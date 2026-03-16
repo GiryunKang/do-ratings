@@ -3,20 +3,23 @@ import StarRating from './StarRating'
 import UserBadge from '@/components/user/UserBadge'
 import HelpfulButton from './HelpfulButton'
 import { timeAgo } from '@/lib/utils/timeAgo'
-
-interface ReviewUser {
-  id: string
-  nickname: string
-  level: 'bronze' | 'silver' | 'gold' | 'platinum'
-  avatar_url: string | null
-}
+import { getCategoryColor } from '@/lib/utils/category-colors'
 
 interface ReviewCardProps {
   review: {
     id: string
-    user: ReviewUser
+    user: {
+      id: string
+      nickname: string
+      level: 'bronze' | 'silver' | 'gold' | 'platinum'
+      avatar_url: string | null
+    }
     subject_id: string
     subject_slug?: string
+    subject_name?: Record<string, string>
+    category_slug?: string
+    category_name?: Record<string, string>
+    category_icon?: string
     overall_rating: number
     title: string
     content: string
@@ -25,80 +28,94 @@ interface ReviewCardProps {
     is_helpful?: boolean
   }
   currentUserId?: string | null
+  locale?: string
 }
 
-function getAccentColor(rating: number): string {
-  if (rating >= 4) return 'bg-emerald-400'
-  if (rating >= 3) return 'bg-yellow-400'
-  return 'bg-red-400'
-}
-
-export default function ReviewCard({ review, currentUserId }: ReviewCardProps) {
+export default function ReviewCard({ review, currentUserId, locale = 'ko' }: ReviewCardProps) {
   const { user } = review
   const subjectHref = review.subject_slug
     ? `/subject/${review.subject_slug}`
     : `/subject/${review.subject_id}`
 
-  const accentColor = getAccentColor(review.overall_rating)
+  const hasCategoryInfo = !!review.category_slug
+
+  const categoryLabel =
+    review.category_name?.[locale] ??
+    review.category_name?.['ko'] ??
+    review.category_slug ??
+    ''
+
+  const categoryColor = review.category_slug
+    ? getCategoryColor(review.category_slug)
+    : 'bg-indigo-500'
 
   return (
-    <article className="flex animate-fadeIn rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden bg-white">
-      {/* Left accent bar */}
-      <div className={`w-1 shrink-0 ${accentColor}`} />
-
-      {/* Card content */}
-      <div className="flex-1 p-4">
-        {/* User info */}
-        <div className="flex items-center gap-2 mb-3">
-          <Link href={`/profile/${user.id}`} className="shrink-0">
-            {user.avatar_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={user.avatar_url}
-                alt={user.nickname}
-                className="w-9 h-9 rounded-full object-cover border border-gray-200"
-              />
-            ) : (
-              <span className="w-9 h-9 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold flex items-center justify-center">
-                {user.nickname.charAt(0).toUpperCase()}
-              </span>
-            )}
-          </Link>
-          <div className="flex flex-col min-w-0">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <Link
-                href={`/profile/${user.id}`}
-                className="text-sm font-semibold text-gray-800 hover:underline truncate"
-              >
-                {user.nickname}
-              </Link>
-              <UserBadge level={user.level} />
-            </div>
-            <span className="text-xs text-gray-400">{timeAgo(review.created_at)}</span>
-          </div>
-          <div className="ml-auto shrink-0">
-            <StarRating value={review.overall_rating} readonly size="sm" />
-          </div>
-        </div>
-
-        {/* Title & Content */}
-        <Link href={subjectHref} className="block group">
-          <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors">
-            {review.title}
-          </h3>
-          <p className="text-sm text-gray-600 line-clamp-3">{review.content}</p>
+    <article className="bg-white rounded-xl border border-gray-200 hover:border-gray-300 p-4 transition-colors animate-fadeIn">
+      {/* Top meta line */}
+      <div className="flex items-center gap-1.5 flex-wrap text-sm text-gray-500">
+        {hasCategoryInfo && (
+          <>
+            <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${categoryColor}`} />
+            <span className="font-medium text-gray-700">r/{categoryLabel}</span>
+            <span className="text-gray-400">•</span>
+          </>
+        )}
+        <Link
+          href={`/profile/${user.id}`}
+          className="font-medium text-gray-700 hover:underline"
+        >
+          {user.nickname}
         </Link>
+        <UserBadge level={user.level} />
+        <span className="text-gray-400">•</span>
+        <span className="text-gray-400 text-xs">{timeAgo(review.created_at)}</span>
+      </div>
 
-        {/* Footer */}
-        <div className="mt-3 flex items-center gap-3">
-          <HelpfulButton
-            reviewId={review.id}
-            initialCount={review.helpful_count}
-            isHelpful={review.is_helpful ?? false}
-            reviewUserId={user.id}
-            currentUserId={currentUserId ?? null}
-          />
-        </div>
+      {/* Title */}
+      <Link href={subjectHref} className="block group mt-2">
+        <h3 className="text-base font-semibold text-gray-900 hover:text-indigo-600 transition-colors">
+          {review.title}
+        </h3>
+      </Link>
+
+      {/* Content */}
+      <p className="text-sm text-gray-600 mt-1 line-clamp-3">{review.content}</p>
+
+      {/* Rating */}
+      <div className="flex items-center gap-2 mt-3">
+        <StarRating value={review.overall_rating} readonly size="sm" />
+        <span className="text-sm text-gray-600 font-medium">{review.overall_rating.toFixed(1)}</span>
+      </div>
+
+      {/* Engagement bar */}
+      <div className="mt-3 flex items-center gap-3">
+        <HelpfulButton
+          reviewId={review.id}
+          initialCount={review.helpful_count}
+          isHelpful={review.is_helpful ?? false}
+          reviewUserId={user.id}
+          currentUserId={currentUserId ?? null}
+        />
+        <button
+          type="button"
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors px-2 py-1 rounded-md hover:bg-gray-100"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.8}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+            />
+          </svg>
+          공유
+        </button>
       </div>
     </article>
   )
