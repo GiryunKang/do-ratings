@@ -45,6 +45,39 @@ interface ReviewerRank {
   review_count: number
 }
 
+const podiumStyles = [
+  'bg-gradient-to-r from-yellow-50 to-amber-50 border border-yellow-200',
+  'bg-gradient-to-r from-gray-50 to-slate-100 border border-gray-200',
+  'bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200',
+]
+
+const badgeStyles = [
+  'bg-gradient-to-r from-yellow-400 to-amber-400 text-white',
+  'bg-gradient-to-r from-gray-300 to-slate-400 text-white',
+  'bg-gradient-to-r from-orange-400 to-amber-500 text-white',
+]
+
+function SkeletonCards() {
+  return (
+    <div className="space-y-2">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} className="skeleton h-14 rounded-xl" />
+      ))}
+    </div>
+  )
+}
+
+function EmptyState({ message }: { message: string }) {
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+      <svg className="w-12 h-12 mx-auto mb-3 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+      </svg>
+      <p className="text-sm text-gray-400">{message}</p>
+    </div>
+  )
+}
+
 export default function RankingsPage() {
   const params = useParams()
   const locale = (params?.locale as string) ?? 'ko'
@@ -153,18 +186,21 @@ export default function RankingsPage() {
       <h1 className="text-xl font-bold text-gray-900 mb-5">{t('rankings')}</h1>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 bg-gray-100 rounded-lg p-1">
+      <div className="flex border-b border-gray-200 mb-6">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
+            className={`flex-1 py-2.5 text-sm font-medium transition-colors relative ${
               activeTab === tab.key
-                ? 'bg-white text-indigo-600 shadow-sm'
+                ? 'text-indigo-600'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
             {tab.label}
+            {activeTab === tab.key && (
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 rounded-t" />
+            )}
           </button>
         ))}
       </div>
@@ -188,20 +224,22 @@ export default function RankingsPage() {
           </div>
 
           {subjectsLoading ? (
-            <p className="text-center text-gray-400 text-sm py-8">{tCommon('loading')}</p>
+            <SkeletonCards />
           ) : topSubjects.length === 0 ? (
-            <p className="text-center text-gray-400 text-sm py-8">{tCommon('noResults')}</p>
+            <EmptyState message={tCommon('noResults')} />
           ) : (
-            <ol className="space-y-2 bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
+            <ol className="space-y-2 bg-white rounded-xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
               {topSubjects.map((subject, index) => {
                 const name = subject.name[locale as 'ko' | 'en'] ?? subject.name.en
+                const podiumStyle = index < 3 ? podiumStyles[index] : ''
+                const badgeStyle = index < 3 ? badgeStyles[index] : 'bg-indigo-100 text-indigo-700'
                 return (
-                  <li key={subject.id}>
+                  <li key={subject.id} className={podiumStyle}>
                     <Link
                       href={`/${locale}/subject/${subject.id}`}
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-white/60 transition-colors"
                     >
-                      <span className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold flex items-center justify-center shrink-0">
+                      <span className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${badgeStyle}`}>
                         {index + 1}
                       </span>
                       <span className="flex-1 text-sm font-medium text-gray-800 truncate">{name}</span>
@@ -225,20 +263,22 @@ export default function RankingsPage() {
         <div>
           <p className="text-xs text-gray-400 mb-3">Most helpful reviews this week</p>
           {reviewsLoading ? (
-            <p className="text-center text-gray-400 text-sm py-8">{tCommon('loading')}</p>
+            <SkeletonCards />
           ) : topReviews.length === 0 ? (
-            <p className="text-center text-gray-400 text-sm py-8">{tCommon('noResults')}</p>
+            <EmptyState message={tCommon('noResults')} />
           ) : (
             <ol className="space-y-2">
               {topReviews.map((review, index) => {
                 const profile = review.public_profiles
+                const podiumStyle = index < 3 ? podiumStyles[index] : 'bg-white border border-gray-200'
+                const badgeStyle = index < 3 ? badgeStyles[index] : 'bg-yellow-100 text-yellow-700'
                 return (
                   <li
                     key={review.id}
-                    className="bg-white rounded-xl border border-gray-200 p-4"
+                    className={`rounded-xl p-4 ${podiumStyle}`}
                   >
                     <div className="flex items-start gap-3">
-                      <span className="w-7 h-7 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                      <span className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 ${badgeStyle}`}>
                         {index + 1}
                       </span>
                       <div className="flex-1 min-w-0">
@@ -277,42 +317,46 @@ export default function RankingsPage() {
         <div>
           <p className="text-xs text-gray-400 mb-3">Top reviewers by review count</p>
           {reviewersLoading ? (
-            <p className="text-center text-gray-400 text-sm py-8">{tCommon('loading')}</p>
+            <SkeletonCards />
           ) : topReviewers.length === 0 ? (
-            <p className="text-center text-gray-400 text-sm py-8">{tCommon('noResults')}</p>
+            <EmptyState message={tCommon('noResults')} />
           ) : (
-            <ol className="space-y-2 bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
-              {topReviewers.map((reviewer, index) => (
-                <li key={reviewer.id}>
-                  <Link
-                    href={`/${locale}/profile/${reviewer.id}`}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
-                  >
-                    <span className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold flex items-center justify-center shrink-0">
-                      {index + 1}
-                    </span>
-                    {reviewer.avatar_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={reviewer.avatar_url}
-                        alt={reviewer.nickname}
-                        className="w-8 h-8 rounded-full object-cover border border-gray-200 shrink-0"
-                      />
-                    ) : (
-                      <span className="w-8 h-8 rounded-full bg-gray-100 text-gray-600 text-sm font-semibold flex items-center justify-center shrink-0">
-                        {reviewer.nickname.charAt(0).toUpperCase()}
+            <ol className="space-y-2 bg-white rounded-xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+              {topReviewers.map((reviewer, index) => {
+                const podiumStyle = index < 3 ? podiumStyles[index] : ''
+                const badgeStyle = index < 3 ? badgeStyles[index] : 'bg-indigo-100 text-indigo-700'
+                return (
+                  <li key={reviewer.id} className={podiumStyle}>
+                    <Link
+                      href={`/${locale}/profile/${reviewer.id}`}
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-white/60 transition-colors"
+                    >
+                      <span className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${badgeStyle}`}>
+                        {index + 1}
                       </span>
-                    )}
-                    <span className="flex-1 text-sm font-medium text-gray-800 truncate">
-                      {reviewer.nickname}
-                    </span>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <UserBadge level={(reviewer.level ?? 'bronze') as 'bronze' | 'silver' | 'gold' | 'platinum'} />
-                      <span className="text-xs text-gray-500">{reviewer.review_count} reviews</span>
-                    </div>
-                  </Link>
-                </li>
-              ))}
+                      {reviewer.avatar_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={reviewer.avatar_url}
+                          alt={reviewer.nickname}
+                          className="w-8 h-8 rounded-full object-cover border border-gray-200 shrink-0"
+                        />
+                      ) : (
+                        <span className="w-8 h-8 rounded-full bg-gray-100 text-gray-600 text-sm font-semibold flex items-center justify-center shrink-0">
+                          {reviewer.nickname.charAt(0).toUpperCase()}
+                        </span>
+                      )}
+                      <span className="flex-1 text-sm font-medium text-gray-800 truncate">
+                        {reviewer.nickname}
+                      </span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <UserBadge level={(reviewer.level ?? 'bronze') as 'bronze' | 'silver' | 'gold' | 'platinum'} />
+                        <span className="text-xs text-gray-500">{reviewer.review_count} reviews</span>
+                      </div>
+                    </Link>
+                  </li>
+                )
+              })}
             </ol>
           )}
         </div>

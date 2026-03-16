@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react'
 import { useTranslations } from 'next-intl'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { useInfiniteScroll } from '@/lib/hooks/useInfiniteScroll'
@@ -10,6 +10,7 @@ import { encodeCursor, decodeCursor } from '@/lib/utils/cursor'
 import InfiniteScroll from '@/components/ui/InfiniteScroll'
 import ReviewCard from '@/components/review/ReviewCard'
 import { useEffect } from 'react'
+import Link from 'next/link'
 
 interface FeedReview {
   id: string
@@ -30,7 +31,17 @@ interface FeedReview {
 
 const PAGE_SIZE = 10
 
-function FeedContent({ userId }: { userId: string }) {
+function FeedSkeletonCards() {
+  return (
+    <div className="space-y-3">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} className="skeleton h-32 rounded-xl" />
+      ))}
+    </div>
+  )
+}
+
+function FeedContent({ userId, locale }: { userId: string; locale: string }) {
   const tCommon = useTranslations('common')
 
   const fetchFeed = useCallback(
@@ -135,17 +146,32 @@ function FeedContent({ userId }: { userId: string }) {
 
   if (!loading && items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 gap-3 text-center px-6">
-        <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center">
-          <svg className="w-7 h-7 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="flex flex-col items-center justify-center py-20 gap-4 text-center px-6">
+        <div className="w-20 h-20 rounded-full bg-indigo-50 flex items-center justify-center animate-pulse-gentle">
+          <svg className="w-10 h-10 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
         </div>
-        <p className="text-gray-500 text-sm max-w-xs">
-          Follow reviewers to see their reviews here
-        </p>
+        <div>
+          <p className="text-gray-600 font-medium text-sm mb-1">
+            Your feed is empty
+          </p>
+          <p className="text-gray-400 text-sm max-w-xs">
+            Follow reviewers to see their reviews here
+          </p>
+        </div>
+        <Link
+          href={`/${locale}/rankings`}
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full px-5 py-2.5 text-sm font-semibold hover:shadow-lg transition-all"
+        >
+          Discover Reviewers
+        </Link>
       </div>
     )
+  }
+
+  if (loading && items.length === 0) {
+    return <FeedSkeletonCards />
   }
 
   return (
@@ -166,8 +192,11 @@ function FeedContent({ userId }: { userId: string }) {
 export default function FeedPage() {
   const { user, loading } = useAuth()
   const router = useRouter()
+  const pathname = usePathname()
   const tCommon = useTranslations('common')
   const tNav = useTranslations('nav')
+
+  const locale = pathname.startsWith('/en') ? 'en' : 'ko'
 
   useEffect(() => {
     if (!loading && !user) {
@@ -177,8 +206,9 @@ export default function FeedPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-64">
-        <p className="text-gray-400 text-sm">{tCommon('loading')}</p>
+      <div className="max-w-2xl mx-auto px-4 py-6">
+        <h1 className="text-xl font-bold text-gray-900 mb-5">{tNav('feed')}</h1>
+        <FeedSkeletonCards />
       </div>
     )
   }
@@ -188,7 +218,7 @@ export default function FeedPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
       <h1 className="text-xl font-bold text-gray-900 mb-5">{tNav('feed')}</h1>
-      <FeedContent userId={user.id} />
+      <FeedContent userId={user.id} locale={locale} />
     </div>
   )
 }

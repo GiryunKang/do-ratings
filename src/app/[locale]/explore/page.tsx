@@ -27,6 +27,34 @@ interface FilterState {
   ratingMin: number | null
 }
 
+// Rotate through accent colors based on category slug
+const categoryAccents: Record<string, string> = {
+  food: 'border-orange-400',
+  restaurant: 'border-orange-400',
+  hotel: 'border-blue-400',
+  travel: 'border-cyan-400',
+  attraction: 'border-green-400',
+  beauty: 'border-pink-400',
+  shopping: 'border-purple-400',
+  entertainment: 'border-yellow-400',
+  health: 'border-red-400',
+  education: 'border-indigo-400',
+}
+
+const accentFallbacks = [
+  'border-indigo-400',
+  'border-purple-400',
+  'border-pink-400',
+  'border-orange-400',
+  'border-teal-400',
+  'border-cyan-400',
+]
+
+function getCategoryAccent(slug: string | undefined, index: number): string {
+  if (slug && categoryAccents[slug]) return categoryAccents[slug]
+  return accentFallbacks[index % accentFallbacks.length]
+}
+
 export default function ExplorePage() {
   const t = useTranslations('common')
   const searchParams = useSearchParams()
@@ -143,39 +171,46 @@ export default function ExplorePage() {
               ))}
             </div>
           ) : subjects.length === 0 ? (
-            <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-400">
-              <svg className="w-12 h-12 mx-auto mb-3 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+              <svg className="w-16 h-16 mx-auto mb-4" viewBox="0 0 64 64" fill="none">
+                <circle cx="28" cy="28" r="18" stroke="#c7d2fe" strokeWidth="3" />
+                <circle cx="28" cy="28" r="10" fill="#e0e7ff" />
+                <path d="M41 41l10 10" stroke="#6366f1" strokeWidth="3" strokeLinecap="round" />
+                <path d="M24 24h8M24 30h5" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" />
               </svg>
-              <p className="text-sm">{t('noResults') ?? 'No results found'}</p>
+              <p className="text-sm font-medium text-gray-600 mb-1">{t('noResults') ?? 'No results found'}</p>
+              <p className="text-xs text-gray-400">Try adjusting your filters or search term</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {subjects.map((subject) => (
-                <Link
-                  key={subject.id}
-                  href={`/${currentLocale}/subject/${subject.id}`}
-                  className="bg-white rounded-xl border border-gray-200 p-4 hover:border-indigo-300 hover:shadow-sm transition-all"
-                >
-                  <p className="font-semibold text-gray-900 text-sm line-clamp-2 mb-2">
-                    {getSubjectName(subject)}
-                  </p>
-                  {getCategoryName(subject) && (
-                    <p className="text-xs text-gray-400 mb-1">{getCategoryName(subject)}</p>
-                  )}
-                  <div className="flex items-center gap-1.5 mt-auto">
-                    {subject.avg_rating != null ? (
-                      <>
-                        <span className="text-yellow-400 text-sm">★</span>
-                        <span className="text-sm font-bold text-gray-800">{subject.avg_rating.toFixed(1)}</span>
-                        <span className="text-xs text-gray-400">({subject.review_count})</span>
-                      </>
-                    ) : (
-                      <span className="text-xs text-gray-400">{t('noReviews') ?? 'No reviews'}</span>
+              {subjects.map((subject, index) => {
+                const accentClass = getCategoryAccent(subject.categories?.slug, index)
+                return (
+                  <Link
+                    key={subject.id}
+                    href={`/${currentLocale}/subject/${subject.id}`}
+                    className={`bg-white rounded-xl border-l-4 border border-gray-200 p-4 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ${accentClass}`}
+                  >
+                    <p className="font-semibold text-gray-900 text-sm line-clamp-2 mb-2">
+                      {getSubjectName(subject)}
+                    </p>
+                    {getCategoryName(subject) && (
+                      <p className="text-xs text-gray-400 mb-1">{getCategoryName(subject)}</p>
                     )}
-                  </div>
-                </Link>
-              ))}
+                    <div className="flex items-center gap-1.5 mt-auto">
+                      {subject.avg_rating != null ? (
+                        <>
+                          <span className="text-yellow-400 text-sm">★</span>
+                          <span className="text-sm font-bold text-gray-800">{subject.avg_rating.toFixed(1)}</span>
+                          <span className="text-xs text-gray-400">({subject.review_count})</span>
+                        </>
+                      ) : (
+                        <span className="text-xs text-gray-400">{t('noReviews') ?? 'No reviews'}</span>
+                      )}
+                    </div>
+                  </Link>
+                )
+              })}
             </div>
           )}
         </div>
