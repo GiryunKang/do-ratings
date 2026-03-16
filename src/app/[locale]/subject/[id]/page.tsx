@@ -8,6 +8,8 @@ import SubRatingChart from '@/components/review/SubRatingChart'
 import ReviewList from '@/components/review/ReviewList'
 import RelatedNews from '@/components/news/RelatedNews'
 import ImageGallery from '@/components/review/ImageGallery'
+import TrendChart from '@/components/analytics/TrendChart'
+import AISummary from '@/components/analytics/AISummary'
 
 interface PageProps {
   params: Promise<{ locale: string; id: string }>
@@ -191,6 +193,16 @@ export default async function SubjectPage({ params }: PageProps) {
             <ImageGallery images={allImages} />
           </div>
         )}
+
+        {/* Rating Trend */}
+        <div className="mt-4 pt-4 border-t border-gray-100">
+          <TrendChart subjectId={id} locale={locale} />
+        </div>
+
+        {/* AI Summary */}
+        <div className="mt-4 pt-4 border-t border-gray-100">
+          <AISummary subjectId={id} locale={locale} />
+        </div>
 
         {/* Write Review Button */}
         <div className="mt-4 flex gap-3 flex-wrap">
