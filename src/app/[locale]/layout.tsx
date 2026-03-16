@@ -8,6 +8,8 @@ import Sidebar from '@/components/layout/Sidebar'
 import AdBanner from '@/components/layout/AdBanner'
 import '../globals.css'
 
+const adsenseClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID
+
 export default async function LocaleLayout({
   children,
   params,
@@ -22,6 +24,17 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#2563eb" />
+        {adsenseClientId && (
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
+            crossOrigin="anonymous"
+          />
+        )}
+      </head>
       <body className="bg-gray-50 text-gray-900 min-h-screen">
         <NextIntlClientProvider messages={messages}>
           <Header />
