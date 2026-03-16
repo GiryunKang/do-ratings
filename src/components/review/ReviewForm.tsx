@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
 import SubRatingInput from '@/components/review/SubRatingInput'
+import ImageUpload, { ImageFile } from '@/components/review/ImageUpload'
 import { calculateOverallRating } from '@/lib/utils/rating'
 import { sanitizeText, validateReviewInput } from '@/lib/utils/sanitize'
 
@@ -29,6 +30,12 @@ interface ReviewFormProps {
   existingReview?: ExistingReview
 }
 
+interface ExistingImage {
+  id: string
+  url: string
+  storage_path: string
+}
+
 export default function ReviewForm({
   subjectId,
   criteria,
@@ -44,9 +51,30 @@ export default function ReviewForm({
   const [subRatings, setSubRatings] = useState<Record<string, number>>(
     existingReview?.sub_ratings ?? {}
   )
+  const [images, setImages] = useState<ImageFile[]>([])
+  const [existingImages, setExistingImages] = useState<ExistingImage[]>([])
+  const [removedImageIds, setRemovedImageIds] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+
+  useEffect(() => {
+    if (!existingReview) return
+
+    const supabase = createClient()
+    supabase
+      .from('review_images')
+      .select('id, url, storage_path')
+      .eq('review_id', existingReview.id)
+      .then(({ data }) => {
+        if (data) setExistingImages(data as ExistingImage[])
+      })
+  }, [existingReview])
+
+  function handleRemoveExistingImage(id: string) {
+    setRemovedImageIds((prev) => [...prev, id])
+    setExistingImages((prev) => prev.filter((img) => img.id !== id))
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -71,6 +99,8 @@ export default function ReviewForm({
     const supabase = createClient()
 
     try {
+      let reviewId: string
+
       if (existingReview) {
         const { error: updateError } = await supabase
           .from('reviews')
@@ -83,11 +113,27 @@ export default function ReviewForm({
           .eq('id', existingReview.id)
 
         if (updateError) throw updateError
+        reviewId = existingReview.id
+
+        // Delete removed images from Storage and DB
+        if (removedImageIds.length > 0) {
+          const { data: removedRows } = await supabase
+            .from('review_images')
+            .select('storage_path')
+            .in('id', removedImageIds)
+
+          if (removedRows && removedRows.length > 0) {
+            const storagePaths = removedRows.map((r: { storage_path: string }) => r.storage_path)
+            await supabase.storage.from('review-images').remove(storagePaths)
+          }
+
+          await supabase.from('review_images').delete().in('id', removedImageIds)
+        }
       } else {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) throw new Error('Not authenticated')
 
-        const { error: insertError } = await supabase
+        const { data: insertedReview, error: insertError } = await supabase
           .from('reviews')
           .insert({
             subject_id: subjectId,
@@ -97,8 +143,56 @@ export default function ReviewForm({
             sub_ratings: subRatings,
             overall_rating: overallRating,
           })
+          .select('id')
+          .single()
 
         if (insertError) throw insertError
+        reviewId = insertedReview.id
+
+        // Upload new images for new review
+        if (images.length > 0) {
+          const uploadedImages = await Promise.all(
+            images.map(async (img) => {
+              const storagePath = `${user.id}/${reviewId}/${crypto.randomUUID()}.webp`
+              const { error: uploadError } = await supabase.storage
+                .from('review-images')
+                .upload(storagePath, img.file, { contentType: 'image/webp' })
+              if (uploadError) throw uploadError
+
+              const storageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/review-images/${storagePath}`
+              return { review_id: reviewId, url: storageUrl, storage_path: storagePath }
+            })
+          )
+
+          const { error: imageInsertError } = await supabase
+            .from('review_images')
+            .insert(uploadedImages)
+          if (imageInsertError) throw imageInsertError
+        }
+      }
+
+      // Upload new images for existing review edits
+      if (existingReview && images.length > 0) {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) throw new Error('Not authenticated')
+
+        const uploadedImages = await Promise.all(
+          images.map(async (img) => {
+            const storagePath = `${user.id}/${reviewId}/${crypto.randomUUID()}.webp`
+            const { error: uploadError } = await supabase.storage
+              .from('review-images')
+              .upload(storagePath, img.file, { contentType: 'image/webp' })
+            if (uploadError) throw uploadError
+
+            const storageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/review-images/${storagePath}`
+            return { review_id: reviewId, url: storageUrl, storage_path: storagePath }
+          })
+        )
+
+        const { error: imageInsertError } = await supabase
+          .from('review_images')
+          .insert(uploadedImages)
+        if (imageInsertError) throw imageInsertError
       }
 
       setSuccess(true)
@@ -112,6 +206,8 @@ export default function ReviewForm({
       setSubmitting(false)
     }
   }
+
+  const maxImages = 5 - existingImages.length + removedImageIds.length
 
   if (success) {
     return (
@@ -174,6 +270,44 @@ export default function ReviewForm({
           rows={6}
           maxLength={5000}
           className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+        />
+      </div>
+
+      {/* Photos */}
+      <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
+        <h2 className="text-sm font-semibold text-gray-700">Photos</h2>
+
+        {/* Existing images thumbnails */}
+        {existingImages.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {existingImages.map((img) => (
+              <div key={img.id} className="relative w-20 h-20 rounded-lg overflow-hidden group">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={img.url}
+                  alt="existing"
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveExistingImage(img.id)}
+                  className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80"
+                  aria-label="Remove image"
+                >
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <ImageUpload
+          images={images}
+          onChange={setImages}
+          maxImages={maxImages}
+          disabled={submitting}
         />
       </div>
 
