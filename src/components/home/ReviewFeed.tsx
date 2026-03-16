@@ -1,19 +1,32 @@
 'use client'
 
 import { useCallback, useState } from 'react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { useInfiniteScroll } from '@/lib/hooks/useInfiniteScroll'
 import { useAuth } from '@/lib/hooks/useAuth'
 import InfiniteScroll from '@/components/ui/InfiniteScroll'
 import ReviewCard from '@/components/review/ReviewCard'
 import SortControls from './SortControls'
+import { getCategoryColor } from '@/lib/utils/category-colors'
+import { CategoryIcon } from '@/lib/icons'
 
 interface ReviewFeedProps {
   categories: Array<{ id: string; slug: string; name: Record<string, string>; icon: string }>
   locale: string
+  subjects?: Array<{
+    id: string
+    name: Record<string, string>
+    description?: Record<string, string>
+    avg_rating: number | null
+    review_count: number
+    category_slug: string
+    category_name: Record<string, string>
+    category_icon: string
+  }>
 }
 
-export default function ReviewFeed({ categories, locale }: ReviewFeedProps) {
+export default function ReviewFeed({ categories, locale, subjects }: ReviewFeedProps) {
   const { user } = useAuth()
   const [sort, setSort] = useState('latest')
   const [categoryFilter, setCategoryFilter] = useState('all')
@@ -159,10 +172,39 @@ export default function ReviewFeed({ categories, locale }: ReviewFeedProps) {
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-gray-400 text-sm">
-            {locale === 'ko' ? '아직 리뷰가 없습니다' : 'No reviews yet'}
-          </p>
+        <div>
+          <h3 className="text-base font-semibold text-gray-800 mb-4">
+            {locale === 'ko' ? '평가할 대상을 찾아보세요' : 'Find something to review'}
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {subjects?.map(subject => {
+              const name = subject.name[locale] ?? subject.name['ko']
+              const desc = subject.description?.[locale] ?? subject.description?.['ko'] ?? ''
+              const catName = subject.category_name[locale] ?? subject.category_name['ko']
+              return (
+                <Link key={subject.id} href={`/${locale}/subject/${subject.id}`}
+                  className="bg-white rounded-xl border border-gray-200 p-4 hover:border-indigo-300 hover:shadow-md transition-all group">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className={`w-6 h-6 rounded-full ${getCategoryColor(subject.category_slug)} flex items-center justify-center`}>
+                      <CategoryIcon name={subject.category_icon} className="w-3.5 h-3.5 text-white" />
+                    </span>
+                    <span className="text-xs text-gray-500">r/{catName}</span>
+                  </div>
+                  <h4 className="font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">{name}</h4>
+                  {desc && <p className="text-xs text-gray-500 mt-1 line-clamp-1">{desc}</p>}
+                  <div className="flex items-center gap-2 mt-2 text-xs text-gray-400">
+                    {subject.avg_rating ? (
+                      <span className="text-yellow-500">★ {subject.avg_rating.toFixed(1)}</span>
+                    ) : (
+                      <span>{locale === 'ko' ? '아직 평점 없음' : 'No ratings yet'}</span>
+                    )}
+                    <span>•</span>
+                    <span>{subject.review_count} {locale === 'ko' ? '리뷰' : 'reviews'}</span>
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
         </div>
       ) : (
         <InfiniteScroll onLoadMore={loadMore} hasMore={hasMore} loading={loading}>

@@ -6,6 +6,7 @@ import { formatRating } from '@/lib/utils/rating'
 import StarRating from '@/components/review/StarRating'
 import SubRatingChart from '@/components/review/SubRatingChart'
 import ReviewList from '@/components/review/ReviewList'
+import RelatedNews from '@/components/news/RelatedNews'
 
 interface PageProps {
   params: Promise<{ locale: string; id: string }>
@@ -179,6 +180,12 @@ export default async function SubjectPage({ params }: PageProps) {
         <h2 className="text-base font-semibold text-gray-700 mb-3">Reviews</h2>
         <ReviewList subjectId={id} locale={locale} />
       </section>
+
+      {/* Related News */}
+      <RelatedNews
+        query={typeof subject.name === 'object' ? ((subject.name as Record<string, string>)['ko'] ?? '') : String(subject.name)}
+        locale={locale}
+      />
     </div>
   )
 }
