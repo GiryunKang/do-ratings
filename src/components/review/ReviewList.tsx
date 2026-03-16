@@ -12,7 +12,6 @@ import SortSelect from '@/components/search/SortSelect'
 interface ReviewListProps {
   subjectId?: string
   userId?: string
-  locale: string
 }
 
 interface ReviewRow {
@@ -31,7 +30,7 @@ interface ReviewRow {
 
 const PAGE_SIZE = 10
 
-export default function ReviewList({ subjectId, userId, locale }: ReviewListProps) {
+export default function ReviewList({ subjectId, userId }: ReviewListProps) {
   const { user: currentUser } = useAuth()
   const [sort, setSort] = useState('latest')
 

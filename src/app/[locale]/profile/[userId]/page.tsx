@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ProfilePage({ params }: PageProps) {
-  const { locale, userId } = await params
+  const { userId } = await params
   const supabase = await createClient()
 
   // Fetch public profile
@@ -87,7 +87,7 @@ export default async function ProfilePage({ params }: PageProps) {
       {/* User's reviews */}
       <section>
         <h2 className="text-base font-semibold text-gray-700 mb-3">Reviews</h2>
-        <ReviewList userId={userId} locale={locale} />
+        <ReviewList userId={userId} />
       </section>
     </div>
   )

@@ -2,17 +2,6 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import StarRating from '@/components/review/StarRating'
 
-interface TrendingSubject {
-  id: string
-  name: { ko: string; en: string }
-  avg_rating: number | null
-  review_count: number
-  category: {
-    name: { ko: string; en: string }
-    slug: string
-  } | null
-}
-
 interface TrendingSubjectsProps {
   locale: string
 }

@@ -1,5 +1,33 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
+interface GooglePlacePhoto {
+  name?: string
+}
+
+interface GooglePlaceLocation {
+  latitude?: number
+  longitude?: number
+}
+
+interface GooglePlaceDisplayName {
+  text?: string
+}
+
+interface GooglePlace {
+  id: string
+  displayName?: GooglePlaceDisplayName
+  formattedAddress?: string
+  rating?: number
+  userRatingCount?: number
+  types?: string[]
+  location?: GooglePlaceLocation
+  photos?: GooglePlacePhoto[]
+}
+
+interface GooglePlacesSearchResponse {
+  places?: GooglePlace[]
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const query = searchParams.get('q') ?? ''
@@ -40,9 +68,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to search places' }, { status: 500 })
   }
 
-  const data = await response.json()
+  const data = (await response.json()) as GooglePlacesSearchResponse
 
-  const results = (data.places ?? []).map((place: any) => ({
+  const results = (data.places ?? []).map((place) => ({
     google_place_id: place.id,
     name: place.displayName?.text ?? '',
     address: place.formattedAddress ?? '',

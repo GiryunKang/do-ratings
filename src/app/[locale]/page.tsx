@@ -4,6 +4,41 @@ import Link from 'next/link'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
 
+interface LocalizedText {
+  [key: string]: string
+}
+
+interface CategoryRecord {
+  id: string
+  slug: string
+  name: LocalizedText
+  icon: string | null
+}
+
+interface SubjectCategoryRecord {
+  slug: string
+  name: LocalizedText
+  icon: string | null
+}
+
+interface SubjectRecord {
+  id: string
+  name: LocalizedText
+  description: LocalizedText | null
+  avg_rating: number | null
+  review_count: number
+  category_id: string
+  categories: SubjectCategoryRecord | SubjectCategoryRecord[] | null
+}
+
+function pickRelation<T>(value: T | T[] | null | undefined): T | null {
+  if (Array.isArray(value)) {
+    return value[0] ?? null
+  }
+
+  return value ?? null
+}
+
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
   const supabase = await createClient()
@@ -21,36 +56,48 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     supabase.from('reviews').select('id, title, overall_rating, created_at, subjects(name, categories(name))').order('created_at', { ascending: false }).limit(5),
   ])
 
-  const cats = (categories ?? []).sort((a, b) => {
+  const cats = ((categories ?? []) as CategoryRecord[]).sort((a, b) => {
     const ai = categoryOrder.indexOf(a.slug as string)
     const bi = categoryOrder.indexOf(b.slug as string)
     return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
   })
 
-  const subjects = allSubjects ?? []
+  const subjects = (allSubjects ?? []) as SubjectRecord[]
 
   // Map subjects with category info
-  const mappedSubjects = subjects.map(s => {
-    const cat = Array.isArray(s.categories) ? s.categories[0] : s.categories
+  const mappedSubjects = subjects.map((subject) => {
+    const category = pickRelation(subject.categories)
+
     return {
-      id: s.id as string,
-      name: s.name as Record<string, string>,
-      description: s.description as Record<string, string> | null,
-      avg_rating: s.avg_rating as number | null,
-      review_count: s.review_count as number,
-      category_id: s.category_id as string,
-      category_slug: (cat as any)?.slug ?? '',
-      category_name: ((cat as any)?.name ?? {}) as Record<string, string>,
-      category_icon: (cat as any)?.icon ?? 'folder',
+      id: subject.id,
+      name: subject.name,
+      description: subject.description,
+      avg_rating: subject.avg_rating,
+      review_count: subject.review_count,
+      category_id: subject.category_id,
+      category_slug: category?.slug ?? '',
+      category_name: category?.name ?? {},
+      category_icon: category?.icon ?? 'folder',
     }
   })
 
   // Featured: top subjects by review count (for carousel)
-  const featured = mappedSubjects.slice(0, 8)
+  const featured = [...mappedSubjects]
+    .sort((a, b) => (
+      b.review_count - a.review_count ||
+      (b.avg_rating ?? 0) - (a.avg_rating ?? 0) ||
+      a.id.localeCompare(b.id)
+    ))
+    .slice(0, 8)
 
-  // Random spotlight: pick 3 random subjects for "What do you think?" section
-  const shuffled = [...mappedSubjects].sort(() => Math.random() - 0.5)
-  const spotlights = shuffled.slice(0, 3)
+  // Spotlight subjects are selected deterministically to keep server renders pure.
+  const spotlights = [...mappedSubjects]
+    .sort((a, b) => (
+      (b.avg_rating ?? 0) - (a.avg_rating ?? 0) ||
+      b.review_count - a.review_count ||
+      a.id.localeCompare(b.id)
+    ))
+    .slice(0, 3)
 
   // Group subjects by category
   const subjectsByCategory: Record<string, typeof mappedSubjects> = {}

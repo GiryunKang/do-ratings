@@ -126,7 +126,7 @@ export default async function CategoryPage({ params }: PageProps) {
       {/* Latest Reviews */}
       <section>
         <h2 className="text-base font-semibold text-gray-700 mb-3">Latest Reviews</h2>
-        <ReviewList locale={locale} />
+        <ReviewList />
       </section>
     </div>
   )

@@ -6,7 +6,6 @@ import { useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
 import { formatRating } from '@/lib/utils/rating'
-import { timeAgo } from '@/lib/utils/timeAgo'
 import StarRating from '@/components/review/StarRating'
 import UserBadge from '@/components/user/UserBadge'
 
@@ -33,8 +32,7 @@ interface ReviewRank {
   created_at: string
   subject_id: string
   user_id: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public_profiles: any
+  public_profiles: ReviewProfile | ReviewProfile[] | null
 }
 
 interface ReviewerRank {
@@ -43,6 +41,13 @@ interface ReviewerRank {
   avatar_url: string | null
   level: string
   review_count: number
+}
+
+interface ReviewProfile {
+  id: string
+  nickname: string
+  avatar_url: string | null
+  level: string
 }
 
 const podiumStyles = [
@@ -78,6 +83,14 @@ function EmptyState({ message }: { message: string }) {
   )
 }
 
+function pickRelation<T>(value: T | T[] | null | undefined): T | null {
+  if (Array.isArray(value)) {
+    return value[0] ?? null
+  }
+
+  return value ?? null
+}
+
 export default function RankingsPage() {
   const params = useParams()
   const locale = (params?.locale as string) ?? 'ko'
@@ -90,7 +103,7 @@ export default function RankingsPage() {
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('')
   const [topSubjects, setTopSubjects] = useState<SubjectRank[]>([])
-  const [subjectsLoading, setSubjectsLoading] = useState(false)
+  const [subjectsLoading, setSubjectsLoading] = useState(true)
 
   // Reviews tab state
   const [topReviews, setTopReviews] = useState<ReviewRank[]>([])
@@ -102,77 +115,133 @@ export default function RankingsPage() {
 
   // Load categories once
   useEffect(() => {
+    let isActive = true
     const supabase = createClient()
-    supabase
-      .from('categories')
-      .select('id, name, slug')
-      .then(({ data }) => {
-        if (data) {
-          setCategories(data as Category[])
-          if (data.length > 0) setSelectedCategoryId(data[0].id)
-        }
-      })
+
+    async function loadCategories() {
+      const { data } = await supabase
+        .from('categories')
+        .select('id, name, slug')
+
+      if (!isActive) {
+        return
+      }
+
+      const nextCategories = (data as Category[] | null) ?? []
+      setCategories(nextCategories)
+
+      const firstCategoryId = nextCategories[0]?.id ?? ''
+      if (!firstCategoryId) {
+        setSubjectsLoading(false)
+        return
+      }
+
+      setSelectedCategoryId(firstCategoryId)
+      setSubjectsLoading(true)
+    }
+
+    void loadCategories()
+
+    return () => {
+      isActive = false
+    }
   }, [])
 
   // Load top subjects when category changes
   useEffect(() => {
     if (!selectedCategoryId) return
-    setSubjectsLoading(true)
+    let isActive = true
     const supabase = createClient()
-    supabase
-      .from('subjects')
-      .select('id, name, avg_rating, review_count')
-      .eq('category_id', selectedCategoryId)
-      .order('avg_rating', { ascending: false })
-      .limit(10)
-      .then(({ data }) => {
-        setTopSubjects((data as SubjectRank[]) ?? [])
-        setSubjectsLoading(false)
-      })
+
+    async function loadTopSubjects() {
+      const { data } = await supabase
+        .from('subjects')
+        .select('id, name, avg_rating, review_count')
+        .eq('category_id', selectedCategoryId)
+        .order('avg_rating', { ascending: false })
+        .limit(10)
+
+      if (!isActive) {
+        return
+      }
+
+      setTopSubjects((data as SubjectRank[] | null) ?? [])
+      setSubjectsLoading(false)
+    }
+
+    void loadTopSubjects()
+
+    return () => {
+      isActive = false
+    }
   }, [selectedCategoryId])
 
   // Load top reviews (this week's most helpful)
   useEffect(() => {
     if (activeTab !== 'reviews' || topReviews.length > 0) return
-    setReviewsLoading(true)
+    let isActive = true
     const oneWeekAgo = new Date()
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
     const supabase = createClient()
-    supabase
-      .from('reviews')
-      .select(`
-        id,
-        title,
-        helpful_count,
-        overall_rating,
-        created_at,
-        subject_id,
-        user_id,
-        public_profiles(id, nickname, level, avatar_url)
-      `)
-      .gte('created_at', oneWeekAgo.toISOString())
-      .order('helpful_count', { ascending: false })
-      .limit(10)
-      .then(({ data }) => {
-        setTopReviews((data as ReviewRank[]) ?? [])
-        setReviewsLoading(false)
-      })
+
+    async function loadTopReviews() {
+      const { data } = await supabase
+        .from('reviews')
+        .select(`
+          id,
+          title,
+          helpful_count,
+          overall_rating,
+          created_at,
+          subject_id,
+          user_id,
+          public_profiles(id, nickname, level, avatar_url)
+        `)
+        .gte('created_at', oneWeekAgo.toISOString())
+        .order('helpful_count', { ascending: false })
+        .limit(10)
+
+      if (!isActive) {
+        return
+      }
+
+      setTopReviews((data as ReviewRank[] | null) ?? [])
+      setReviewsLoading(false)
+    }
+
+    void loadTopReviews()
+
+    return () => {
+      isActive = false
+    }
   }, [activeTab, topReviews.length])
 
   // Load top reviewers
   useEffect(() => {
     if (activeTab !== 'reviewers' || topReviewers.length > 0) return
-    setReviewersLoading(true)
+    let isActive = true
     const supabase = createClient()
-    supabase
-      .from('public_profiles')
-      .select('id, nickname, avatar_url, level, review_count')
-      .order('review_count', { ascending: false })
-      .limit(10)
-      .then(({ data }) => {
-        setTopReviewers((data as ReviewerRank[]) ?? [])
-        setReviewersLoading(false)
-      })
+
+    async function loadTopReviewers() {
+      const { data } = await supabase
+        .from('public_profiles')
+        .select('id, nickname, avatar_url, level, review_count')
+        .order('review_count', { ascending: false })
+        .limit(10)
+
+      if (!isActive) {
+        return
+      }
+
+      setTopReviewers((data as ReviewerRank[] | null) ?? [])
+      setReviewersLoading(false)
+    }
+
+    void loadTopReviewers()
+
+    return () => {
+      isActive = false
+    }
   }, [activeTab, topReviewers.length])
 
   const tabs: { key: Tab; label: string }[] = [
@@ -180,6 +249,24 @@ export default function RankingsPage() {
     { key: 'reviews', label: 'Reviews' },
     { key: 'reviewers', label: 'Reviewers' },
   ]
+
+  function handleTabChange(nextTab: Tab) {
+    setActiveTab(nextTab)
+
+    if (nextTab === 'reviews' && topReviews.length === 0) {
+      setReviewsLoading(true)
+    }
+
+    if (nextTab === 'reviewers' && topReviewers.length === 0) {
+      setReviewersLoading(true)
+    }
+  }
+
+  function handleCategoryChange(nextCategoryId: string) {
+    setSelectedCategoryId(nextCategoryId)
+    setTopSubjects([])
+    setSubjectsLoading(true)
+  }
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
@@ -190,7 +277,7 @@ export default function RankingsPage() {
         {tabs.map((tab) => (
           <button
             key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
+            onClick={() => handleTabChange(tab.key)}
             className={`flex-1 py-2.5 text-sm font-medium transition-colors relative ${
               activeTab === tab.key
                 ? 'text-indigo-600'
@@ -212,7 +299,7 @@ export default function RankingsPage() {
           <div className="mb-4">
             <select
               value={selectedCategoryId}
-              onChange={(e) => setSelectedCategoryId(e.target.value)}
+              onChange={(e) => handleCategoryChange(e.target.value)}
               className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
             >
               {categories.map((cat) => (
@@ -269,7 +356,7 @@ export default function RankingsPage() {
           ) : (
             <ol className="space-y-2">
               {topReviews.map((review, index) => {
-                const profile = review.public_profiles
+                const profile = pickRelation(review.public_profiles)
                 const podiumStyle = index < 3 ? podiumStyles[index] : 'bg-white border border-gray-200'
                 const badgeStyle = index < 3 ? badgeStyles[index] : 'bg-yellow-100 text-yellow-700'
                 return (

@@ -42,8 +42,6 @@ function FeedSkeletonCards() {
 }
 
 function FeedContent({ userId, locale }: { userId: string; locale: string }) {
-  const tCommon = useTranslations('common')
-
   const fetchFeed = useCallback(
     async (cursor: string | null) => {
       const supabase = createClient()
@@ -193,16 +191,15 @@ export default function FeedPage() {
   const { user, loading } = useAuth()
   const router = useRouter()
   const pathname = usePathname()
-  const tCommon = useTranslations('common')
   const tNav = useTranslations('nav')
 
   const locale = pathname.startsWith('/en') ? 'en' : 'ko'
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/auth/login')
+      router.push(`/${locale}/auth/login`)
     }
-  }, [user, loading, router])
+  }, [locale, user, loading, router])
 
   if (loading) {
     return (

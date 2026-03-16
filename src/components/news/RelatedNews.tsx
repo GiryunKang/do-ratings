@@ -13,20 +13,46 @@ interface RelatedNewsProps {
   locale: string
 }
 
+interface RelatedNewsState {
+  query: string
+  articles: Article[]
+}
+
 export default function RelatedNews({ query, locale }: RelatedNewsProps) {
-  const [articles, setArticles] = useState<Article[]>([])
-  const [loading, setLoading] = useState(true)
+  const [state, setState] = useState<RelatedNewsState>({ query: '', articles: [] })
+  const loading = Boolean(query) && state.query !== query
+  const articles = state.query === query ? state.articles : []
 
   useEffect(() => {
-    if (!query) { setLoading(false); return }
+    if (!query) {
+      return
+    }
+
+    let isActive = true
 
     fetch(`/api/news?q=${encodeURIComponent(query)}`)
       .then(res => res.json())
-      .then(data => setArticles(data.articles ?? []))
-      .catch(() => setArticles([]))
-      .finally(() => setLoading(false))
+      .then(data => {
+        if (!isActive) {
+          return
+        }
+
+        setState({ query, articles: data.articles ?? [] })
+      })
+      .catch(() => {
+        if (!isActive) {
+          return
+        }
+
+        setState({ query, articles: [] })
+      })
+
+    return () => {
+      isActive = false
+    }
   }, [query])
 
+  if (!query) return null
   if (!loading && articles.length === 0) return null
 
   return (

@@ -77,7 +77,7 @@ export default async function SubjectPage({ params }: PageProps) {
     Array.isArray(category?.sub_rating_criteria) ? category.sub_rating_criteria : []
 
   // Compute average sub_ratings server-side
-  let avgSubRatings: Record<string, number> = {}
+  const avgSubRatings: Record<string, number> = {}
   if (criteria.length > 0) {
     const { data: reviews } = await supabase
       .from('reviews')
@@ -178,7 +178,7 @@ export default async function SubjectPage({ params }: PageProps) {
       {/* Reviews */}
       <section>
         <h2 className="text-base font-semibold text-gray-700 mb-3">Reviews</h2>
-        <ReviewList subjectId={id} locale={locale} />
+        <ReviewList subjectId={id} />
       </section>
 
       {/* Related News */}
