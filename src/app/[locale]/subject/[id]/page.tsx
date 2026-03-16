@@ -7,6 +7,7 @@ import StarRating from '@/components/review/StarRating'
 import SubRatingChart from '@/components/review/SubRatingChart'
 import ReviewList from '@/components/review/ReviewList'
 import RelatedNews from '@/components/news/RelatedNews'
+import ImageGallery from '@/components/review/ImageGallery'
 
 interface PageProps {
   params: Promise<{ locale: string; id: string }>
@@ -101,6 +102,19 @@ export default async function SubjectPage({ params }: PageProps) {
     }
   }
 
+  // Fetch review photos for gallery
+  const { data: reviewsWithImages } = await supabase
+    .from('reviews')
+    .select('review_images(id, storage_path, display_order)')
+    .eq('subject_id', id)
+    .limit(20)
+
+  const storageBase = process.env.NEXT_PUBLIC_SUPABASE_URL + '/storage/v1/object/public/review-images/'
+  const allImages = (reviewsWithImages ?? [])
+    .flatMap(r => ((r as any).review_images as any[]) ?? [])
+    .slice(0, 12)
+    .map((img: any) => ({ id: img.id as string, url: storageBase + (img.storage_path as string) }))
+
   // Check if current user already reviewed (server-side via cookie session)
   const { data: { user } } = await supabase.auth.getUser()
   let existingReviewId: string | null = null
@@ -158,6 +172,14 @@ export default async function SubjectPage({ params }: PageProps) {
         {criteria.length > 0 && Object.keys(avgSubRatings).length > 0 && (
           <div className="mt-4 pt-4 border-t border-gray-100">
             <SubRatingChart criteria={criteria} values={avgSubRatings} locale={locale} />
+          </div>
+        )}
+
+        {/* Photos */}
+        {allImages.length > 0 && (
+          <div className="mt-4 pt-4 border-t border-gray-100">
+            <h3 className="text-sm font-semibold text-gray-700 mb-2">Photos</h3>
+            <ImageGallery images={allImages} />
           </div>
         )}
 
