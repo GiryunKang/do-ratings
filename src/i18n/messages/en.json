@@ -109,5 +109,27 @@
   "share": {
     "copied": "Link copied!",
     "share": "Share"
+  },
+  "achievement": {
+    "achievements": "Achievements",
+    "earned": "Earned",
+    "noAchievements": "No achievements yet"
+  },
+  "trust": {
+    "trustScore": "Trust Score"
+  },
+  "comment": {
+    "comments": "Comments",
+    "writeComment": "Write a comment...",
+    "submit": "Submit",
+    "noComments": "No comments yet",
+    "loginToComment": "Log in to leave a comment"
+  },
+  "reaction": {
+    "like": "Like",
+    "love": "Love",
+    "wow": "Wow",
+    "sad": "Sad",
+    "angry": "Angry"
   }
 }

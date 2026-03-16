@@ -109,5 +109,27 @@
   "share": {
     "copied": "링크가 복사되었습니다",
     "share": "공유"
+  },
+  "achievement": {
+    "achievements": "업적",
+    "earned": "획득",
+    "noAchievements": "아직 업적이 없습니다"
+  },
+  "trust": {
+    "trustScore": "신뢰도 점수"
+  },
+  "comment": {
+    "comments": "댓글",
+    "writeComment": "댓글을 작성하세요...",
+    "submit": "등록",
+    "noComments": "아직 댓글이 없습니다",
+    "loginToComment": "로그인 후 댓글을 작성할 수 있습니다"
+  },
+  "reaction": {
+    "like": "좋아요",
+    "love": "최고",
+    "wow": "놀라워요",
+    "sad": "슬퍼요",
+    "angry": "화나요"
   }
 }
