@@ -78,7 +78,15 @@ export default async function CategoryPage({ params }: PageProps) {
 
       {/* Top Subjects */}
       <section className="mb-8">
-        <h2 className="text-base font-semibold text-gray-700 mb-3">Top Subjects</h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base font-semibold text-gray-700">Top Subjects</h2>
+          <Link
+            href={`/${locale}/compare`}
+            className="text-xs text-indigo-500 hover:underline font-medium"
+          >
+            Compare →
+          </Link>
+        </div>
         {!topSubjects || topSubjects.length === 0 ? (
           <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
             <svg className="w-16 h-16 mx-auto mb-4 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
