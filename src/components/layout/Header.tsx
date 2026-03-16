@@ -51,7 +51,7 @@ export default function Header() {
         </Link>
 
         {/* Search bar — hidden on mobile */}
-        <div className="hidden md:flex flex-1 max-w-md">
+        <div className="hidden md:flex flex-1 max-w-xl mx-auto">
           <SearchBar className="w-full" />
         </div>
 
