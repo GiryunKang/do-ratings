@@ -33,7 +33,12 @@
     "sortLatest": "Latest",
     "sortHelpful": "Most Helpful",
     "sortRating": "Rating",
-    "alreadyReviewed": "You have already reviewed this"
+    "alreadyReviewed": "You have already reviewed this",
+    "photos": "Photos",
+    "addPhotos": "Add photos (up to 5)",
+    "dragPhotos": "Drag photos here",
+    "photoUploading": "Uploading...",
+    "seeAllPhotos": "See all photos"
   },
   "rating": {
     "overall": "Overall Rating",
@@ -90,5 +95,19 @@
     "noResults": "No results found",
     "review": "Review",
     "addedSuccess": "Place added successfully"
+  },
+  "compare": {
+    "title": "Compare",
+    "addSubject": "Add Subject",
+    "selectSubject": "Select a subject to compare",
+    "sameCategoryOnly": "Only same-category comparisons allowed",
+    "winner": "Best",
+    "noSubjects": "Add subjects to compare",
+    "compare": "Compare",
+    "removeSubject": "Remove"
+  },
+  "share": {
+    "copied": "Link copied!",
+    "share": "Share"
   }
 }

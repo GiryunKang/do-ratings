@@ -33,7 +33,12 @@
     "sortLatest": "최신순",
     "sortHelpful": "도움순",
     "sortRating": "평점순",
-    "alreadyReviewed": "이미 리뷰를 작성했습니다"
+    "alreadyReviewed": "이미 리뷰를 작성했습니다",
+    "photos": "사진",
+    "addPhotos": "사진 추가 (최대 5장)",
+    "dragPhotos": "여기에 사진을 끌어놓으세요",
+    "photoUploading": "업로드 중...",
+    "seeAllPhotos": "모든 사진 보기"
   },
   "rating": {
     "overall": "종합 평점",
@@ -90,5 +95,19 @@
     "noResults": "검색 결과가 없습니다",
     "review": "리뷰하기",
     "addedSuccess": "장소가 추가되었습니다"
+  },
+  "compare": {
+    "title": "비교하기",
+    "addSubject": "주제 추가",
+    "selectSubject": "비교할 주제를 선택하세요",
+    "sameCategoryOnly": "같은 카테고리만 비교 가능합니다",
+    "winner": "최고",
+    "noSubjects": "비교할 주제를 추가하세요",
+    "compare": "비교",
+    "removeSubject": "제거"
+  },
+  "share": {
+    "copied": "링크가 복사되었습니다",
+    "share": "공유"
   }
 }
