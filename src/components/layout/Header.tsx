@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { useRouter, usePathname } from 'next/navigation'
 import { useAuth } from '@/lib/hooks/useAuth'
+import SearchBar from '@/components/search/SearchBar'
 
 export default function Header() {
   const t = useTranslations('common')
@@ -49,14 +50,9 @@ export default function Header() {
           {t('appName')}
         </Link>
 
-        {/* Search input — hidden on mobile */}
+        {/* Search bar — hidden on mobile */}
         <div className="hidden md:flex flex-1 max-w-md">
-          <input
-            type="text"
-            placeholder={t('search')}
-            className="w-full px-4 py-1.5 rounded-full border border-gray-300 text-sm focus:outline-none focus:border-indigo-400 bg-gray-50"
-            readOnly
-          />
+          <SearchBar className="w-full" />
         </div>
 
         <div className="ml-auto flex items-center gap-2 shrink-0">
