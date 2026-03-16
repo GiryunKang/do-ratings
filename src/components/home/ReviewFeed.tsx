@@ -172,6 +172,7 @@ export default function ReviewFeed({ categories, locale }: ReviewFeedProps) {
                 key={review.id}
                 review={review}
                 currentUserId={user?.id ?? null}
+                locale={locale}
               />
             ))}
           </div>
