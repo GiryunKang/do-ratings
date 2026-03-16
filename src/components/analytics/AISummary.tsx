@@ -1,0 +1,220 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { useTranslations } from 'next-intl'
+
+interface AISummaryProps {
+  subjectId: string
+  locale: string
+}
+
+interface Review {
+  title: string
+  content: string
+  overall_rating: number
+}
+
+interface Summary {
+  avgRating: number
+  totalReviews: number
+  pros: string[]
+  cons: string[]
+  sentiment: 'positive' | 'mixed' | 'negative'
+  ratingDistribution: { rating: number; count: number }[]
+}
+
+function generateSummary(reviews: Review[]): Summary {
+  const highRated = reviews.filter((r) => r.overall_rating >= 4)
+  const lowRated = reviews.filter((r) => r.overall_rating <= 2)
+  const avgRating = reviews.reduce((s, r) => s + r.overall_rating, 0) / reviews.length
+
+  function extractTopWords(items: Review[], count: number): string[] {
+    const words: Record<string, number> = {}
+    const stopWords = new Set([
+      'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
+      'of', 'with', 'is', 'it', 'this', 'that', 'was', 'are', 'be', 'as',
+      'i', 'my', 'me', 'we', 'our', 'you', 'your', 'he', 'she', 'they',
+      'very', 'so', 'not', 'no', 'yes', 'its', 'by', 'from', 'up', 'do',
+      '이', '가', '을', '를', '의', '은', '는', '에', '도', '와', '과',
+    ])
+    items.forEach((r) => {
+      const titleWords = r.title
+        .split(/\s+/)
+        .map((w) => w.replace(/[^a-zA-Z0-9가-힣]/g, '').toLowerCase())
+        .filter((w) => w.length > 1 && !stopWords.has(w))
+      titleWords.forEach((w) => {
+        words[w] = (words[w] ?? 0) + 1
+      })
+    })
+    return Object.entries(words)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, count)
+      .map(([word]) => word)
+  }
+
+  return {
+    avgRating: Math.round(avgRating * 10) / 10,
+    totalReviews: reviews.length,
+    pros: highRated.length > 0 ? extractTopWords(highRated, 3) : [],
+    cons: lowRated.length > 0 ? extractTopWords(lowRated, 3) : [],
+    sentiment: avgRating >= 4 ? 'positive' : avgRating >= 3 ? 'mixed' : 'negative',
+    ratingDistribution: [1, 2, 3, 4, 5].map((r) => ({
+      rating: r,
+      count: reviews.filter((rev) => Math.round(rev.overall_rating) === r).length,
+    })),
+  }
+}
+
+const sentimentConfig = {
+  positive: { label: '😊', color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-200' },
+  mixed: { label: '😐', color: 'text-yellow-600', bg: 'bg-yellow-50', border: 'border-yellow-200' },
+  negative: { label: '😞', color: 'text-red-600', bg: 'bg-red-50', border: 'border-red-200' },
+}
+
+export default function AISummary({ subjectId }: AISummaryProps) {
+  const t = useTranslations('aiSummary')
+  const tAnalytics = useTranslations('analytics')
+
+  const [reviews, setReviews] = useState<Review[]>([])
+  const [loading, setLoading] = useState(true)
+  const [generating, setGenerating] = useState(false)
+  const [summary, setSummary] = useState<Summary | null>(null)
+
+  useEffect(() => {
+    const supabase = createClient()
+    async function fetchReviews() {
+      setLoading(true)
+      const { data, error } = await supabase
+        .from('reviews')
+        .select('title, content, overall_rating')
+        .eq('subject_id', subjectId)
+
+      if (!error && data && data.length > 0) {
+        setReviews(data)
+        setGenerating(true)
+        setTimeout(() => {
+          setSummary(generateSummary(data))
+          setGenerating(false)
+        }, 500)
+      }
+      setLoading(false)
+    }
+    fetchReviews()
+  }, [subjectId])
+
+  const MIN_REVIEWS = 3
+
+  return (
+    <div className="bg-white rounded-xl p-5 shadow-sm">
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-base">✨</span>
+        <h3 className="text-sm font-semibold text-gray-700">{t('summary')}</h3>
+      </div>
+
+      {/* Loading state */}
+      {loading && (
+        <div className="h-[160px] flex items-center justify-center">
+          <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+
+      {/* Generating animation */}
+      {!loading && generating && (
+        <div className="h-[160px] flex flex-col items-center justify-center gap-3">
+          <div className="flex gap-1">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"
+                style={{ animationDelay: `${i * 0.15}s` }}
+              />
+            ))}
+          </div>
+          <p className="text-xs text-gray-400">{t('generating')}</p>
+        </div>
+      )}
+
+      {/* Not enough data */}
+      {!loading && !generating && reviews.length < MIN_REVIEWS && (
+        <div className="h-[160px] flex items-center justify-center text-sm text-gray-400">
+          {tAnalytics('noData')}
+        </div>
+      )}
+
+      {/* Summary content */}
+      {!loading && !generating && summary && reviews.length >= MIN_REVIEWS && (
+        <div className="space-y-4">
+          {/* Overall sentiment + avg rating */}
+          <div className={`flex items-center justify-between rounded-lg px-4 py-3 border ${sentimentConfig[summary.sentiment].bg} ${sentimentConfig[summary.sentiment].border}`}>
+            <div className="flex items-center gap-2">
+              <span className="text-xl">{sentimentConfig[summary.sentiment].label}</span>
+              <span className={`text-sm font-semibold capitalize ${sentimentConfig[summary.sentiment].color}`}>
+                {t('overall')}: {summary.sentiment}
+              </span>
+            </div>
+            <div className="text-right">
+              <div className="text-lg font-bold text-gray-800">{summary.avgRating} <span className="text-yellow-400">★</span></div>
+              <div className="text-xs text-gray-400">{summary.totalReviews} {t('basedOn')}</div>
+            </div>
+          </div>
+
+          {/* Rating distribution */}
+          <div className="space-y-1.5">
+            {[5, 4, 3, 2, 1].map((star) => {
+              const item = summary.ratingDistribution.find((d) => d.rating === star) ?? { rating: star, count: 0 }
+              const pct = summary.totalReviews > 0 ? (item.count / summary.totalReviews) * 100 : 0
+              return (
+                <div key={star} className="flex items-center gap-2">
+                  <span className="text-xs text-gray-500 w-5 text-right">{star}★</span>
+                  <div className="flex-1 bg-gray-100 rounded-full h-2 overflow-hidden">
+                    <div
+                      className="h-2 rounded-full bg-indigo-400 transition-all duration-500"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                  <span className="text-xs text-gray-400 w-5 text-right">{item.count}</span>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Pros */}
+          {summary.pros.length > 0 && (
+            <div>
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <span className="w-2 h-2 rounded-full bg-green-400 inline-block" />
+                <span className="text-xs font-semibold text-green-700">{t('pros')}</span>
+              </div>
+              <ul className="space-y-1 pl-3.5">
+                {summary.pros.map((word) => (
+                  <li key={word} className="text-xs text-gray-600 flex items-center gap-1">
+                    <span className="text-green-400">•</span> {word}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Cons */}
+          {summary.cons.length > 0 && (
+            <div>
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <span className="w-2 h-2 rounded-full bg-red-400 inline-block" />
+                <span className="text-xs font-semibold text-red-700">{t('cons')}</span>
+              </div>
+              <ul className="space-y-1 pl-3.5">
+                {summary.cons.map((word) => (
+                  <li key={word} className="text-xs text-gray-600 flex items-center gap-1">
+                    <span className="text-red-400">•</span> {word}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
