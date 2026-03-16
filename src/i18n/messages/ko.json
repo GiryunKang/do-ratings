@@ -61,5 +61,12 @@
     "inappropriate": "부적절한 내용",
     "fake": "허위 리뷰",
     "description": "상세 설명 (선택)"
+  },
+  "home": {
+    "heroTitle": "발견하고, 리뷰하고, 공유하세요",
+    "heroSubtitle": "당신의 의견이 중요합니다. 무엇이든 평가하고, 모두에게 도움을 주세요.",
+    "exploreCta": "탐색하기",
+    "trending": "지금 뜨는 곳",
+    "categories": "카테고리별 랭킹"
   }
 }

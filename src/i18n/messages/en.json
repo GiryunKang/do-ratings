@@ -61,5 +61,12 @@
     "inappropriate": "Inappropriate",
     "fake": "Fake Review",
     "description": "Description (optional)"
+  },
+  "home": {
+    "heroTitle": "Discover. Review. Share.",
+    "heroSubtitle": "Your voice matters. Rate anything, help everyone.",
+    "exploreCta": "Explore Now",
+    "trending": "Trending Now",
+    "categories": "Rankings by Category"
   }
 }
