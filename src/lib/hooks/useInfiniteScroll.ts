@@ -12,6 +12,7 @@ interface UseInfiniteScrollResult<T> {
   loading: boolean
   hasMore: boolean
   loadMore: () => void
+  reset: () => void
 }
 
 export function useInfiniteScroll<T>(
@@ -52,5 +53,21 @@ export function useInfiniteScroll<T>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return { items, loading, hasMore, loadMore }
+  // Auto-load after reset (items cleared, hasMore restored, not initialized)
+  useEffect(() => {
+    if (!initializedRef.current && items.length === 0 && hasMore) {
+      initializedRef.current = true
+      loadMore()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items.length, hasMore])
+
+  const reset = useCallback(() => {
+    setItems([])
+    cursorRef.current = null
+    setHasMore(true)
+    initializedRef.current = false
+  }, [])
+
+  return { items, loading, hasMore, loadMore, reset }
 }

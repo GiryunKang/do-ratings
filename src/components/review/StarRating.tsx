@@ -34,9 +34,10 @@ function Star({
 }) {
   const cls = sizeClass[size]
   const interactive = !readonly ? 'cursor-pointer' : 'cursor-default'
+  const hoverScale = !readonly ? 'hover:scale-110 transition-transform duration-150' : ''
 
   return (
-    <span className={`relative inline-block ${cls} ${interactive}`}>
+    <span className={`relative inline-block ${cls} ${interactive} ${hoverScale}`}>
       {/* Background star (gray) */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -52,7 +53,7 @@ function Star({
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          className={`absolute inset-0 ${cls} text-yellow-400`}
+          className={`absolute inset-0 ${cls} text-yellow-400 golden-glow`}
           fill="currentColor"
           style={fill === 'half' ? { clipPath: 'inset(0 50% 0 0)' } : undefined}
         >

@@ -132,12 +132,11 @@ export default function ReviewList({ subjectId, userId, locale }: ReviewListProp
     [subjectId, userId, sort, currentUser]
   )
 
-  const { items, loading, hasMore, loadMore } = useInfiniteScroll(fetchReviews)
+  const { items, loading, hasMore, loadMore, reset } = useInfiniteScroll(fetchReviews)
 
   function handleSortChange(newSort: string) {
     setSort(newSort)
-    // Reset will happen via new fetchReviews memoization key change
-    window.location.reload()
+    reset()
   }
 
   return (
@@ -146,8 +145,36 @@ export default function ReviewList({ subjectId, userId, locale }: ReviewListProp
         <SortSelect value={sort} onChange={handleSortChange} />
       </div>
 
-      {items.length === 0 && !loading ? (
-        <p className="text-center text-gray-400 py-12 text-sm">No reviews yet</p>
+      {items.length === 0 && loading ? (
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-white rounded-2xl p-4 space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="skeleton w-10 h-10 rounded-full" />
+                <div className="skeleton w-24 h-4" />
+              </div>
+              <div className="skeleton w-3/4 h-5" />
+              <div className="skeleton w-full h-16" />
+            </div>
+          ))}
+        </div>
+      ) : items.length === 0 && !loading ? (
+        <div className="text-center py-16">
+          <svg
+            className="w-16 h-16 mx-auto text-gray-300 mb-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+          </svg>
+          <p className="text-gray-500 font-medium mb-2">No reviews yet</p>
+          <p className="text-gray-400 text-sm">Be the first to share your experience!</p>
+        </div>
       ) : (
         <InfiniteScroll onLoadMore={loadMore} hasMore={hasMore} loading={loading}>
           <div className="space-y-3">
