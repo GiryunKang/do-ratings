@@ -11,10 +11,11 @@ interface RightSidebarProps {
 export default async function RightSidebar({ locale }: RightSidebarProps) {
   const supabase = await createClient()
 
+  const categoryOrder = ['people', 'places', 'companies', 'restaurants', 'airlines', 'hotels']
+
   const { data: categoriesRaw } = await supabase
     .from('categories')
     .select('*')
-    .order('slug')
 
   const { data: reviewersRaw } = await supabase
     .from('public_profiles')
@@ -22,7 +23,11 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
     .order('review_count', { ascending: false })
     .limit(5)
 
-  const categories = categoriesRaw ?? []
+  const categories = (categoriesRaw ?? []).sort((a, b) => {
+    const ai = categoryOrder.indexOf(a.slug as string)
+    const bi = categoryOrder.indexOf(b.slug as string)
+    return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
+  })
   const reviewers = reviewersRaw ?? []
 
   return (

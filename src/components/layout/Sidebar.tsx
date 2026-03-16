@@ -20,12 +20,17 @@ export default function Sidebar({ locale }: { locale: string }) {
 
   useEffect(() => {
     const supabase = createClient()
+    const categoryOrder = ['people', 'places', 'companies', 'restaurants', 'airlines', 'hotels']
     supabase
       .from('categories')
       .select('id, name, slug, icon')
-      .order('slug')
       .then(({ data }) => {
-        setCategories((data as Category[]) ?? [])
+        const sorted = (data as Category[] ?? []).sort((a, b) => {
+          const ai = categoryOrder.indexOf(a.slug)
+          const bi = categoryOrder.indexOf(b.slug)
+          return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
+        })
+        setCategories(sorted)
       })
   }, [])
 
