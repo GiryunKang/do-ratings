@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { formatRating } from '@/lib/utils/rating'
 import ReviewList from '@/components/review/ReviewList'
 import { CategoryIcon } from '@/lib/icons'
+import PlaceSearch from '@/components/places/PlaceSearch'
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>
@@ -69,6 +70,11 @@ export default async function CategoryPage({ params }: PageProps) {
         </div>
         <h1 className="text-2xl font-bold text-gray-900">{categoryName}</h1>
       </div>
+
+      {/* Google Places Search - only for places and restaurants */}
+      {(category.slug === 'places' || category.slug === 'restaurants') && (
+        <PlaceSearch categorySlug={category.slug as 'places' | 'restaurants'} locale={locale} />
+      )}
 
       {/* Top Subjects */}
       <section className="mb-8">

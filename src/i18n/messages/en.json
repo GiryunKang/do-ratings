@@ -82,5 +82,13 @@
     "categories": "Rankings by Category",
     "featured": "Trending",
     "recentReviews": "Recent Reviews"
+  },
+  "places": {
+    "searchGoogle": "Search places on Google",
+    "searchRestaurants": "Search restaurants on Google",
+    "placeholder": "Enter a place name...",
+    "noResults": "No results found",
+    "review": "Review",
+    "addedSuccess": "Place added successfully"
   }
 }

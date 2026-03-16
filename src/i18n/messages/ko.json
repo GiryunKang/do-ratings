@@ -82,5 +82,13 @@
     "categories": "카테고리별 랭킹",
     "featured": "트렌딩",
     "recentReviews": "최신 리뷰"
+  },
+  "places": {
+    "searchGoogle": "Google에서 장소 검색",
+    "searchRestaurants": "Google에서 레스토랑 검색",
+    "placeholder": "장소명을 입력하세요...",
+    "noResults": "검색 결과가 없습니다",
+    "review": "리뷰하기",
+    "addedSuccess": "장소가 추가되었습니다"
   }
 }
