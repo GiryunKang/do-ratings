@@ -157,6 +157,33 @@
     "tie": "무승부",
     "noBattles": "진행 중인 배틀이 없습니다"
   },
+  "analytics": {
+    "trendChart": "평점 변화 추이",
+    "period": "기간",
+    "week": "주간",
+    "month": "월간",
+    "quarter": "분기",
+    "avgRating": "평균 평점",
+    "reviewCount": "리뷰 수",
+    "noData": "데이터가 부족합니다"
+  },
+  "dashboard": {
+    "myDashboard": "내 리뷰 대시보드",
+    "totalReviews": "총 리뷰",
+    "totalHelpful": "총 도움이 됐어요",
+    "avgRating": "평균 평점",
+    "categoryBreakdown": "카테고리별 분포",
+    "monthlyActivity": "월별 활동",
+    "recentActivity": "최근 활동"
+  },
+  "aiSummary": {
+    "summary": "AI 리뷰 요약",
+    "generating": "요약을 생성하는 중...",
+    "pros": "장점",
+    "cons": "단점",
+    "overall": "종합",
+    "basedOn": "개 리뷰 기반"
+  },
   "notification": {
     "notifications": "알림",
     "markAllRead": "모두 읽음 처리",

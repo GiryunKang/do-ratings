@@ -157,6 +157,33 @@
     "tie": "Tie",
     "noBattles": "No active battles"
   },
+  "analytics": {
+    "trendChart": "Rating Trend",
+    "period": "Period",
+    "week": "Week",
+    "month": "Month",
+    "quarter": "Quarter",
+    "avgRating": "Avg Rating",
+    "reviewCount": "Reviews",
+    "noData": "Not enough data"
+  },
+  "dashboard": {
+    "myDashboard": "My Review Dashboard",
+    "totalReviews": "Total Reviews",
+    "totalHelpful": "Total Helpful",
+    "avgRating": "Average Rating",
+    "categoryBreakdown": "Category Breakdown",
+    "monthlyActivity": "Monthly Activity",
+    "recentActivity": "Recent Activity"
+  },
+  "aiSummary": {
+    "summary": "AI Review Summary",
+    "generating": "Generating summary...",
+    "pros": "Pros",
+    "cons": "Cons",
+    "overall": "Overall",
+    "basedOn": "reviews analyzed"
+  },
   "notification": {
     "notifications": "Notifications",
     "markAllRead": "Mark all as read",
