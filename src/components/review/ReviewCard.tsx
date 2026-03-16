@@ -1,7 +1,11 @@
+'use client'
+
+import { useState } from 'react'
 import Link from 'next/link'
 import StarRating from './StarRating'
 import UserBadge from '@/components/user/UserBadge'
 import HelpfulButton from './HelpfulButton'
+import ImageGallery from './ImageGallery'
 import { timeAgo } from '@/lib/utils/timeAgo'
 import { getCategoryColor } from '@/lib/utils/category-colors'
 
@@ -26,6 +30,7 @@ interface ReviewCardProps {
     helpful_count: number
     created_at: string
     is_helpful?: boolean
+    images?: { id: string; url: string }[]
   }
   currentUserId?: string | null
   locale?: string
@@ -33,6 +38,8 @@ interface ReviewCardProps {
 
 export default function ReviewCard({ review, currentUserId, locale = 'ko' }: ReviewCardProps) {
   const { user } = review
+  const [copied, setCopied] = useState(false)
+
   const subjectHref = review.subject_slug
     ? `/subject/${review.subject_slug}`
     : `/subject/${review.subject_id}`
@@ -48,6 +55,14 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
   const categoryColor = review.category_slug
     ? getCategoryColor(review.category_slug)
     : 'bg-indigo-500'
+
+  const handleShare = () => {
+    const url = window.location.origin + '/' + locale + subjectHref
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
 
   return (
     <article className="bg-white rounded-xl border border-gray-200 hover:border-gray-300 p-4 transition-colors animate-fadeIn">
@@ -81,6 +96,13 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
       {/* Content */}
       <p className="text-sm text-gray-600 mt-1 line-clamp-3">{review.content}</p>
 
+      {/* Image Gallery */}
+      {review.images && review.images.length > 0 && (
+        <div className="mt-2">
+          <ImageGallery images={review.images} />
+        </div>
+      )}
+
       {/* Rating */}
       <div className="flex items-center gap-2 mt-3">
         <StarRating value={review.overall_rating} readonly size="sm" />
@@ -98,6 +120,7 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
         />
         <button
           type="button"
+          onClick={handleShare}
           className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors px-2 py-1 rounded-md hover:bg-gray-100"
         >
           <svg
@@ -114,7 +137,7 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
               d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
             />
           </svg>
-          공유
+          {copied ? '복사됨' : '공유'}
         </button>
       </div>
     </article>
