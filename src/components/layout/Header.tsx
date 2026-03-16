@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { useRouter, usePathname } from 'next/navigation'
 import { useAuth } from '@/lib/hooks/useAuth'
 import SearchBar from '@/components/search/SearchBar'
+import NotificationBell from '@/components/notification/NotificationBell'
 
 export default function Header() {
   const t = useTranslations('common')
@@ -64,6 +65,9 @@ export default function Header() {
           >
             {otherLocale.toUpperCase()}
           </button>
+
+          {/* Notifications */}
+          <NotificationBell userId={user?.id ?? null} />
 
           {/* Auth */}
           {!loading && (
