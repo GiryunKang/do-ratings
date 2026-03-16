@@ -62,11 +62,25 @@
     "fake": "Fake Review",
     "description": "Description (optional)"
   },
+  "sort": {
+    "popular": "Popular",
+    "latest": "Latest",
+    "topRated": "Top Rated",
+    "all": "All"
+  },
+  "rightSidebar": {
+    "popularCategories": "Popular Categories",
+    "popularReviewers": "Popular Reviewers",
+    "explore": "Explore",
+    "seeMore": "See more"
+  },
   "home": {
     "heroTitle": "Discover. Review. Share.",
     "heroSubtitle": "Your voice matters. Rate anything, help everyone.",
     "exploreCta": "Explore Now",
     "trending": "Trending Now",
-    "categories": "Rankings by Category"
+    "categories": "Rankings by Category",
+    "featured": "Trending",
+    "recentReviews": "Recent Reviews"
   }
 }

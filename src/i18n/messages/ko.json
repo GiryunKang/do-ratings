@@ -62,11 +62,25 @@
     "fake": "허위 리뷰",
     "description": "상세 설명 (선택)"
   },
+  "sort": {
+    "popular": "인기순",
+    "latest": "최신순",
+    "topRated": "평점 높은 순",
+    "all": "전체"
+  },
+  "rightSidebar": {
+    "popularCategories": "인기 카테고리",
+    "popularReviewers": "인기 리뷰어",
+    "explore": "탐색",
+    "seeMore": "더 보기"
+  },
   "home": {
     "heroTitle": "발견하고, 리뷰하고, 공유하세요",
     "heroSubtitle": "당신의 의견이 중요합니다. 무엇이든 평가하고, 모두에게 도움을 주세요.",
     "exploreCta": "탐색하기",
     "trending": "지금 뜨는 곳",
-    "categories": "카테고리별 랭킹"
+    "categories": "카테고리별 랭킹",
+    "featured": "트렌딩",
+    "recentReviews": "최신 리뷰"
   }
 }
