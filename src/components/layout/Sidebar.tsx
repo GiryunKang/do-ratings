@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 
 interface Category {
   id: string
-  name: string
+  name: Record<string, string>
   slug: string
   icon: string | null
 }
@@ -42,7 +42,7 @@ export default async function Sidebar({ locale }: { locale: string }) {
                   <span className="text-base w-5 text-center">
                     {cat.icon ?? '📁'}
                   </span>
-                  <span className="truncate">{cat.name}</span>
+                  <span className="truncate">{cat.name[locale] ?? cat.name['ko']}</span>
                 </Link>
               </li>
             ))}
