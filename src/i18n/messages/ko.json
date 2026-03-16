@@ -157,6 +157,21 @@
     "tie": "무승부",
     "noBattles": "진행 중인 배틀이 없습니다"
   },
+  "embed": {
+    "embedWidget": "임베드 위젯",
+    "copyCode": "코드 복사",
+    "copied": "복사됨!",
+    "preview": "미리보기",
+    "size": "크기",
+    "small": "소형",
+    "medium": "중형",
+    "large": "대형"
+  },
+  "seo": {
+    "siteDescription": "무엇이든 평가하고 리뷰하세요. 항공사, 호텔, 레스토랑, 기업, 장소, 인물까지.",
+    "reviewOf": "{name} 리뷰 및 평점",
+    "profileOf": "{name}의 프로필"
+  },
   "analytics": {
     "trendChart": "평점 변화 추이",
     "period": "기간",

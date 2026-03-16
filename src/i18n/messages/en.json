@@ -157,6 +157,21 @@
     "tie": "Tie",
     "noBattles": "No active battles"
   },
+  "embed": {
+    "embedWidget": "Embed Widget",
+    "copyCode": "Copy Code",
+    "copied": "Copied!",
+    "preview": "Preview",
+    "size": "Size",
+    "small": "Small",
+    "medium": "Medium",
+    "large": "Large"
+  },
+  "seo": {
+    "siteDescription": "Rate and review anything. Airlines, hotels, restaurants, companies, places, and people.",
+    "reviewOf": "Reviews and ratings for {name}",
+    "profileOf": "{name}'s profile"
+  },
   "analytics": {
     "trendChart": "Rating Trend",
     "period": "Period",
