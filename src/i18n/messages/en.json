@@ -131,5 +131,40 @@
     "wow": "Wow",
     "sad": "Sad",
     "angry": "Angry"
+  },
+  "collection": {
+    "collections": "Collections",
+    "myCollections": "My Collections",
+    "createCollection": "Create Collection",
+    "title": "Title",
+    "description": "Description",
+    "addToCollection": "Add to Collection",
+    "removeFromCollection": "Remove from Collection",
+    "noCollections": "No collections yet",
+    "subjects": "subjects",
+    "public": "Public",
+    "private": "Private"
+  },
+  "battle": {
+    "battles": "Review Battles",
+    "vsLabel": "VS",
+    "voteA": "Vote A",
+    "voteB": "Vote B",
+    "voted": "Voted",
+    "endsIn": "Ends in",
+    "ended": "Ended",
+    "winner": "Winner",
+    "tie": "Tie",
+    "noBattles": "No active battles"
+  },
+  "notification": {
+    "notifications": "Notifications",
+    "markAllRead": "Mark all as read",
+    "noNotifications": "No new notifications",
+    "helpful": "Your review received a helpful vote",
+    "comment": "Someone commented on your review",
+    "follow": "Someone started following you",
+    "achievement": "You earned a new achievement",
+    "battle": "You were invited to a review battle"
   }
 }
