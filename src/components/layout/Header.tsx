@@ -40,14 +40,14 @@ export default function Header() {
     'User'
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 h-14 flex items-center gap-4">
+    <header className="sticky top-0 z-50 glass border-b border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center gap-4">
         {/* Logo */}
         <Link
           href={`/${currentLocale}`}
-          className="text-xl font-bold text-indigo-600 shrink-0"
+          className="shrink-0"
         >
-          {t('appName')}
+          <span className="text-xl font-bold text-gradient">Ratings</span>
         </Link>
 
         {/* Search bar — hidden on mobile */}
@@ -101,6 +101,7 @@ export default function Header() {
           )}
         </div>
       </div>
+      <div className="absolute bottom-0 left-0 right-0 h-0.5 gradient-primary opacity-30" />
     </header>
   )
 }

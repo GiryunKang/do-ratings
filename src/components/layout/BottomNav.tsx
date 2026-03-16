@@ -63,7 +63,7 @@ export default function BottomNav() {
   const basePath = `/${locale}`
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-gray-100 md:hidden">
       <div className="flex items-stretch h-16">
         {tabs.map((tab) => {
           const href = basePath + tab.href
@@ -82,8 +82,11 @@ export default function BottomNav() {
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              {tab.icon}
+              <span className={isActive ? 'transform scale-110 transition-transform duration-200' : ''}>
+                {tab.icon}
+              </span>
               <span>{t(tab.key as 'home' | 'explore' | 'rankings' | 'feed' | 'profile')}</span>
+              {isActive && <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-scaleIn" />}
             </Link>
           )
         })}
