@@ -157,6 +157,49 @@
     "tie": "무승부",
     "noBattles": "진행 중인 배틀이 없습니다"
   },
+  "darkMode": {
+    "light": "라이트",
+    "dark": "다크",
+    "system": "시스템"
+  },
+  "onboarding": {
+    "welcome": "Ratings에 오신 것을 환영합니다!",
+    "step1Title": "관심사를 선택하세요",
+    "step1Desc": "좋아하는 카테고리를 선택하면 맞춤 콘텐츠를 추천해 드립니다.",
+    "step2Title": "첫 리뷰를 작성해 보세요",
+    "step2Desc": "경험을 공유하고 다른 사람들에게 도움을 주세요.",
+    "step3Title": "커뮤니티에 참여하세요",
+    "step3Desc": "리뷰어를 팔로우하고, 댓글을 달고, 배틀에 참여하세요.",
+    "skip": "건너뛰기",
+    "next": "다음",
+    "getStarted": "시작하기"
+  },
+  "admin": {
+    "dashboard": "관리자 대시보드",
+    "reports": "신고 관리",
+    "users": "사용자 관리",
+    "claims": "사업자 인증 관리",
+    "stats": "통계",
+    "totalUsers": "총 사용자",
+    "totalReviews": "총 리뷰",
+    "totalSubjects": "총 주제",
+    "pendingReports": "대기 중 신고",
+    "pendingClaims": "대기 중 인증",
+    "approve": "승인",
+    "reject": "거부",
+    "dismiss": "기각",
+    "resolve": "처리"
+  },
+  "business": {
+    "claimPage": "이 페이지 인증하기",
+    "businessName": "사업체명",
+    "businessEmail": "사업자 이메일",
+    "submitClaim": "인증 요청",
+    "claimPending": "인증 심사 중",
+    "claimApproved": "인증된 사업자",
+    "respondToReview": "리뷰에 답변하기",
+    "businessResponse": "사업자 답변"
+  },
   "embed": {
     "embedWidget": "임베드 위젯",
     "copyCode": "코드 복사",

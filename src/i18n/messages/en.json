@@ -157,6 +157,49 @@
     "tie": "Tie",
     "noBattles": "No active battles"
   },
+  "darkMode": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "onboarding": {
+    "welcome": "Welcome to Ratings!",
+    "step1Title": "Choose your interests",
+    "step1Desc": "Select your favorite categories for personalized recommendations.",
+    "step2Title": "Write your first review",
+    "step2Desc": "Share your experience and help others make better decisions.",
+    "step3Title": "Join the community",
+    "step3Desc": "Follow reviewers, leave comments, and join review battles.",
+    "skip": "Skip",
+    "next": "Next",
+    "getStarted": "Get Started"
+  },
+  "admin": {
+    "dashboard": "Admin Dashboard",
+    "reports": "Report Management",
+    "users": "User Management",
+    "claims": "Business Claims",
+    "stats": "Statistics",
+    "totalUsers": "Total Users",
+    "totalReviews": "Total Reviews",
+    "totalSubjects": "Total Subjects",
+    "pendingReports": "Pending Reports",
+    "pendingClaims": "Pending Claims",
+    "approve": "Approve",
+    "reject": "Reject",
+    "dismiss": "Dismiss",
+    "resolve": "Resolve"
+  },
+  "business": {
+    "claimPage": "Claim this page",
+    "businessName": "Business Name",
+    "businessEmail": "Business Email",
+    "submitClaim": "Submit Claim",
+    "claimPending": "Claim under review",
+    "claimApproved": "Verified Business",
+    "respondToReview": "Respond to review",
+    "businessResponse": "Business Response"
+  },
   "embed": {
     "embedWidget": "Embed Widget",
     "copyCode": "Copy Code",
