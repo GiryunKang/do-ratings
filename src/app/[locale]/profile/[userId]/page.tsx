@@ -21,7 +21,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!profile) return {}
 
-  return { title: `${profile.nickname} — Ratings` }
+  const nickname = profile.nickname
+
+  return {
+    title: `${nickname} — Ratings`,
+    description: `${nickname}'s profile on Ratings`,
+    openGraph: {
+      title: `${nickname} — Ratings`,
+      description: `${nickname} has written reviews on Ratings`,
+      type: 'profile',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${nickname} — Ratings`,
+    },
+  }
 }
 
 export default async function ProfilePage({ params }: PageProps) {
