@@ -42,35 +42,23 @@ export default function InfiniteScroll({
       {/* Sentinel element */}
       <div ref={sentinelRef} className="h-px" />
 
-      {/* Loading spinner */}
+      {/* Loading bouncing dots */}
       {loading && (
-        <div className="flex justify-center py-8">
-          <svg
-            className="animate-spin w-6 h-6 text-indigo-500"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v8H4z"
-            />
-          </svg>
+        <div className="flex gap-1 justify-center py-4">
+          <div className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+          <div className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+          <div className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '300ms' }} />
         </div>
       )}
 
       {/* End of list */}
       {!hasMore && !loading && (
-        <p className="text-center text-sm text-gray-400 py-6">— End —</p>
+        <div className="flex items-center justify-center gap-2 py-6">
+          <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          <p className="text-sm text-gray-400">{"You've seen it all!"}</p>
+        </div>
       )}
     </div>
   )

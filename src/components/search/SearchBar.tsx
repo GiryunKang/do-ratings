@@ -25,6 +25,7 @@ export default function SearchBar({ className }: SearchBarProps) {
   const [results, setResults] = useState<Subject[]>([])
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(-1)
 
   const inputRef = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -34,6 +35,7 @@ export default function SearchBar({ className }: SearchBarProps) {
     if (!q.trim()) {
       setResults([])
       setOpen(false)
+      setActiveIndex(-1)
       return
     }
     setLoading(true)
@@ -43,6 +45,7 @@ export default function SearchBar({ className }: SearchBarProps) {
         const data = await res.json()
         setResults(data ?? [])
         setOpen(true)
+        setActiveIndex(-1)
       }
     } catch {
       // silently fail
@@ -66,6 +69,7 @@ export default function SearchBar({ className }: SearchBarProps) {
     function handleClickOutside(e: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false)
+        setActiveIndex(-1)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
@@ -73,12 +77,25 @@ export default function SearchBar({ className }: SearchBarProps) {
   }, [])
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Enter' && query.trim()) {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setActiveIndex((prev) => Math.min(prev + 1, results.length - 1))
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setActiveIndex((prev) => Math.max(prev - 1, -1))
+    } else if (e.key === 'Enter') {
+      if (activeIndex >= 0 && results[activeIndex]) {
+        setOpen(false)
+        setActiveIndex(-1)
+        router.push(`/${currentLocale}/subject/${results[activeIndex].id}`)
+      } else if (query.trim()) {
+        setOpen(false)
+        setActiveIndex(-1)
+        router.push(`/${currentLocale}/explore?q=${encodeURIComponent(query.trim())}`)
+      }
+    } else if (e.key === 'Escape') {
       setOpen(false)
-      router.push(`/${currentLocale}/explore?q=${encodeURIComponent(query.trim())}`)
-    }
-    if (e.key === 'Escape') {
-      setOpen(false)
+      setActiveIndex(-1)
       inputRef.current?.blur()
     }
   }
@@ -120,15 +137,19 @@ export default function SearchBar({ className }: SearchBarProps) {
       </div>
 
       {open && results.length > 0 && (
-        <ul className="absolute top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg z-50 max-h-72 overflow-y-auto">
-          {results.map((subject) => (
+        <ul className="absolute top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg z-50 max-h-72 overflow-y-auto animate-slideDown">
+          {results.map((subject, index) => (
             <li key={subject.id}>
               <button
-                className="w-full text-left px-4 py-2.5 hover:bg-indigo-50 transition-colors flex items-center justify-between gap-2"
+                className={`w-full text-left px-4 py-2.5 transition-colors flex items-center justify-between gap-2 ${
+                  index === activeIndex ? 'bg-indigo-50' : 'hover:bg-indigo-50'
+                }`}
                 onMouseDown={() => {
                   setOpen(false)
+                  setActiveIndex(-1)
                   router.push(`/${currentLocale}/subject/${subject.id}`)
                 }}
+                onMouseEnter={() => setActiveIndex(index)}
               >
                 <div>
                   <span className="text-sm font-medium text-gray-900">{getSubjectName(subject)}</span>
@@ -144,11 +165,15 @@ export default function SearchBar({ className }: SearchBarProps) {
               </button>
             </li>
           ))}
+          {/* Hint at bottom */}
+          <li className="px-4 py-2 border-t border-gray-100">
+            <p className="text-xs text-gray-400">Press Enter to search all</p>
+          </li>
         </ul>
       )}
 
       {open && results.length === 0 && query.trim() && !loading && (
-        <div className="absolute top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg z-50 px-4 py-3 text-sm text-gray-400">
+        <div className="absolute top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg z-50 px-4 py-3 text-sm text-gray-400 animate-slideDown">
           {t('noResults') ?? 'No results found'}
         </div>
       )}
