@@ -1,11 +1,17 @@
-import { useTranslations } from 'next-intl'
+import TrendingSubjects from '@/components/home/TrendingSubjects'
+import CategoryRanking from '@/components/home/CategoryRanking'
 
-export default function Home() {
-  const t = useTranslations('common')
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8">
-      <h1 className="text-4xl font-bold">{t('appName')}</h1>
-      <p className="mt-4 text-gray-500">Universal Review Platform</p>
-    </main>
+    <div className="max-w-2xl mx-auto">
+      <TrendingSubjects locale={locale} />
+      <CategoryRanking locale={locale} />
+    </div>
   )
 }
