@@ -6,6 +6,9 @@ import StarRating from './StarRating'
 import UserBadge from '@/components/user/UserBadge'
 import HelpfulButton from './HelpfulButton'
 import ImageGallery from './ImageGallery'
+import ReactionBar from './ReactionBar'
+import CommentSection from './CommentSection'
+import TrustBadge from '@/components/user/TrustBadge'
 import { timeAgo } from '@/lib/utils/timeAgo'
 import { getCategoryColor } from '@/lib/utils/category-colors'
 
@@ -31,6 +34,10 @@ interface ReviewCardProps {
     created_at: string
     is_helpful?: boolean
     images?: { id: string; url: string }[]
+    trust_score?: number
+    reactions?: Record<string, number>
+    user_reaction?: string | null
+    comment_count?: number
   }
   currentUserId?: string | null
   locale?: string
@@ -82,6 +89,9 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
           {user.nickname}
         </Link>
         <UserBadge level={user.level} />
+        {review.trust_score != null && review.trust_score > 0 && (
+          <TrustBadge score={review.trust_score} size="sm" />
+        )}
         <span className="text-gray-400">•</span>
         <span className="text-gray-400 text-xs">{timeAgo(review.created_at)}</span>
       </div>
@@ -118,6 +128,12 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
           reviewUserId={user.id}
           currentUserId={currentUserId ?? null}
         />
+        <ReactionBar
+          reviewId={review.id}
+          currentUserId={currentUserId ?? null}
+          initialReactions={review.reactions ?? {}}
+          userReaction={review.user_reaction ?? null}
+        />
         <button
           type="button"
           onClick={handleShare}
@@ -140,6 +156,13 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
           {copied ? '복사됨' : '공유'}
         </button>
       </div>
+
+      {/* Comment Section */}
+      <CommentSection
+        reviewId={review.id}
+        currentUserId={currentUserId ?? null}
+        locale={locale}
+      />
     </article>
   )
 }
