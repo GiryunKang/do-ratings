@@ -64,7 +64,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const totalReviews = (recentReviews ?? []).length
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-4 space-y-6">
+    <div className="px-4 py-4 space-y-6">
       {/* 1. Featured Carousel */}
       <FeaturedCarousel subjects={featured.map(s => ({
         id: s.id,
