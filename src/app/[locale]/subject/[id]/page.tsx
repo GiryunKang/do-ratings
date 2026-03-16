@@ -35,6 +35,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${name} (${rating}) — Ratings`,
     description: `Reviews and ratings for ${name}`,
+    openGraph: {
+      title: `${name} — ${rating} ★`,
+      description: `${name} has ${rating} average rating on Ratings`,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${name} — ${rating} ★`,
+    },
   }
 }
 
