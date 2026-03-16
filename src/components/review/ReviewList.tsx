@@ -24,12 +24,8 @@ interface ReviewRow {
   created_at: string
   subject_id: string
   user_id: string
-  public_profiles: {
-    id: string
-    nickname: string
-    level: string
-    avatar_url: string | null
-  } | null
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public_profiles: any
   helpful_votes?: { user_id: string }[]
 }
 
@@ -98,8 +94,9 @@ export default function ReviewList({ subjectId, userId, locale }: ReviewListProp
         if (votes) helpfulSet = new Set(votes.map((v) => v.review_id))
       }
 
-      const mapped = data.map((r: ReviewRow) => {
-        const profile = r.public_profiles
+      const mapped = (data as ReviewRow[]).map((r) => {
+        const profileRaw = r.public_profiles
+        const profile = Array.isArray(profileRaw) ? profileRaw[0] : profileRaw
         return {
           id: r.id,
           user: {

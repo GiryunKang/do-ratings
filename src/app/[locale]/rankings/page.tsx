@@ -33,12 +33,8 @@ interface ReviewRank {
   created_at: string
   subject_id: string
   user_id: string
-  public_profiles: {
-    id: string
-    nickname: string
-    level: string
-    avatar_url: string | null
-  } | null
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public_profiles: any
 }
 
 interface ReviewerRank {

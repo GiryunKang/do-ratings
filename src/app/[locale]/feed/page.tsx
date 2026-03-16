@@ -96,11 +96,13 @@ function FeedContent({ userId }: { userId: string }) {
         created_at: string
         subject_id: string
         user_id: string
-        public_profiles: { id: string; nickname: string; level: string; avatar_url: string | null } | null
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        public_profiles: any
       }
 
-      const mapped: FeedReview[] = reviews.map((r: ReviewRow) => {
-        const profile = r.public_profiles
+      const mapped: FeedReview[] = (reviews as ReviewRow[]).map((r) => {
+        const profileRaw = r.public_profiles
+        const profile = Array.isArray(profileRaw) ? profileRaw[0] : profileRaw
         return {
           id: r.id,
           user: {
