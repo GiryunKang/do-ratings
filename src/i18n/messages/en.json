@@ -1,0 +1,65 @@
+{
+  "common": {
+    "appName": "Ratings",
+    "search": "Search",
+    "login": "Log in",
+    "signup": "Sign up",
+    "logout": "Log out",
+    "settings": "Settings",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "noResults": "No results found"
+  },
+  "nav": {
+    "home": "Home",
+    "explore": "Explore",
+    "rankings": "Rankings",
+    "feed": "Feed",
+    "profile": "Profile"
+  },
+  "review": {
+    "writeReview": "Write Review",
+    "editReview": "Edit Review",
+    "title": "Title",
+    "content": "Content",
+    "titlePlaceholder": "Enter review title",
+    "contentPlaceholder": "Write your review",
+    "submit": "Submit",
+    "helpful": "Helpful",
+    "report": "Report",
+    "sortLatest": "Latest",
+    "sortHelpful": "Most Helpful",
+    "sortRating": "Rating",
+    "alreadyReviewed": "You have already reviewed this"
+  },
+  "rating": {
+    "overall": "Overall Rating",
+    "noRating": "No ratings yet"
+  },
+  "user": {
+    "reviews": "Reviews",
+    "followers": "Followers",
+    "following": "Following",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "topReviewer": "Top Reviewer"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "nickname": "Nickname",
+    "loginWith": "Log in with {provider}",
+    "signupWith": "Sign up with {provider}",
+    "orContinueWith": "or"
+  },
+  "report": {
+    "spam": "Spam",
+    "abuse": "Abuse",
+    "inappropriate": "Inappropriate",
+    "fake": "Fake Review",
+    "description": "Description (optional)"
+  }
+}

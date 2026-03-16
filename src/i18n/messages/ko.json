@@ -1,0 +1,65 @@
+{
+  "common": {
+    "appName": "Ratings",
+    "search": "검색",
+    "login": "로그인",
+    "signup": "회원가입",
+    "logout": "로그아웃",
+    "settings": "설정",
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "edit": "수정",
+    "loading": "로딩 중...",
+    "noResults": "결과가 없습니다"
+  },
+  "nav": {
+    "home": "홈",
+    "explore": "탐색",
+    "rankings": "랭킹",
+    "feed": "피드",
+    "profile": "프로필"
+  },
+  "review": {
+    "writeReview": "리뷰 작성",
+    "editReview": "리뷰 수정",
+    "title": "제목",
+    "content": "내용",
+    "titlePlaceholder": "리뷰 제목을 입력하세요",
+    "contentPlaceholder": "리뷰 내용을 작성하세요",
+    "submit": "등록",
+    "helpful": "도움이 됐어요",
+    "report": "신고",
+    "sortLatest": "최신순",
+    "sortHelpful": "도움순",
+    "sortRating": "평점순",
+    "alreadyReviewed": "이미 리뷰를 작성했습니다"
+  },
+  "rating": {
+    "overall": "종합 평점",
+    "noRating": "아직 평점이 없습니다"
+  },
+  "user": {
+    "reviews": "리뷰",
+    "followers": "팔로워",
+    "following": "팔로잉",
+    "follow": "팔로우",
+    "unfollow": "언팔로우",
+    "topReviewer": "Top Reviewer"
+  },
+  "auth": {
+    "email": "이메일",
+    "password": "비밀번호",
+    "nickname": "닉네임",
+    "loginWith": "{provider}로 로그인",
+    "signupWith": "{provider}로 회원가입",
+    "orContinueWith": "또는"
+  },
+  "report": {
+    "spam": "스팸",
+    "abuse": "욕설/비방",
+    "inappropriate": "부적절한 내용",
+    "fake": "허위 리뷰",
+    "description": "상세 설명 (선택)"
+  }
+}
