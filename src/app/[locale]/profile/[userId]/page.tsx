@@ -4,6 +4,8 @@ import { createClient } from '@/lib/supabase/server'
 import UserCard from '@/components/user/UserCard'
 import FollowButton from '@/components/user/FollowButton'
 import ReviewList from '@/components/review/ReviewList'
+import AchievementList from '@/components/user/AchievementList'
+import TrustBadge from '@/components/user/TrustBadge'
 
 interface PageProps {
   params: Promise<{ locale: string; userId: string }>
@@ -39,13 +41,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ProfilePage({ params }: PageProps) {
-  const { userId } = await params
+  const { locale, userId } = await params
   const supabase = await createClient()
 
   // Fetch public profile
   const { data: profile } = await supabase
     .from('public_profiles')
-    .select('id, nickname, avatar_url, level, review_count')
+    .select('id, nickname, avatar_url, level, review_count, trust_score')
     .eq('id', userId)
     .single()
 
@@ -86,17 +88,27 @@ export default async function ProfilePage({ params }: PageProps) {
     following_count: followingCount ?? 0,
   }
 
+  const trustScore = profile.trust_score ?? 0
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       {/* Profile card + follow button */}
       <div className="space-y-3">
         <UserCard profile={userProfile} />
+        <div className="px-1">
+          <TrustBadge score={trustScore} size="md" />
+        </div>
         {currentUser && currentUser.id !== userId && (
           <div className="flex justify-center">
             <FollowButton targetUserId={userId} isFollowing={isFollowing} />
           </div>
         )}
       </div>
+
+      {/* Achievements */}
+      <section className="mb-6">
+        <AchievementList userId={userId} locale={locale} />
+      </section>
 
       {/* User's reviews */}
       <section>
