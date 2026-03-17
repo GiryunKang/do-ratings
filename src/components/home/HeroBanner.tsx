@@ -77,20 +77,21 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
       {/* Main layout: Hand + Text side by side */}
       <div className="relative z-10 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
 
-        {/* Pointing Hand */}
-        <div className="relative">
+        {/* Pointing Hand — large, pointing upper-right */}
+        <div className="relative flex items-center justify-center" style={{ minWidth: '140px', minHeight: '140px' }}>
           <span
-            className={`block text-7xl md:text-[120px] select-none ${phase >= 1 ? '' : 'opacity-0'}`}
+            className={`block text-[100px] md:text-[160px] lg:text-[200px] select-none ${phase >= 1 ? '' : 'opacity-0'}`}
             style={phase >= 1 ? {
+              transform: 'rotate(-35deg)',
               animation: 'heroHandPoint 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards, heroHandBob 3s ease-in-out 1.5s infinite',
-              filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.3))',
+              filter: 'drop-shadow(0 8px 25px rgba(0,0,0,0.4)) drop-shadow(0 0 40px rgba(255,255,255,0.15))',
             } : undefined}
           >
-            ☝️
+            👉
           </span>
 
-          {/* Star bursts emanating from the fingertip */}
-          <div className="absolute -top-4 left-1/2 -translate-x-1/2 pointer-events-none" key={burstKey}>
+          {/* Star bursts emanating from the fingertip (upper-right) */}
+          <div className="absolute -top-6 right-0 pointer-events-none" key={burstKey}>
             {burstStars.map((star) => {
               const rad = (star.angle * Math.PI) / 180
               const bx = Math.cos(rad) * star.distance

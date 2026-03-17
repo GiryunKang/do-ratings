@@ -54,16 +54,16 @@ body {
   100% { transform: scale(2.5); opacity: 0; }
 }
 @keyframes heroHandPoint {
-  0% { transform: translateX(-60px) rotate(-15deg); opacity: 0; }
-  40% { transform: translateX(10px) rotate(5deg); opacity: 1; }
-  60% { transform: translateX(-5px) rotate(-2deg); }
-  80% { transform: translateX(3px) rotate(1deg); }
-  100% { transform: translateX(0) rotate(0deg); opacity: 1; }
+  0% { transform: rotate(-35deg) translateX(-80px) scale(0.5); opacity: 0; }
+  35% { transform: rotate(-35deg) translateX(12px) scale(1.05); opacity: 1; }
+  55% { transform: rotate(-35deg) translateX(-6px) scale(0.98); }
+  75% { transform: rotate(-35deg) translateX(3px) scale(1.01); }
+  100% { transform: rotate(-35deg) translateX(0) scale(1); opacity: 1; }
 }
 @keyframes heroHandBob {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-6px) rotate(2deg); }
-  75% { transform: translateY(4px) rotate(-1deg); }
+  0%, 100% { transform: rotate(-35deg) translateY(0); }
+  30% { transform: rotate(-33deg) translateY(-8px) translateX(3px); }
+  70% { transform: rotate(-37deg) translateY(5px) translateX(-2px); }
 }
 @keyframes heroStarBurst {
   0% { transform: translate(0, 0) scale(0); opacity: 1; }
