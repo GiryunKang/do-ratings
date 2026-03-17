@@ -10,6 +10,9 @@ import RelatedNews from '@/components/news/RelatedNews'
 import ImageGallery from '@/components/review/ImageGallery'
 import TrendChart from '@/components/analytics/TrendChart'
 import AISummary from '@/components/analytics/AISummary'
+import ClaimButton from '@/components/business/ClaimButton'
+import AddToCollectionButton from '@/components/collection/AddToCollectionButton'
+import EmbedWidget from '@/components/embed/EmbedWidget'
 
 interface PageProps {
   params: Promise<{ locale: string; id: string }>
@@ -224,6 +227,18 @@ export default async function SubjectPage({ params }: PageProps) {
             </svg>
             Compare
           </Link>
+          <ClaimButton subjectId={id} currentUserId={user?.id ?? null} locale={locale} />
+          <AddToCollectionButton subjectId={id} currentUserId={user?.id ?? null} />
+        </div>
+
+        {/* Embed Widget */}
+        <div className="mt-4 pt-4 border-t border-gray-100">
+          <EmbedWidget
+            subjectId={id}
+            subjectName={subjectName}
+            avgRating={subject.avg_rating ? Number(subject.avg_rating) : null}
+            reviewCount={subject.review_count as number}
+          />
         </div>
       </div>
 
