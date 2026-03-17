@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import SearchBar from '@/components/search/SearchBar'
 import FilterPanel from '@/components/search/FilterPanel'
+import AddSubjectModal from '@/components/subject/AddSubjectModal'
 import { createClient } from '@/lib/supabase/client'
 
 interface Subject {
@@ -68,15 +69,21 @@ export default function ExplorePage() {
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState<FilterState>({ category: null, ratingMin: null })
   const [showFilters, setShowFilters] = useState(false)
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  // Load categories once
+  // Load categories and auth state once
   useEffect(() => {
-    async function loadCategories() {
+    async function loadData() {
       const supabase = createClient()
-      const { data } = await supabase.from('categories').select('id, name, slug').order('slug')
-      if (data) setCategories(data)
+      const [{ data: catData }, { data: { user } }] = await Promise.all([
+        supabase.from('categories').select('id, name, slug').order('slug'),
+        supabase.auth.getUser(),
+      ])
+      if (catData) setCategories(catData)
+      setIsLoggedIn(!!user)
     }
-    loadCategories()
+    loadData()
   }, [])
 
   const fetchSubjects = useCallback(async (q: string, f: FilterState) => {
@@ -121,11 +128,32 @@ export default function ExplorePage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6">
+      {/* Add Subject Modal */}
+      {showAddModal && (
+        <AddSubjectModal
+          onClose={() => setShowAddModal(false)}
+          defaultCategorySlug={filters.category ?? undefined}
+        />
+      )}
+
       {/* Page header */}
       <div className="mb-6 space-y-3">
-        <h1 className="text-2xl font-bold text-gray-900">
-          {t('explore') ?? 'Explore'}
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-900">
+            {t('explore') ?? 'Explore'}
+          </h1>
+          {isLoggedIn && (
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="hidden md:flex items-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 active:bg-indigo-800 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              {currentLocale === 'ko' ? '항목 추가' : 'Add Subject'}
+            </button>
+          )}
+        </div>
         <SearchBar className="max-w-xl" />
 
         {/* Mobile filter toggle */}
@@ -215,6 +243,19 @@ export default function ExplorePage() {
           )}
         </div>
       </div>
+
+      {/* Floating "+" button — mobile only, logged-in users */}
+      {isLoggedIn && (
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="md:hidden fixed bottom-20 right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-600 shadow-lg text-white hover:bg-indigo-700 active:bg-indigo-800 transition-colors"
+          aria-label={currentLocale === 'ko' ? '항목 추가' : 'Add Subject'}
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+      )}
     </div>
   )
 }
