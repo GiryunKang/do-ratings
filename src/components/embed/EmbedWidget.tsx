@@ -18,7 +18,7 @@ const SIZES: { key: SizeKey; labelKey: 'small' | 'medium' | 'large'; width: numb
   { key: 'lg', labelKey: 'large',  width: 400, height: 120 },
 ]
 
-const EMBED_DOMAIN = 'https://ratings.example.com'
+const EMBED_DOMAIN = 'https://do-ratings.com'
 
 function renderStars(rating: number | null): { filled: number; empty: number } {
   const rounded = Math.round(rating ?? 0)
