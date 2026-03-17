@@ -133,6 +133,40 @@ export default function Sidebar({ locale }: { locale: string }) {
             ))}
           </ul>
         )}
+
+        {/* Divider */}
+        <div className="border-t border-gray-200 my-3" />
+
+        {/* More Features */}
+        <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest px-1 mb-2">
+          {locale === 'ko' ? '더보기' : 'More'}
+        </h2>
+        <ul className="space-y-0.5">
+          {[
+            { href: `/${locale}/dashboard`, label: locale === 'ko' ? '대시보드' : 'Dashboard', emoji: '📊' },
+            { href: `/${locale}/collections`, label: locale === 'ko' ? '컬렉션' : 'Collections', emoji: '📚' },
+            { href: `/${locale}/battles`, label: locale === 'ko' ? '배틀' : 'Battles', emoji: '⚔️' },
+            { href: `/${locale}/notifications`, label: locale === 'ko' ? '알림' : 'Notifications', emoji: '🔔' },
+            { href: `/${locale}/admin`, label: locale === 'ko' ? '관리자' : 'Admin', emoji: '⚙️' },
+          ].map((item) => {
+            const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+            return (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    isActive
+                      ? 'bg-gray-100 text-gray-900'
+                      : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  <span className="text-base leading-none">{item.emoji}</span>
+                  <span>{item.label}</span>
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
       </div>
     </aside>
   )
