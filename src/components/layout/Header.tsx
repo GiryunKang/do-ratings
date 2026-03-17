@@ -6,6 +6,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { useAuth } from '@/lib/hooks/useAuth'
 import SearchBar from '@/components/search/SearchBar'
 import NotificationBell from '@/components/notification/NotificationBell'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 
 export default function Header() {
   const t = useTranslations('common')
@@ -57,6 +58,9 @@ export default function Header() {
         </div>
 
         <div className="ml-auto flex items-center gap-2 shrink-0">
+          {/* Theme toggle */}
+          <ThemeToggle />
+
           {/* Locale toggle */}
           <button
             onClick={switchLocale}

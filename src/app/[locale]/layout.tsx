@@ -7,6 +7,7 @@ import BottomNav from '@/components/layout/BottomNav'
 import Sidebar from '@/components/layout/Sidebar'
 import RightSidebar from '@/components/layout/RightSidebar'
 import AdBanner from '@/components/layout/AdBanner'
+import { ThemeProvider } from '@/components/ui/ThemeProvider'
 
 export default async function LocaleLayout({
   children,
@@ -22,18 +23,20 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <Header />
-      <div className="flex">
-        <div className="hidden md:block w-64 shrink-0">
-          <Sidebar locale={locale} />
+      <ThemeProvider>
+        <Header />
+        <div className="flex">
+          <div className="hidden md:block w-64 shrink-0">
+            <Sidebar locale={locale} />
+          </div>
+          <main className="flex-1 min-h-screen pb-20 md:pb-0 md:ml-64 lg:mr-72 bg-gradient-to-b from-gray-50/80 to-white">
+            {children}
+          </main>
+          <RightSidebar locale={locale} />
         </div>
-        <main className="flex-1 min-h-screen pb-20 md:pb-0 md:ml-64 lg:mr-72 bg-gradient-to-b from-gray-50/80 to-white">
-          {children}
-        </main>
-        <RightSidebar locale={locale} />
-      </div>
-      <AdBanner />
-      <BottomNav />
+        <AdBanner />
+        <BottomNav />
+      </ThemeProvider>
     </NextIntlClientProvider>
   )
 }
