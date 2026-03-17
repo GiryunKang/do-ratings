@@ -13,6 +13,7 @@ import AISummary from '@/components/analytics/AISummary'
 import ClaimButton from '@/components/business/ClaimButton'
 import AddToCollectionButton from '@/components/collection/AddToCollectionButton'
 import EmbedWidget from '@/components/embed/EmbedWidget'
+import ImageAttribution from '@/components/ui/ImageAttribution'
 
 interface PageProps {
   params: Promise<{ locale: string; id: string }>
@@ -65,6 +66,7 @@ export default async function SubjectPage({ params }: PageProps) {
       avg_rating,
       review_count,
       category_id,
+      metadata,
       categories!inner(id, name, slug, sub_rating_criteria)
     `)
     .eq('id', id)
@@ -152,18 +154,26 @@ export default async function SubjectPage({ params }: PageProps) {
       {/* Subject Header */}
       <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
         <div className="flex gap-4">
-          {subject.image_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={subject.image_url as string}
-              alt={subjectName}
-              className="w-20 h-20 rounded-lg object-cover shrink-0"
-            />
-          ) : (
-            <div className="w-20 h-20 rounded-lg shrink-0 bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
-              <span className="text-3xl font-bold text-white">{firstLetter}</span>
-            </div>
-          )}
+          <div className="shrink-0">
+            {subject.image_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={subject.image_url as string}
+                alt={subjectName}
+                className="w-20 h-20 rounded-lg object-cover"
+              />
+            ) : (
+              <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
+                <span className="text-3xl font-bold text-white">{firstLetter}</span>
+              </div>
+            )}
+            {/* Image Attribution */}
+            {(() => {
+              const meta = subject.metadata as Record<string, unknown> | null
+              const attr = meta?.image_attribution as { source: string; photographer?: string; url?: string; license?: string } | null
+              return attr ? <ImageAttribution attribution={attr} /> : null
+            })()}
+          </div>
           <div className="flex-1 min-w-0">
             <Link
               href={`/${locale}/category/${category?.slug ?? ''}`}
