@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import FeaturedCarousel from '@/components/home/FeaturedCarousel'
+import HeroBanner from '@/components/home/HeroBanner'
 import Link from 'next/link'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
@@ -112,6 +113,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <div className="px-4 py-4 space-y-6">
+      {/* 0. Hero Banner - Do! Ratings! */}
+      <HeroBanner locale={locale} />
+
       {/* 1. Featured Carousel */}
       <FeaturedCarousel subjects={featured.map(s => ({
         id: s.id,
