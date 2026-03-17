@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import FeaturedCarousel from '@/components/home/FeaturedCarousel'
 import HeroBanner from '@/components/home/HeroBanner'
+import AutoScrollRow from '@/components/home/AutoScrollRow'
 import Link from 'next/link'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
@@ -29,6 +30,7 @@ interface SubjectRecord {
   avg_rating: number | null
   review_count: number
   category_id: string
+  image_url: string | null
   categories: SubjectCategoryRecord | SubjectCategoryRecord[] | null
 }
 
@@ -53,7 +55,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     { data: recentReviews },
   ] = await Promise.all([
     supabase.from('categories').select('*'),
-    supabase.from('subjects').select('id, name, avg_rating, review_count, description, category_id, categories(slug, name, icon)').limit(100),
+    supabase.from('subjects').select('id, name, avg_rating, review_count, description, category_id, image_url, categories(slug, name, icon)').limit(200),
     supabase.from('reviews').select('id, title, overall_rating, created_at, subjects(name, categories(name))').order('created_at', { ascending: false }).limit(5),
   ])
 
@@ -76,6 +78,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       avg_rating: subject.avg_rating,
       review_count: subject.review_count,
       category_id: subject.category_id,
+      image_url: subject.image_url,
       category_slug: category?.slug ?? '',
       category_name: category?.name ?? {},
       category_icon: category?.icon ?? 'folder',
@@ -200,38 +203,21 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </Link>
             </div>
 
-            {/* Horizontal scroll of subject cards */}
-            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
-              {catSubjects.slice(0, 10).map((subject, index) => {
-                const name = subject.name[locale] ?? subject.name['ko']
-                const desc = subject.description?.[locale] ?? subject.description?.['ko'] ?? ''
-                return (
-                  <Link key={subject.id} href={`/${locale}/subject/${subject.id}`}
-                    className="shrink-0 w-44 bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all group">
-                    {/* Color header based on category */}
-                    <div className={`h-16 ${getCategoryColor(slug)} opacity-80 flex items-center justify-center relative`}>
-                      <CategoryIcon name={icon} className="w-8 h-8 text-white/40" />
-                      {index < 3 && (
-                        <span className={`absolute top-2 right-2 w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center ${
-                          index === 0 ? 'bg-yellow-400 text-white' : index === 1 ? 'bg-gray-300 text-white' : 'bg-amber-600 text-white'
-                        }`}>{index + 1}</span>
-                      )}
-                    </div>
-                    <div className="p-3">
-                      <h4 className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors truncate">{name}</h4>
-                      {desc && <p className="text-xs text-gray-400 truncate mt-0.5">{desc}</p>}
-                      <div className="flex items-center gap-1 mt-2 text-xs">
-                        {subject.avg_rating ? (
-                          <span className="text-yellow-500 font-medium">★ {subject.avg_rating.toFixed(1)}</span>
-                        ) : (
-                          <span className="text-gray-300">{locale === 'ko' ? '평점 없음' : 'No rating'}</span>
-                        )}
-                      </div>
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
+            {/* Auto-scrolling subject cards */}
+            <AutoScrollRow
+              subjects={catSubjects.slice(0, 20).map(s => ({
+                id: s.id,
+                name: s.name,
+                description: s.description,
+                avg_rating: s.avg_rating,
+                review_count: s.review_count,
+                image_url: s.image_url,
+              }))}
+              categorySlug={slug}
+              categoryIcon={icon}
+              locale={locale}
+              speed={25}
+            />
           </section>
         )
       })}
