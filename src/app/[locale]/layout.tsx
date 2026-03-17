@@ -8,6 +8,7 @@ import Sidebar from '@/components/layout/Sidebar'
 import RightSidebar from '@/components/layout/RightSidebar'
 import AdBanner from '@/components/layout/AdBanner'
 import { ThemeProvider } from '@/components/ui/ThemeProvider'
+import OnboardingTrigger from '@/components/onboarding/OnboardingTrigger'
 
 export default async function LocaleLayout({
   children,
@@ -36,6 +37,7 @@ export default async function LocaleLayout({
         </div>
         <AdBanner />
         <BottomNav />
+        <OnboardingTrigger />
       </ThemeProvider>
     </NextIntlClientProvider>
   )
