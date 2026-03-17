@@ -128,6 +128,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         category_slug: s.category_slug,
         category_name: s.category_name,
         category_icon: s.category_icon,
+        image_url: s.image_url,
       }))} locale={locale} />
 
       {/* 2. Quick Stats Banner */}

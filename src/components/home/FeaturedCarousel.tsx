@@ -13,6 +13,7 @@ interface Subject {
   category_slug: string
   category_name: Record<string, string>
   category_icon: string
+  image_url?: string | null
 }
 
 export default function FeaturedCarousel({
@@ -68,10 +69,16 @@ export default function FeaturedCarousel({
             <Link
               key={subject.id}
               href={`/${locale}/subject/${subject.id}`}
-              className={`relative shrink-0 w-[300px] aspect-[16/9] rounded-2xl overflow-hidden snap-center ${bgColor} hover:shadow-xl transition-shadow`}
+              className={`relative shrink-0 w-[300px] aspect-[16/9] rounded-2xl overflow-hidden snap-center ${subject.image_url ? '' : bgColor} hover:shadow-xl transition-shadow`}
             >
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+              {subject.image_url ? (
+                <div className="absolute inset-0">
+                  <img src={subject.image_url} alt={subjectName} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                </div>
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+              )}
 
               {/* Content */}
               <div className="absolute bottom-0 left-0 right-0 p-4">
