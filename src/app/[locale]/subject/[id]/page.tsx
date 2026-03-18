@@ -8,12 +8,9 @@ import SubRatingChart from '@/components/review/SubRatingChart'
 import RelatedNews from '@/components/news/RelatedNews'
 import ImageAttribution from '@/components/ui/ImageAttribution'
 import SubjectTabs from '@/components/subject/SubjectTabs'
-
-// Lazy load heavy client components to avoid SSR issues
-import dynamic from 'next/dynamic'
-const ClaimButton = dynamic(() => import('@/components/business/ClaimButton'), { ssr: false })
-const AddToCollectionButton = dynamic(() => import('@/components/collection/AddToCollectionButton'), { ssr: false })
-const EmbedWidget = dynamic(() => import('@/components/embed/EmbedWidget'), { ssr: false })
+import ClaimButton from '@/components/business/ClaimButton'
+import AddToCollectionButton from '@/components/collection/AddToCollectionButton'
+import EmbedWidget from '@/components/embed/EmbedWidget'
 
 interface PageProps {
   params: Promise<{ locale: string; id: string }>
