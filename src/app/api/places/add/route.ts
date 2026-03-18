@@ -91,7 +91,36 @@ export async function POST(request: NextRequest) {
             { redirect: 'follow' }
           )
           if (photoRes.ok) {
-            imageUrl = photoRes.url  // The final redirected URL is the image
+            const googleImageUrl = photoRes.url  // The final redirected URL is the image
+            // Download the image and upload to Supabase Storage for permanence
+            try {
+              const imageResponse = await fetch(googleImageUrl)
+              if (imageResponse.ok) {
+                const imageBlob = await imageResponse.blob()
+                const fileName = `subjects/${newSubject.id}.jpg`
+
+                const { error: uploadError } = await supabase.storage
+                  .from('review-images')
+                  .upload(fileName, imageBlob, {
+                    contentType: imageBlob.type || 'image/jpeg',
+                    upsert: true,
+                  })
+
+                if (!uploadError) {
+                  const { data: publicUrl } = supabase.storage
+                    .from('review-images')
+                    .getPublicUrl(fileName)
+                  imageUrl = publicUrl.publicUrl
+                } else {
+                  // Fallback to Google URL if upload fails
+                  imageUrl = googleImageUrl
+                }
+              }
+            } catch (e) {
+              // Fallback to Google URL
+              imageUrl = googleImageUrl
+            }
+
             const authorAttribs = detailsData.photos[0].authorAttributions?.[0]
             imageAttribution = {
               source: 'Google',
