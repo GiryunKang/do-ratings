@@ -20,6 +20,7 @@ interface ReviewRow {
   title: string
   content: string
   helpful_count: number
+  not_helpful_count: number
   created_at: string
   subject_id: string
   user_id: string
@@ -47,6 +48,7 @@ export default function ReviewList({ subjectId, userId }: ReviewListProps) {
           title,
           content,
           helpful_count,
+          not_helpful_count,
           created_at,
           subject_id,
           user_id,
@@ -83,16 +85,25 @@ export default function ReviewList({ subjectId, userId }: ReviewListProps) {
 
       if (!data || data.length === 0) return { data: [], nextCursor: null }
 
-      // Check helpful votes for current user
+      // Check helpful / not_helpful votes for current user
       let helpfulSet = new Set<string>()
+      let notHelpfulSet = new Set<string>()
       if (currentUser) {
         const reviewIds = data.map((r) => r.id)
-        const { data: votes } = await supabase
-          .from('helpful_votes')
-          .select('review_id')
-          .eq('user_id', currentUser.id)
-          .in('review_id', reviewIds)
-        if (votes) helpfulSet = new Set(votes.map((v) => v.review_id))
+        const [{ data: helpfulVotes }, { data: notHelpfulVotes }] = await Promise.all([
+          supabase
+            .from('helpful_votes')
+            .select('review_id')
+            .eq('user_id', currentUser.id)
+            .in('review_id', reviewIds),
+          supabase
+            .from('not_helpful_votes')
+            .select('review_id')
+            .eq('user_id', currentUser.id)
+            .in('review_id', reviewIds),
+        ])
+        if (helpfulVotes) helpfulSet = new Set(helpfulVotes.map((v) => v.review_id))
+        if (notHelpfulVotes) notHelpfulSet = new Set(notHelpfulVotes.map((v) => v.review_id))
       }
 
       const mapped = (data as ReviewRow[]).map((r) => {
@@ -111,8 +122,10 @@ export default function ReviewList({ subjectId, userId }: ReviewListProps) {
           title: r.title,
           content: r.content,
           helpful_count: r.helpful_count,
+          not_helpful_count: r.not_helpful_count,
           created_at: r.created_at,
           is_helpful: helpfulSet.has(r.id),
+          is_not_helpful: notHelpfulSet.has(r.id),
           country_code: r.country_code ?? null,
         }
       })

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import StarRating from './StarRating'
 import UserBadge from '@/components/user/UserBadge'
 import HelpfulButton from './HelpfulButton'
+import NotHelpfulButton from './NotHelpfulButton'
 import ImageGallery from './ImageGallery'
 import ReactionBar from './ReactionBar'
 import CommentSection from './CommentSection'
@@ -37,8 +38,10 @@ interface ReviewCardProps {
     title: string
     content: string
     helpful_count: number
+    not_helpful_count?: number
     created_at: string
     is_helpful?: boolean
+    is_not_helpful?: boolean
     images?: { id: string; url: string }[]
     trust_score?: number
     reactions?: Record<string, number>
@@ -160,6 +163,13 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
             reviewId={review.id}
             initialCount={review.helpful_count}
             isHelpful={review.is_helpful ?? false}
+            reviewUserId={user.id}
+            currentUserId={currentUserId ?? null}
+          />
+          <NotHelpfulButton
+            reviewId={review.id}
+            initialCount={review.not_helpful_count ?? 0}
+            isNotHelpful={review.is_not_helpful ?? false}
             reviewUserId={user.id}
             currentUserId={currentUserId ?? null}
           />
