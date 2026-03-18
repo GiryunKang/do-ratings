@@ -23,6 +23,7 @@ interface ReviewRow {
   created_at: string
   subject_id: string
   user_id: string
+  country_code: string | null
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public_profiles: any
   helpful_votes?: { user_id: string }[]
@@ -49,6 +50,7 @@ export default function ReviewList({ subjectId, userId }: ReviewListProps) {
           created_at,
           subject_id,
           user_id,
+          country_code,
           public_profiles(id, nickname, level, avatar_url)
         `)
         .limit(PAGE_SIZE)
@@ -111,6 +113,7 @@ export default function ReviewList({ subjectId, userId }: ReviewListProps) {
           helpful_count: r.helpful_count,
           created_at: r.created_at,
           is_helpful: helpfulSet.has(r.id),
+          country_code: r.country_code ?? null,
         }
       })
 

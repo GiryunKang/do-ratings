@@ -10,6 +10,7 @@ import ReactionBar from './ReactionBar'
 import CommentSection from './CommentSection'
 import TrustBadge from '@/components/user/TrustBadge'
 import { timeAgo } from '@/lib/utils/timeAgo'
+import { countryCodeToFlag, getCountryName } from '@/lib/utils/country'
 import { getCategoryColor } from '@/lib/utils/category-colors'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -43,6 +44,7 @@ interface ReviewCardProps {
     reactions?: Record<string, number>
     user_reaction?: string | null
     comment_count?: number
+    country_code?: string | null
   }
   currentUserId?: string | null
   locale?: string
@@ -105,6 +107,15 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
           >
             {user.nickname}
           </Link>
+
+          {review.country_code && (
+            <span
+              title={getCountryName(review.country_code, locale)}
+              className="text-base leading-none"
+            >
+              {countryCodeToFlag(review.country_code)}
+            </span>
+          )}
 
           <UserBadge level={user.level} />
 

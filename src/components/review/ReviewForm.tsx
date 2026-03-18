@@ -57,6 +57,14 @@ export default function ReviewForm({
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [countryCode, setCountryCode] = useState<string>('XX')
+
+  useEffect(() => {
+    fetch('/api/geo')
+      .then((res) => res.json())
+      .then((data) => { if (data.country) setCountryCode(data.country) })
+      .catch(() => { /* ignore — defaults to 'XX' */ })
+  }, [])
 
   useEffect(() => {
     if (!existingReview) return
@@ -142,6 +150,7 @@ export default function ReviewForm({
             content: cleanContent,
             sub_ratings: subRatings,
             overall_rating: overallRating,
+            country_code: countryCode !== 'XX' ? countryCode : null,
           })
           .select('id')
           .single()
