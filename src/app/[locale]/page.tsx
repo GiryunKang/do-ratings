@@ -101,14 +101,40 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     }
   })
 
-  // Featured: top subjects by review count (for carousel)
-  const featured = [...mappedSubjects]
-    .sort((a, b) => (
-      b.review_count - a.review_count ||
-      (b.avg_rating ?? 0) - (a.avg_rating ?? 0) ||
-      a.id.localeCompare(b.id)
-    ))
-    .slice(0, 8)
+  // Featured: based on weekly review activity, fallback to category-balanced selection
+  const weeklyReviewCounts = new Map<string, number>()
+  for (const r of (trendingReviews ?? [])) {
+    const sid = (r as { subject_id: string }).subject_id
+    weeklyReviewCounts.set(sid, (weeklyReviewCounts.get(sid) ?? 0) + 1)
+  }
+
+  let featured: typeof mappedSubjects
+  if (weeklyReviewCounts.size >= 3) {
+    // Use weekly trending subjects
+    featured = [...mappedSubjects]
+      .sort((a, b) => (
+        (weeklyReviewCounts.get(b.id) ?? 0) - (weeklyReviewCounts.get(a.id) ?? 0) ||
+        b.review_count - a.review_count ||
+        (b.avg_rating ?? 0) - (a.avg_rating ?? 0)
+      ))
+      .slice(0, 8)
+  } else {
+    // Fallback: pick evenly from each category (1-2 per category)
+    const byCategory = new Map<string, typeof mappedSubjects>()
+    for (const s of mappedSubjects) {
+      const list = byCategory.get(s.category_slug) ?? []
+      list.push(s)
+      byCategory.set(s.category_slug, list)
+    }
+    const balanced: typeof mappedSubjects = []
+    for (const slug of categoryOrder) {
+      const list = byCategory.get(slug) ?? []
+      // Sort within category: review_count then rating then random-ish
+      list.sort((a, b) => b.review_count - a.review_count || (b.avg_rating ?? 0) - (a.avg_rating ?? 0))
+      balanced.push(...list.slice(0, 2))
+    }
+    featured = balanced.slice(0, 8)
+  }
 
   // Spotlight subjects are selected deterministically to keep server renders pure.
   const spotlights = [...mappedSubjects]
