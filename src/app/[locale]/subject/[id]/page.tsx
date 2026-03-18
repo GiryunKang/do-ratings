@@ -5,15 +5,16 @@ import { createClient } from '@/lib/supabase/server'
 import { formatRating } from '@/lib/utils/rating'
 import StarRating from '@/components/review/StarRating'
 import SubRatingChart from '@/components/review/SubRatingChart'
-import ReviewList from '@/components/review/ReviewList'
 import RelatedNews from '@/components/news/RelatedNews'
-import ImageGallery from '@/components/review/ImageGallery'
-import TrendChart from '@/components/analytics/TrendChart'
-import AISummary from '@/components/analytics/AISummary'
 import ClaimButton from '@/components/business/ClaimButton'
 import AddToCollectionButton from '@/components/collection/AddToCollectionButton'
 import EmbedWidget from '@/components/embed/EmbedWidget'
 import ImageAttribution from '@/components/ui/ImageAttribution'
+import SubjectTabs from '@/components/subject/SubjectTabs'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { buttonVariants } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 
 interface PageProps {
   params: Promise<{ locale: string; id: string }>
@@ -150,113 +151,91 @@ export default async function SubjectPage({ params }: PageProps) {
   const firstLetter = subjectName.charAt(0).toUpperCase()
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6">
-      {/* Subject Header */}
-      <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
-        <div className="flex gap-4">
-          <div className="shrink-0">
-            {subject.image_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={subject.image_url as string}
-                alt={subjectName}
-                className="w-20 h-20 rounded-lg object-cover"
-              />
-            ) : (
-              <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
-                <span className="text-3xl font-bold text-white">{firstLetter}</span>
+    <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      {/* Subject Header Card */}
+      <Card>
+        <CardContent className="pt-6">
+          {/* Subject info row */}
+          <div className="flex gap-4">
+            <div className="shrink-0">
+              {subject.image_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={subject.image_url as string}
+                  alt={subjectName}
+                  className="w-20 h-20 rounded-lg object-cover"
+                />
+              ) : (
+                <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
+                  <span className="text-3xl font-bold text-white">{firstLetter}</span>
+                </div>
+              )}
+              {/* Image Attribution */}
+              {(() => {
+                const meta = subject.metadata as Record<string, unknown> | null
+                const attr = meta?.image_attribution as { source: string; photographer?: string; url?: string; license?: string } | null
+                return attr ? <ImageAttribution attribution={attr} /> : null
+              })()}
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <Link href={`/${locale}/category/${category?.slug ?? ''}`}>
+                <Badge variant="secondary" className="cursor-pointer hover:opacity-80">
+                  {categoryName}
+                </Badge>
+              </Link>
+              <h1 className="text-xl font-bold mt-1 mb-2">{subjectName}</h1>
+              <div className="flex items-center gap-2 golden-glow rounded-lg px-2 py-1 inline-flex">
+                <StarRating value={subject.avg_rating ?? 0} readonly size="lg" />
+                <span className="text-lg font-semibold text-foreground">
+                  {formatRating(subject.avg_rating)}
+                </span>
+                <span className="text-sm text-muted-foreground">({subject.review_count} reviews)</span>
               </div>
-            )}
-            {/* Image Attribution */}
-            {(() => {
-              const meta = subject.metadata as Record<string, unknown> | null
-              const attr = meta?.image_attribution as { source: string; photographer?: string; url?: string; license?: string } | null
-              return attr ? <ImageAttribution attribution={attr} /> : null
-            })()}
-          </div>
-          <div className="flex-1 min-w-0">
-            <Link
-              href={`/${locale}/category/${category?.slug ?? ''}`}
-              className="text-xs text-indigo-500 font-medium hover:underline"
-            >
-              {categoryName}
-            </Link>
-            <h1 className="text-xl font-bold text-gray-900 mt-0.5 mb-2">{subjectName}</h1>
-            <div className="flex items-center gap-2 golden-glow rounded-lg px-2 py-1 inline-flex">
-              <StarRating value={subject.avg_rating ?? 0} readonly size="lg" />
-              <span className="text-lg font-semibold text-gray-700">
-                {formatRating(subject.avg_rating)}
-              </span>
-              <span className="text-sm text-gray-400">({subject.review_count} reviews)</span>
             </div>
           </div>
-        </div>
 
-        {/* Sub Rating Chart */}
-        {criteria.length > 0 && Object.keys(avgSubRatings).length > 0 && (
-          <div className="mt-4 pt-4 border-t border-gray-100">
-            <SubRatingChart criteria={criteria} values={avgSubRatings} locale={locale} />
+          {/* Sub Rating Chart */}
+          {criteria.length > 0 && Object.keys(avgSubRatings).length > 0 && (
+            <>
+              <Separator className="my-4" />
+              <SubRatingChart criteria={criteria} values={avgSubRatings} locale={locale} />
+            </>
+          )}
+
+          <Separator className="my-4" />
+
+          {/* Action Buttons */}
+          <div className="flex gap-2 flex-wrap">
+            <Link href={writeHref} className={buttonVariants({ size: 'sm' })}>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+              {existingReviewId ? 'Edit Review' : 'Write Review'}
+            </Link>
+            <Link href={`/${locale}/compare?ids=${id}`} className={buttonVariants({ variant: 'outline', size: 'sm' })}>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              Compare
+            </Link>
+            <ClaimButton subjectId={id} currentUserId={user?.id ?? null} locale={locale} />
+            <AddToCollectionButton subjectId={id} currentUserId={user?.id ?? null} />
           </div>
-        )}
 
-        {/* Photos */}
-        {allImages.length > 0 && (
-          <div className="mt-4 pt-4 border-t border-gray-100">
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">Photos</h3>
-            <ImageGallery images={allImages} />
-          </div>
-        )}
-
-        {/* Rating Trend */}
-        <div className="mt-4 pt-4 border-t border-gray-100">
-          <TrendChart subjectId={id} locale={locale} />
-        </div>
-
-        {/* AI Summary */}
-        <div className="mt-4 pt-4 border-t border-gray-100">
-          <AISummary subjectId={id} locale={locale} />
-        </div>
-
-        {/* Write Review Button */}
-        <div className="mt-4 flex gap-3 flex-wrap">
-          <Link
-            href={writeHref}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full px-6 py-3 hover:shadow-lg transition-all text-sm font-semibold"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-            </svg>
-            {existingReviewId ? 'Edit Review' : 'Write Review'}
-          </Link>
-          <Link
-            href={`/${locale}/compare?ids=${id}`}
-            className="inline-flex items-center gap-2 border border-indigo-200 text-indigo-600 rounded-full px-6 py-3 hover:bg-indigo-50 transition-all text-sm font-semibold"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-            Compare
-          </Link>
-          <ClaimButton subjectId={id} currentUserId={user?.id ?? null} locale={locale} />
-          <AddToCollectionButton subjectId={id} currentUserId={user?.id ?? null} />
-        </div>
-
-        {/* Embed Widget */}
-        <div className="mt-4 pt-4 border-t border-gray-100">
+          {/* Embed Widget */}
+          <Separator className="my-4" />
           <EmbedWidget
             subjectId={id}
             subjectName={subjectName}
             avgRating={subject.avg_rating ? Number(subject.avg_rating) : null}
             reviewCount={subject.review_count as number}
           />
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      {/* Reviews */}
-      <section>
-        <h2 className="text-base font-semibold text-gray-700 mb-3">Reviews</h2>
-        <ReviewList subjectId={id} />
-      </section>
+      {/* Tabbed content: Reviews, Photos, Trend, AI Summary */}
+      <SubjectTabs subjectId={id} locale={locale} images={allImages} />
 
       {/* Related News */}
       <RelatedNews
