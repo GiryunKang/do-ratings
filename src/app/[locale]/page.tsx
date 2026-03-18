@@ -235,13 +235,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </AnimatedSection>
 
       {/* 3. Today's Trending */}
-      {trendingSubjects.length > 0 && (
-        <AnimatedSection delay={0.15}>
+      <AnimatedSection delay={0.15}>
         <section>
-          <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+          <h2 className="text-base font-bold text-foreground mb-3 flex items-center gap-2">
             <span className="text-lg">🔥</span>
             {locale === 'ko' ? '오늘의 인기 평가 대상' : "Today's Trending"}
           </h2>
+      {trendingSubjects.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {trendingSubjects.map((item, index) => {
               const name = item.name[locale] ?? item.name['ko'] ?? item.name['en']
@@ -271,18 +271,31 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               )
             })}
           </div>
-        </section>
-        </AnimatedSection>
+      ) : (
+          <div className="bg-card rounded-xl ring-1 ring-foreground/10 p-6 text-center">
+            <p className="text-3xl mb-2">🔥</p>
+            <p className="text-sm font-medium text-foreground mb-1">
+              {locale === 'ko' ? '아직 이번 주 리뷰가 없습니다' : 'No reviews this week yet'}
+            </p>
+            <p className="text-xs text-muted-foreground mb-3">
+              {locale === 'ko' ? '첫 번째 리뷰어가 되어 트렌딩에 올라보세요!' : 'Be the first reviewer and trend!'}
+            </p>
+            <Link href={`/${locale}/explore`} className="inline-flex items-center gap-1.5 h-8 px-4 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:bg-primary/80 transition-colors">
+              {locale === 'ko' ? '평가하러 가기' : 'Start Rating'}
+            </Link>
+          </div>
       )}
+        </section>
+      </AnimatedSection>
 
       {/* 4. Popular Reviews */}
-      {topReviews.length > 0 && (
-        <AnimatedSection delay={0.15}>
-          <section>
-            <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
-              <span className="text-lg">⭐</span>
-              {locale === 'ko' ? '인기 리뷰' : 'Popular Reviews'}
-            </h2>
+      <AnimatedSection delay={0.15}>
+        <section>
+          <h2 className="text-base font-bold text-foreground mb-3 flex items-center gap-2">
+            <span className="text-lg">⭐</span>
+            {locale === 'ko' ? '인기 리뷰' : 'Popular Reviews'}
+          </h2>
+      {topReviews.length > 0 ? (
             <div className="space-y-3">
               {topReviews.map(review => {
                 const subjectName = review.subject_name?.[locale] ?? review.subject_name?.['ko'] ?? ''
@@ -312,9 +325,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 )
               })}
             </div>
-          </section>
-        </AnimatedSection>
+      ) : (
+          <div className="bg-card rounded-xl ring-1 ring-foreground/10 p-6 text-center">
+            <p className="text-3xl mb-2">⭐</p>
+            <p className="text-sm font-medium text-foreground mb-1">
+              {locale === 'ko' ? '아직 인기 리뷰가 없습니다' : 'No popular reviews yet'}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {locale === 'ko' ? '리뷰를 작성하고 도움이 됐어요 투표를 받아보세요!' : 'Write reviews and get helpful votes!'}
+            </p>
+          </div>
       )}
+        </section>
+      </AnimatedSection>
 
       {/* 5. Spotlight: "어떻게 생각하세요?" */}
       <AnimatedSection delay={0.1}>

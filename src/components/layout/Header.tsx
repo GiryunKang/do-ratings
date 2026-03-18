@@ -37,7 +37,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto flex items-center h-14 px-4 gap-4">
         {/* Logo */}
         <Link href={`/${locale}`} className="shrink-0 text-lg font-bold text-primary">
-          Do! <ShimmerText>Ratings</ShimmerText>
+          Do! <ShimmerText>Ratings!</ShimmerText>
         </Link>
 
         {/* Search bar — hidden on mobile */}

@@ -58,7 +58,7 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
 
   return (
     <div
-      className="relative overflow-hidden rounded-2xl p-8 md:p-12 text-white min-h-[300px] md:min-h-[340px]"
+      className="relative overflow-hidden rounded-2xl p-6 md:p-8 text-white min-h-[200px] md:min-h-[220px]"
       style={{
         background: 'linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #4f46e5, #7c3aed, #db2777)',
         backgroundSize: '400% 400%',
@@ -79,9 +79,9 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
       <div className="relative z-10 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
 
         {/* Pointing Hand — 3D style image */}
-        <div className="relative flex items-center justify-center" style={{ minWidth: '160px', minHeight: '160px' }}>
+        <div className="relative flex items-center justify-center" style={{ minWidth: '100px', minHeight: '100px' }}>
           <div
-            className={`w-[120px] h-[120px] md:w-[180px] md:h-[180px] lg:w-[220px] lg:h-[220px] ${phase >= 1 ? '' : 'opacity-0'}`}
+            className={`w-[80px] h-[80px] md:w-[120px] md:h-[120px] lg:w-[140px] lg:h-[140px] ${phase >= 1 ? '' : 'opacity-0'}`}
             style={phase >= 1 ? {
               animation: 'heroHandPoint 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards, heroHandBob 3s ease-in-out 1.5s infinite',
               filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.3))',
@@ -118,7 +118,7 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
         {/* Text content */}
         <div className="text-center md:text-left">
           {/* DO! RATINGS! */}
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-none">
             <span
               className={`inline-block ${phase >= 1 ? '' : 'opacity-0'}`}
               style={phase >= 1 ? {
@@ -146,7 +146,7 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
             {[1, 2, 3, 4, 5].map((i) => (
               <span
                 key={i}
-                className={`text-2xl md:text-4xl text-yellow-300 ${phase >= 2 ? '' : 'opacity-0'}`}
+                className={`text-xl md:text-2xl text-yellow-300 ${phase >= 2 ? '' : 'opacity-0'}`}
                 style={phase >= 2 ? {
                   animation: `heroStarExplode 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.06}s both, heroStarTwinkle 2s ease-in-out ${1.5 + i * 0.3}s infinite`,
                   filter: 'drop-shadow(0 0 8px rgba(250,204,21,0.5))',
@@ -159,7 +159,7 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
 
           {/* Subtitle */}
           <p
-            className={`text-base md:text-lg font-medium max-w-md mb-5 transition-all duration-700 ${
+            className={`text-sm md:text-base font-medium max-w-md mb-4 transition-all duration-700 ${
               phase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
             }`}
             style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}
@@ -172,7 +172,7 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
           {/* CTA Button */}
           <Link
             href={`/${locale}/explore`}
-            className={`inline-flex items-center gap-2 bg-yellow-400 text-gray-900 font-extrabold px-8 py-3.5 rounded-full text-sm md:text-base shadow-[0_0_30px_rgba(250,204,21,0.4)] hover:shadow-[0_0_50px_rgba(250,204,21,0.7)] hover:scale-110 active:scale-95 transition-all duration-300 ${
+            className={`inline-flex items-center gap-2 bg-yellow-400 text-gray-900 font-extrabold px-6 py-2.5 rounded-full text-xs md:text-sm shadow-[0_0_30px_rgba(250,204,21,0.4)] hover:shadow-[0_0_50px_rgba(250,204,21,0.7)] hover:scale-110 active:scale-95 transition-all duration-300 ${
               phase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
