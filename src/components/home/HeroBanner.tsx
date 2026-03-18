@@ -78,15 +78,16 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
       {/* Main layout: Hand + Text side by side */}
       <div className="relative z-10 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
 
-        {/* Pointing Hand — realistic SVG, pointing upper-right */}
-        <div className="relative flex items-center justify-center" style={{ minWidth: '160px', minHeight: '180px' }}>
+        {/* Pointing Hand — 3D style image */}
+        <div className="relative flex items-center justify-center" style={{ minWidth: '160px', minHeight: '160px' }}>
           <div
-            className={`w-[140px] h-[160px] md:w-[200px] md:h-[220px] lg:w-[240px] lg:h-[260px] ${phase >= 1 ? '' : 'opacity-0'}`}
+            className={`w-[120px] h-[120px] md:w-[180px] md:h-[180px] lg:w-[220px] lg:h-[220px] ${phase >= 1 ? '' : 'opacity-0'}`}
             style={phase >= 1 ? {
               animation: 'heroHandPoint 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards, heroHandBob 3s ease-in-out 1.5s infinite',
+              filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.3))',
             } : undefined}
           >
-            <PointingHand className="w-full h-full" />
+            <PointingHand className="w-full h-full object-contain" />
           </div>
 
           {/* Star bursts emanating from the fingertip (upper-right) */}
