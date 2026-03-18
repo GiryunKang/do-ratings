@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import FeaturedCarousel from '@/components/home/FeaturedCarousel'
 import HeroBanner from '@/components/home/HeroBanner'
 import AutoScrollRow from '@/components/home/AutoScrollRow'
+import TrendingSection from '@/components/home/TrendingSection'
+import PopularReviewsSection from '@/components/home/PopularReviewsSection'
 import AnimatedSection from '@/components/ui/AnimatedSection'
 import GlowCard from '@/components/ui/GlowCard'
 import Link from 'next/link'
@@ -216,7 +218,16 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         }))} locale={locale} />
       </AnimatedSection>
 
-      {/* 2. Quick Stats Banner */}
+      {/* 2. Trending + Popular Reviews (with daily/weekly/monthly tabs) */}
+      <AnimatedSection delay={0.1}>
+        <TrendingSection locale={locale} />
+      </AnimatedSection>
+
+      <AnimatedSection delay={0.12}>
+        <PopularReviewsSection locale={locale} />
+      </AnimatedSection>
+
+      {/* 3. Quick Stats Banner */}
       <AnimatedSection delay={0.1}>
         <div className="grid grid-cols-3 gap-3">
           <GlowCard className="bg-gradient-to-br from-indigo-500 to-purple-600 p-4 text-white text-center border-0" glowColor="rgba(129, 140, 248, 0.4)">
@@ -232,111 +243,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <p className="text-xs text-white/70 mt-1">{locale === 'ko' ? '리뷰' : 'Reviews'}</p>
           </GlowCard>
         </div>
-      </AnimatedSection>
-
-      {/* 3. Today's Trending */}
-      <AnimatedSection delay={0.15}>
-        <section>
-          <h2 className="text-base font-bold text-foreground mb-3 flex items-center gap-2">
-            <span className="text-lg">🔥</span>
-            {locale === 'ko' ? '오늘의 인기 평가 대상' : "Today's Trending"}
-          </h2>
-      {trendingSubjects.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {trendingSubjects.map((item, index) => {
-              const name = item.name[locale] ?? item.name['ko'] ?? item.name['en']
-              return (
-                <Link key={item.id} href={`/${locale}/subject/${item.id}`}
-                  className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all group">
-                  {item.image_url ? (
-                    <div className="h-24 relative overflow-hidden">
-                      <img src={item.image_url} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                      <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                        🔥 {index + 1}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="h-16 bg-gradient-to-br from-red-400 to-orange-500 flex items-center justify-center">
-                      <span className="text-2xl">🔥</span>
-                    </div>
-                  )}
-                  <div className="p-3">
-                    <h4 className="text-sm font-semibold text-gray-900 truncate">{name}</h4>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">
-                      {item.avg_rating && <span className="text-yellow-500 font-medium">★ {item.avg_rating.toFixed(1)}</span>}
-                      <span>{item.recentCount} {locale === 'ko' ? '개 최근 리뷰' : 'recent reviews'}</span>
-                    </div>
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
-      ) : (
-          <div className="bg-card rounded-xl ring-1 ring-foreground/10 p-6 text-center">
-            <p className="text-3xl mb-2">🔥</p>
-            <p className="text-sm font-medium text-foreground mb-1">
-              {locale === 'ko' ? '아직 이번 주 리뷰가 없습니다' : 'No reviews this week yet'}
-            </p>
-            <p className="text-xs text-muted-foreground mb-3">
-              {locale === 'ko' ? '첫 번째 리뷰어가 되어 트렌딩에 올라보세요!' : 'Be the first reviewer and trend!'}
-            </p>
-            <Link href={`/${locale}/explore`} className="inline-flex items-center gap-1.5 h-8 px-4 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:bg-primary/80 transition-colors">
-              {locale === 'ko' ? '평가하러 가기' : 'Start Rating'}
-            </Link>
-          </div>
-      )}
-        </section>
-      </AnimatedSection>
-
-      {/* 4. Popular Reviews */}
-      <AnimatedSection delay={0.15}>
-        <section>
-          <h2 className="text-base font-bold text-foreground mb-3 flex items-center gap-2">
-            <span className="text-lg">⭐</span>
-            {locale === 'ko' ? '인기 리뷰' : 'Popular Reviews'}
-          </h2>
-      {topReviews.length > 0 ? (
-            <div className="space-y-3">
-              {topReviews.map(review => {
-                const subjectName = review.subject_name?.[locale] ?? review.subject_name?.['ko'] ?? ''
-                return (
-                  <Link key={review.id} href={`/${locale}/subject/${review.subject_id}`}
-                    className="block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md hover:border-indigo-200 transition-all">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 text-xs text-gray-400 mb-1">
-                          <span className="font-medium text-gray-600">{review.nickname}</span>
-                          <span>•</span>
-                          <span>{subjectName}</span>
-                        </div>
-                        <h4 className="text-sm font-semibold text-gray-900 truncate">{review.title}</h4>
-                        <p className="text-xs text-gray-500 mt-1 line-clamp-2">{review.content}</p>
-                      </div>
-                      <div className="shrink-0 flex flex-col items-center">
-                        <div className="flex gap-0.5">
-                          {Array.from({length: 5}).map((_, i) => (
-                            <span key={i} className={`text-xs ${i < Math.round(review.overall_rating) ? 'text-yellow-400' : 'text-gray-200'}`}>★</span>
-                          ))}
-                        </div>
-                        <span className="text-xs text-gray-400 mt-1">👍 {review.helpful_count}</span>
-                      </div>
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
-      ) : (
-          <div className="bg-card rounded-xl ring-1 ring-foreground/10 p-6 text-center">
-            <p className="text-3xl mb-2">⭐</p>
-            <p className="text-sm font-medium text-foreground mb-1">
-              {locale === 'ko' ? '아직 인기 리뷰가 없습니다' : 'No popular reviews yet'}
-            </p>
-            <p className="text-xs text-muted-foreground">
-              {locale === 'ko' ? '리뷰를 작성하고 도움이 됐어요 투표를 받아보세요!' : 'Write reviews and get helpful votes!'}
-            </p>
-          </div>
-      )}
-        </section>
       </AnimatedSection>
 
       {/* 5. Spotlight: "어떻게 생각하세요?" */}
