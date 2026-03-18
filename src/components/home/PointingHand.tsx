@@ -1,147 +1,65 @@
 export default function PointingHand({ className }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 260 240"
+      viewBox="0 0 300 280"
       className={className}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* Stylized cartoon hand: index pointing right, thumb up, others curled */}
       <defs>
-        <linearGradient id="skinBase" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#ffcda8" />
-          <stop offset="60%" stopColor="#f5b48a" />
-          <stop offset="100%" stopColor="#e89b6e" />
+        <linearGradient id="skin1" x1="30%" y1="0%" x2="70%" y2="100%">
+          <stop offset="0%" stopColor="#fdd9b5" />
+          <stop offset="100%" stopColor="#f0b88a" />
         </linearGradient>
-        <linearGradient id="skinLight" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#ffe0c4" />
-          <stop offset="100%" stopColor="#ffd1aa" />
+        <linearGradient id="skin2" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#f5c9a0" />
+          <stop offset="100%" stopColor="#e8a474" />
         </linearGradient>
-        <linearGradient id="skinDark" x1="100%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#d4845a" />
-          <stop offset="100%" stopColor="#c07548" />
+        <linearGradient id="highlight" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#ffe8d0" />
+          <stop offset="100%" stopColor="#fdd9b5" stopOpacity="0" />
         </linearGradient>
-        <filter id="softShadow">
-          <feDropShadow dx="4" dy="6" stdDeviation="8" floodColor="rgba(0,0,0,0.3)" />
+        <filter id="fs">
+          <feDropShadow dx="3" dy="5" stdDeviation="6" floodColor="rgba(0,0,0,0.25)" />
         </filter>
       </defs>
 
-      <g filter="url(#softShadow)">
-        {/* === THUMB — pointing up === */}
-        <path
-          d="M95 130 C90 115, 85 95, 82 75 C80 60, 78 45, 82 35 C86 28, 94 26, 100 30 C106 34, 106 48, 105 62 C104 78, 102 98, 100 118"
-          fill="url(#skinBase)"
-          stroke="#d4885c"
-          strokeWidth="1.5"
-        />
-        {/* Thumb highlight */}
-        <path
-          d="M90 120 C88 105, 85 85, 84 68 C83 55, 84 42, 87 35"
-          stroke="url(#skinLight)"
-          strokeWidth="5"
-          strokeLinecap="round"
-          opacity="0.5"
-        />
-        {/* Thumb nail */}
-        <path
-          d="M86 36 C88 30, 96 28, 98 32 C100 36, 96 40, 90 40 C87 40, 85 38, 86 36Z"
-          fill="#f8dcc8"
-          stroke="#d4a080"
-          strokeWidth="0.8"
-        />
+      <g filter="url(#fs)">
+        {/* ── INDEX FINGER pointing right ── */}
+        <path d="M148 128 Q165 124 195 118 Q220 113 242 112 Q258 112 264 118 Q268 124 264 130 Q258 135 242 133 Q220 131 195 130 Q170 130 152 134 Z" fill="url(#skin1)" stroke="#dda06a" strokeWidth="1.2"/>
+        <path d="M155 127 Q175 122 210 116 Q235 113 252 114" stroke="url(#highlight)" strokeWidth="4" strokeLinecap="round" opacity="0.45"/>
+        {/* nail */}
+        <ellipse cx="262" cy="122" rx="5.5" ry="4.5" fill="#fce4d0" stroke="#d9a07a" strokeWidth="0.7"/>
+        {/* crease */}
+        <path d="M200 120 Q200 125 200 129" stroke="#d09060" strokeWidth="0.7" opacity="0.35" strokeLinecap="round"/>
 
-        {/* === INDEX FINGER — pointing right === */}
-        <path
-          d="M130 120 C150 118, 175 114, 200 110 C212 108, 225 106, 235 108 C242 110, 244 116, 240 120 C236 124, 224 124, 212 122 C195 120, 170 122, 145 126 L130 128Z"
-          fill="url(#skinBase)"
-          stroke="#d4885c"
-          strokeWidth="1.5"
-        />
-        {/* Index finger top highlight */}
-        <path
-          d="M135 120 C155 117, 180 113, 205 110 C218 108, 230 108, 236 110"
-          stroke="url(#skinLight)"
-          strokeWidth="5"
-          strokeLinecap="round"
-          opacity="0.5"
-        />
-        {/* Index fingernail */}
-        <path
-          d="M235 110 C238 108, 242 112, 242 116 C242 120, 238 122, 235 120 C232 118, 232 112, 235 110Z"
-          fill="#f8dcc8"
-          stroke="#d4a080"
-          strokeWidth="0.8"
-        />
-        {/* Index finger knuckle crease */}
-        <path d="M170 116 C170 120, 170 124, 170 126" stroke="#c88060" strokeWidth="1" opacity="0.4" strokeLinecap="round" />
+        {/* ── THUMB pointing up-left ── */}
+        <path d="M108 130 Q104 118 98 100 Q94 85 92 72 Q90 60 94 54 Q100 48 106 52 Q112 58 112 72 Q112 88 112 105 Q112 118 110 130 Z" fill="url(#skin1)" stroke="#dda06a" strokeWidth="1.2"/>
+        <path d="M102 122 Q100 108 98 90 Q96 76 96 64" stroke="url(#highlight)" strokeWidth="3.5" strokeLinecap="round" opacity="0.4"/>
+        <ellipse cx="99" cy="55" rx="5" ry="4" fill="#fce4d0" stroke="#d9a07a" strokeWidth="0.7"/>
 
-        {/* === PALM — main body === */}
-        <path
-          d="M80 125 C78 118, 82 110, 95 108 L130 115 L135 130 L130 155 C125 165, 110 170, 95 168 C82 166, 76 155, 76 145 C76 138, 78 130, 80 125Z"
-          fill="url(#skinBase)"
-          stroke="#d4885c"
-          strokeWidth="1.5"
-        />
-        {/* Palm center shadow */}
-        <path
-          d="M90 125 C95 120, 110 118, 125 122 C120 135, 115 150, 105 158 C95 162, 86 155, 84 145 C82 138, 86 130, 90 125Z"
-          fill="url(#skinDark)"
-          opacity="0.2"
-        />
+        {/* ── PALM ── */}
+        <path d="M95 125 Q90 118 92 108 Q96 98 108 94 L148 110 Q155 118 155 132 Q152 148 142 158 Q130 168 115 166 Q100 162 94 150 Q90 140 95 125 Z" fill="url(#skin2)" stroke="#dda06a" strokeWidth="1.2"/>
+        {/* palm shadow */}
+        <path d="M105 125 Q112 118 130 115 Q140 118 145 128 Q142 142 132 152 Q120 160 108 155 Q98 148 100 135 Z" fill="#d4915a" opacity="0.12"/>
 
-        {/* === MIDDLE FINGER — curled into fist === */}
-        <path
-          d="M130 130 C140 132, 148 136, 150 142 C152 150, 146 156, 138 155 C132 154, 126 148, 125 142 C124 138, 126 134, 130 130Z"
-          fill="url(#skinBase)"
-          stroke="#d4885c"
-          strokeWidth="1.2"
-        />
-        {/* Middle finger knuckle */}
-        <ellipse cx="140" cy="137" rx="6" ry="4" fill="url(#skinDark)" opacity="0.15" />
+        {/* ── MIDDLE FINGER curled ── */}
+        <path d="M148 134 Q158 136 164 142 Q168 150 164 156 Q158 160 150 157 Q144 152 142 145 Q141 139 148 134 Z" fill="url(#skin2)" stroke="#dda06a" strokeWidth="1"/>
+        <path d="M155 138 Q160 140 162 144" stroke="#d09060" strokeWidth="0.8" opacity="0.3" strokeLinecap="round"/>
 
-        {/* === RING FINGER — curled === */}
-        <path
-          d="M125 140 C134 144, 140 150, 140 157 C140 164, 134 168, 127 166 C121 164, 118 158, 118 152 C118 147, 120 143, 125 140Z"
-          fill="url(#skinBase)"
-          stroke="#d4885c"
-          strokeWidth="1.2"
-        />
-        {/* Ring finger knuckle */}
-        <ellipse cx="132" cy="148" rx="5" ry="3.5" fill="url(#skinDark)" opacity="0.15" />
+        {/* ── RING FINGER curled ── */}
+        <path d="M140 148 Q150 152 154 158 Q156 166 150 170 Q144 172 138 168 Q134 162 134 155 Q135 150 140 148 Z" fill="url(#skin2)" stroke="#dda06a" strokeWidth="1"/>
 
-        {/* === PINKY — curled === */}
-        <path
-          d="M118 152 C126 156, 130 162, 128 168 C126 174, 120 176, 114 174 C108 172, 106 166, 108 160 C110 156, 114 153, 118 152Z"
-          fill="url(#skinBase)"
-          stroke="#d4885c"
-          strokeWidth="1.2"
-        />
-        {/* Pinky knuckle */}
-        <ellipse cx="124" cy="160" rx="4" ry="3" fill="url(#skinDark)" opacity="0.15" />
+        {/* ── PINKY curled ── */}
+        <path d="M130 158 Q140 162 142 168 Q143 176 138 179 Q132 180 127 176 Q124 170 125 164 Q126 160 130 158 Z" fill="url(#skin2)" stroke="#dda06a" strokeWidth="1"/>
 
-        {/* === WRIST === */}
-        <path
-          d="M76 145 C72 160, 68 180, 66 200 C65 210, 68 218, 78 220 L110 222 C120 220, 124 212, 122 200 C120 185, 116 168, 110 155"
-          fill="url(#skinBase)"
-          stroke="#d4885c"
-          strokeWidth="1.5"
-        />
+        {/* ── WRIST ── */}
+        <path d="M94 150 Q88 165 84 185 Q82 200 86 210 L124 214 Q130 202 128 185 Q126 168 120 155" fill="url(#skin1)" stroke="#dda06a" strokeWidth="1.2"/>
+        <path d="M92 175 Q100 172 115 174" stroke="#d09060" strokeWidth="0.8" opacity="0.25" strokeLinecap="round"/>
 
-        {/* Wrist crease */}
-        <path d="M78 170 C88 168, 100 167, 112 170" stroke="#c88060" strokeWidth="1" opacity="0.3" strokeLinecap="round" />
-
-        {/* === SLEEVE/CUFF === */}
-        <path
-          d="M62 198 C60 205, 62 215, 70 222 L78 224 L116 224 C124 220, 128 212, 126 202 C125 198, 122 196, 118 198 C115 200, 112 210, 105 216 L85 218 C78 215, 72 208, 70 200 C68 196, 64 196, 62 198Z"
-          fill="#4f46e5"
-        />
-        <path
-          d="M64 204 C68 200, 74 198, 80 200"
-          stroke="#6366f1"
-          strokeWidth="2"
-          strokeLinecap="round"
-          opacity="0.5"
-        />
+        {/* ── SLEEVE ── */}
+        <path d="M80 205 Q78 195 82 188 L86 210 Q88 218 96 222 L116 222 Q126 218 128 210 L132 188 Q134 195 132 205 Q130 225 108 228 Q86 225 80 205 Z" fill="#4f46e5"/>
+        <path d="M84 208 Q96 204 120 206" stroke="#6366f1" strokeWidth="1.5" strokeLinecap="round" opacity="0.4"/>
       </g>
     </svg>
   )
