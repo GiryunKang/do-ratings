@@ -34,6 +34,15 @@ interface SubjectRecord {
   categories: SubjectCategoryRecord | SubjectCategoryRecord[] | null
 }
 
+interface TrendingSubject {
+  id: string
+  name: LocalizedText
+  image_url: string | null
+  avg_rating: number | null
+  review_count: number
+  recentCount: number
+}
+
 function pickRelation<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) {
     return value[0] ?? null
@@ -49,14 +58,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const categoryOrder = ['people', 'places', 'companies', 'restaurants', 'airlines', 'hotels']
 
   // Fetch all data in parallel
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
   const [
     { data: categories },
     { data: allSubjects },
     { data: recentReviews },
+    { data: trendingReviews },
+    { data: popularReviews },
   ] = await Promise.all([
     supabase.from('categories').select('*'),
     supabase.from('subjects').select('id, name, avg_rating, review_count, description, category_id, image_url, categories(slug, name, icon)').limit(200),
     supabase.from('reviews').select('id, title, overall_rating, created_at, subjects(name, categories(name))').order('created_at', { ascending: false }).limit(5),
+    supabase.from('reviews').select('subject_id, subjects(id, name, image_url, avg_rating, review_count, categories(slug, name, icon))').gte('created_at', sevenDaysAgo).order('created_at', { ascending: false }).limit(50),
+    supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, created_at, user_id, subject_id, subjects(name, categories(name, slug)), public_profiles(nickname, level, avatar_url)').order('helpful_count', { ascending: false }).limit(5),
   ])
 
   const cats = ((categories ?? []) as CategoryRecord[]).sort((a, b) => {
@@ -114,6 +128,45 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const totalCategories = cats.length
   const totalReviews = (recentReviews ?? []).length
 
+  // Process trending subjects
+  const trendingMap = new Map<string, TrendingSubject>()
+  for (const r of (trendingReviews ?? [])) {
+    const s = pickRelation(r.subjects as any)
+    if (!s) continue
+    const existing = trendingMap.get(s.id)
+    if (existing) {
+      existing.recentCount++
+    } else {
+      trendingMap.set(s.id, {
+        id: s.id,
+        name: s.name,
+        image_url: s.image_url,
+        avg_rating: s.avg_rating,
+        review_count: s.review_count,
+        recentCount: 1,
+      })
+    }
+  }
+  const trendingSubjects = [...trendingMap.values()]
+    .sort((a, b) => b.recentCount - a.recentCount)
+    .slice(0, 6)
+
+  // Process popular reviews
+  const topReviews = (popularReviews ?? []).map(r => {
+    const subject = pickRelation(r.subjects as any)
+    const profile = pickRelation(r.public_profiles as any)
+    return {
+      id: r.id,
+      title: r.title,
+      content: r.content,
+      overall_rating: r.overall_rating,
+      helpful_count: r.helpful_count,
+      subject_id: r.subject_id,
+      subject_name: (subject?.name ?? {}) as LocalizedText,
+      nickname: profile?.nickname ?? 'Anonymous',
+    }
+  }).filter(r => r.helpful_count > 0)
+
   return (
     <div className="px-4 py-4 space-y-6">
       {/* 0. Hero Banner - Do! Ratings! */}
@@ -147,7 +200,85 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </div>
 
-      {/* 3. Spotlight: "어떻게 생각하세요?" */}
+      {/* 3. Today's Trending */}
+      {trendingSubjects.length > 0 && (
+        <section>
+          <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+            <span className="text-lg">🔥</span>
+            {locale === 'ko' ? '오늘의 인기 평가 대상' : "Today's Trending"}
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {trendingSubjects.map((item, index) => {
+              const name = item.name[locale] ?? item.name['ko'] ?? item.name['en']
+              return (
+                <Link key={item.id} href={`/${locale}/subject/${item.id}`}
+                  className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all group">
+                  {item.image_url ? (
+                    <div className="h-24 relative overflow-hidden">
+                      <img src={item.image_url} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                      <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                        🔥 {index + 1}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="h-16 bg-gradient-to-br from-red-400 to-orange-500 flex items-center justify-center">
+                      <span className="text-2xl">🔥</span>
+                    </div>
+                  )}
+                  <div className="p-3">
+                    <h4 className="text-sm font-semibold text-gray-900 truncate">{name}</h4>
+                    <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">
+                      {item.avg_rating && <span className="text-yellow-500 font-medium">★ {item.avg_rating.toFixed(1)}</span>}
+                      <span>{item.recentCount} {locale === 'ko' ? '개 최근 리뷰' : 'recent reviews'}</span>
+                    </div>
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* 4. Popular Reviews */}
+      {topReviews.length > 0 && (
+        <section>
+          <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+            <span className="text-lg">⭐</span>
+            {locale === 'ko' ? '인기 리뷰' : 'Popular Reviews'}
+          </h2>
+          <div className="space-y-3">
+            {topReviews.map(review => {
+              const subjectName = review.subject_name?.[locale] ?? review.subject_name?.['ko'] ?? ''
+              return (
+                <Link key={review.id} href={`/${locale}/subject/${review.subject_id}`}
+                  className="block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md hover:border-indigo-200 transition-all">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 text-xs text-gray-400 mb-1">
+                        <span className="font-medium text-gray-600">{review.nickname}</span>
+                        <span>•</span>
+                        <span>{subjectName}</span>
+                      </div>
+                      <h4 className="text-sm font-semibold text-gray-900 truncate">{review.title}</h4>
+                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">{review.content}</p>
+                    </div>
+                    <div className="shrink-0 flex flex-col items-center">
+                      <div className="flex gap-0.5">
+                        {Array.from({length: 5}).map((_, i) => (
+                          <span key={i} className={`text-xs ${i < Math.round(review.overall_rating) ? 'text-yellow-400' : 'text-gray-200'}`}>★</span>
+                        ))}
+                      </div>
+                      <span className="text-xs text-gray-400 mt-1">👍 {review.helpful_count}</span>
+                    </div>
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* 5. Spotlight: "어떻게 생각하세요?" */}
       <section>
         <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
           <span className="text-lg">💬</span>
@@ -180,7 +311,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
-      {/* 4. Category Showcase - each category with its subjects */}
+      {/* 6. Category Showcase - each category with its subjects */}
       {cats.map(cat => {
         const catSubjects = subjectsByCategory[cat.id] ?? []
         if (catSubjects.length === 0) return null
@@ -223,7 +354,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         )
       })}
 
-      {/* 5. CTA Banner */}
+      {/* 7. CTA Banner */}
       <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 rounded-2xl p-6 text-center text-white">
         <h2 className="text-xl font-bold mb-2">
           {locale === 'ko' ? '당신의 의견을 들려주세요' : 'Share Your Opinion'}
