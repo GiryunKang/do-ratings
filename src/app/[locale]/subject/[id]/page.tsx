@@ -6,15 +6,14 @@ import { formatRating } from '@/lib/utils/rating'
 import StarRating from '@/components/review/StarRating'
 import SubRatingChart from '@/components/review/SubRatingChart'
 import RelatedNews from '@/components/news/RelatedNews'
-import ClaimButton from '@/components/business/ClaimButton'
-import AddToCollectionButton from '@/components/collection/AddToCollectionButton'
-import EmbedWidget from '@/components/embed/EmbedWidget'
 import ImageAttribution from '@/components/ui/ImageAttribution'
 import SubjectTabs from '@/components/subject/SubjectTabs'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { buttonVariants } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
+
+// Lazy load heavy client components to avoid SSR issues
+import dynamic from 'next/dynamic'
+const ClaimButton = dynamic(() => import('@/components/business/ClaimButton'), { ssr: false })
+const AddToCollectionButton = dynamic(() => import('@/components/collection/AddToCollectionButton'), { ssr: false })
+const EmbedWidget = dynamic(() => import('@/components/embed/EmbedWidget'), { ssr: false })
 
 interface PageProps {
   params: Promise<{ locale: string; id: string }>
@@ -153,8 +152,8 @@ export default async function SubjectPage({ params }: PageProps) {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       {/* Subject Header Card */}
-      <Card>
-        <CardContent className="pt-6">
+      <div className="bg-card rounded-xl ring-1 ring-foreground/10 overflow-hidden">
+        <div className="px-4 py-6">
           {/* Subject info row */}
           <div className="flex gap-4">
             <div className="shrink-0">
@@ -179,10 +178,8 @@ export default async function SubjectPage({ params }: PageProps) {
             </div>
 
             <div className="flex-1 min-w-0">
-              <Link href={`/${locale}/category/${category?.slug ?? ''}`}>
-                <Badge variant="secondary" className="cursor-pointer hover:opacity-80">
-                  {categoryName}
-                </Badge>
+              <Link href={`/${locale}/category/${category?.slug ?? ''}`} className="inline-block px-2.5 py-0.5 text-xs font-medium bg-secondary text-secondary-foreground rounded-md hover:opacity-80">
+                {categoryName}
               </Link>
               <h1 className="text-xl font-bold mt-1 mb-2">{subjectName}</h1>
               <div className="flex items-center gap-2 golden-glow rounded-lg px-2 py-1 inline-flex">
@@ -198,22 +195,22 @@ export default async function SubjectPage({ params }: PageProps) {
           {/* Sub Rating Chart */}
           {criteria.length > 0 && Object.keys(avgSubRatings).length > 0 && (
             <>
-              <Separator className="my-4" />
+              <hr className="my-4 border-border" />
               <SubRatingChart criteria={criteria} values={avgSubRatings} locale={locale} />
             </>
           )}
 
-          <Separator className="my-4" />
+          <hr className="my-4 border-border" />
 
           {/* Action Buttons */}
           <div className="flex gap-2 flex-wrap">
-            <Link href={writeHref} className={buttonVariants({ size: 'sm' })}>
+            <Link href={writeHref} className="inline-flex items-center gap-1.5 h-8 px-3 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:bg-primary/80 transition-colors">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
               </svg>
               {existingReviewId ? 'Edit Review' : 'Write Review'}
             </Link>
-            <Link href={`/${locale}/compare?ids=${id}`} className={buttonVariants({ variant: 'outline', size: 'sm' })}>
+            <Link href={`/${locale}/compare?ids=${id}`} className="inline-flex items-center gap-1.5 h-8 px-3 text-sm font-medium border border-border bg-background rounded-lg hover:bg-muted transition-colors">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
@@ -224,15 +221,15 @@ export default async function SubjectPage({ params }: PageProps) {
           </div>
 
           {/* Embed Widget */}
-          <Separator className="my-4" />
+          <hr className="my-4 border-border" />
           <EmbedWidget
             subjectId={id}
             subjectName={subjectName}
             avgRating={subject.avg_rating ? Number(subject.avg_rating) : null}
             reviewCount={subject.review_count as number}
           />
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Tabbed content: Reviews, Photos, Trend, AI Summary */}
       <SubjectTabs subjectId={id} locale={locale} images={allImages} />
