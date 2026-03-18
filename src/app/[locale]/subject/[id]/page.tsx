@@ -201,35 +201,35 @@ export default async function SubjectPage({ params }: PageProps) {
 
           {/* Action Buttons */}
           <div className="flex gap-2 flex-wrap">
-            <Link href={writeHref} className="inline-flex items-center gap-1.5 h-8 px-3 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:bg-primary/80 transition-colors">
+            <Link href={writeHref} className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/80 transition-colors">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
               </svg>
-              {existingReviewId ? 'Edit Review' : 'Write Review'}
+              {existingReviewId
+                ? (locale === 'ko' ? '리뷰 수정' : 'Edit Review')
+                : (locale === 'ko' ? '리뷰 작성' : 'Write Review')}
             </Link>
-            <Link href={`/${locale}/compare?ids=${id}`} className="inline-flex items-center gap-1.5 h-8 px-3 text-sm font-medium border border-border bg-background rounded-lg hover:bg-muted transition-colors">
+            <Link href={`/${locale}/compare?ids=${id}`} className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-medium border border-border bg-background rounded-lg hover:bg-muted transition-colors">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
-              Compare
+              {locale === 'ko' ? '비교하기' : 'Compare'}
             </Link>
             <ClaimButton subjectId={id} currentUserId={user?.id ?? null} locale={locale} />
             <AddToCollectionButton subjectId={id} currentUserId={user?.id ?? null} />
           </div>
-
-          {/* Embed Widget */}
-          <hr className="my-4 border-border" />
-          <EmbedWidget
-            subjectId={id}
-            subjectName={subjectName}
-            avgRating={subject.avg_rating ? Number(subject.avg_rating) : null}
-            reviewCount={subject.review_count as number}
-          />
         </div>
       </div>
 
-      {/* Tabbed content: Reviews, Photos, Trend, AI Summary */}
-      <SubjectTabs subjectId={id} locale={locale} images={allImages} />
+      {/* Tabbed content: Reviews, Photos, Trend, AI Summary, Embed */}
+      <SubjectTabs
+        subjectId={id}
+        locale={locale}
+        images={allImages}
+        subjectName={subjectName}
+        avgRating={subject.avg_rating ? Number(subject.avg_rating) : null}
+        reviewCount={subject.review_count as number}
+      />
 
       {/* Related News */}
       <RelatedNews

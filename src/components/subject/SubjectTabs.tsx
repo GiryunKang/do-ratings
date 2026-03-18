@@ -5,6 +5,7 @@ import ReviewList from '@/components/review/ReviewList'
 import ImageGallery from '@/components/review/ImageGallery'
 import TrendChart from '@/components/analytics/TrendChart'
 import AISummary from '@/components/analytics/AISummary'
+import EmbedWidget from '@/components/embed/EmbedWidget'
 
 interface GalleryImage {
   id: string
@@ -15,6 +16,9 @@ interface SubjectTabsProps {
   subjectId: string
   locale: string
   images: GalleryImage[]
+  subjectName?: string
+  avgRating?: number | null
+  reviewCount?: number
 }
 
 const tabs = [
@@ -22,9 +26,17 @@ const tabs = [
   { key: 'photos', ko: '사진', en: 'Photos' },
   { key: 'trend', ko: '트렌드', en: 'Trend' },
   { key: 'summary', ko: 'AI 요약', en: 'AI Summary' },
+  { key: 'embed', ko: '임베드', en: 'Embed' },
 ]
 
-export default function SubjectTabs({ subjectId, locale, images }: SubjectTabsProps) {
+export default function SubjectTabs({
+  subjectId,
+  locale,
+  images,
+  subjectName,
+  avgRating,
+  reviewCount,
+}: SubjectTabsProps) {
   const [activeTab, setActiveTab] = useState('reviews')
 
   const visibleTabs = tabs.filter(t => t.key !== 'photos' || images.length > 0)
@@ -32,12 +44,12 @@ export default function SubjectTabs({ subjectId, locale, images }: SubjectTabsPr
   return (
     <div>
       {/* Tab list */}
-      <div className="flex gap-1 bg-muted rounded-lg p-1">
+      <div className="flex gap-1 bg-muted rounded-lg p-1 overflow-x-auto scrollbar-hide">
         {visibleTabs.map(tab => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex-1 px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
+            className={`flex-1 px-3 py-1.5 text-sm font-medium rounded-md transition-all whitespace-nowrap ${
               activeTab === tab.key
                 ? 'bg-background text-foreground shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
@@ -54,6 +66,14 @@ export default function SubjectTabs({ subjectId, locale, images }: SubjectTabsPr
         {activeTab === 'photos' && images.length > 0 && <ImageGallery images={images} />}
         {activeTab === 'trend' && <TrendChart subjectId={subjectId} locale={locale} />}
         {activeTab === 'summary' && <AISummary subjectId={subjectId} locale={locale} />}
+        {activeTab === 'embed' && subjectName && (
+          <EmbedWidget
+            subjectId={subjectId}
+            subjectName={subjectName}
+            avgRating={avgRating ?? null}
+            reviewCount={reviewCount ?? 0}
+          />
+        )}
       </div>
     </div>
   )
