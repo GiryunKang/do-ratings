@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from 'react'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
 
@@ -81,10 +82,15 @@ export default function AutoScrollRow({
         const originalIndex = index % subjects.length
 
         return (
-          <Link
+          <motion.div
             key={`${subject.id}-${index}`}
+            className="shrink-0"
+            whileHover={{ scale: 1.03, rotateY: 5 }}
+            transition={{ type: 'spring', stiffness: 300 }}
+          >
+          <Link
             href={`/${locale}/subject/${subject.id}`}
-            className="shrink-0 w-44 bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all group"
+            className="block w-44 bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-all group"
           >
             {/* Image or category color header */}
             {subject.image_url ? (
@@ -123,6 +129,7 @@ export default function AutoScrollRow({
               </div>
             </div>
           </Link>
+          </motion.div>
         )
       })}
     </div>

@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import FeaturedCarousel from '@/components/home/FeaturedCarousel'
 import HeroBanner from '@/components/home/HeroBanner'
 import AutoScrollRow from '@/components/home/AutoScrollRow'
+import AnimatedSection from '@/components/ui/AnimatedSection'
+import GlowCard from '@/components/ui/GlowCard'
 import Link from 'next/link'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
@@ -170,38 +172,45 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   return (
     <div className="px-4 py-4 space-y-6">
       {/* 0. Hero Banner - Do! Ratings! */}
-      <HeroBanner locale={locale} />
+      <AnimatedSection delay={0}>
+        <HeroBanner locale={locale} />
+      </AnimatedSection>
 
       {/* 1. Featured Carousel */}
-      <FeaturedCarousel subjects={featured.map(s => ({
-        id: s.id,
-        name: s.name,
-        avg_rating: s.avg_rating,
-        review_count: s.review_count,
-        category_slug: s.category_slug,
-        category_name: s.category_name,
-        category_icon: s.category_icon,
-        image_url: s.image_url,
-      }))} locale={locale} />
+      <AnimatedSection delay={0.05}>
+        <FeaturedCarousel subjects={featured.map(s => ({
+          id: s.id,
+          name: s.name,
+          avg_rating: s.avg_rating,
+          review_count: s.review_count,
+          category_slug: s.category_slug,
+          category_name: s.category_name,
+          category_icon: s.category_icon,
+          image_url: s.image_url,
+        }))} locale={locale} />
+      </AnimatedSection>
 
       {/* 2. Quick Stats Banner */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-4 text-white text-center">
-          <p className="text-2xl font-bold">{totalSubjects}</p>
-          <p className="text-xs text-white/70 mt-1">{locale === 'ko' ? '등록된 대상' : 'Subjects'}</p>
+      <AnimatedSection delay={0.1}>
+        <div className="grid grid-cols-3 gap-3">
+          <GlowCard className="bg-gradient-to-br from-indigo-500 to-purple-600 p-4 text-white text-center border-0" glowColor="rgba(129, 140, 248, 0.4)">
+            <p className="text-2xl font-bold">{totalSubjects}</p>
+            <p className="text-xs text-white/70 mt-1">{locale === 'ko' ? '등록된 대상' : 'Subjects'}</p>
+          </GlowCard>
+          <GlowCard className="bg-gradient-to-br from-pink-500 to-rose-600 p-4 text-white text-center border-0" glowColor="rgba(244, 114, 182, 0.4)">
+            <p className="text-2xl font-bold">{totalCategories}</p>
+            <p className="text-xs text-white/70 mt-1">{locale === 'ko' ? '카테고리' : 'Categories'}</p>
+          </GlowCard>
+          <GlowCard className="bg-gradient-to-br from-amber-500 to-orange-600 p-4 text-white text-center border-0" glowColor="rgba(251, 191, 36, 0.4)">
+            <p className="text-2xl font-bold">{totalReviews}</p>
+            <p className="text-xs text-white/70 mt-1">{locale === 'ko' ? '리뷰' : 'Reviews'}</p>
+          </GlowCard>
         </div>
-        <div className="bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl p-4 text-white text-center">
-          <p className="text-2xl font-bold">{totalCategories}</p>
-          <p className="text-xs text-white/70 mt-1">{locale === 'ko' ? '카테고리' : 'Categories'}</p>
-        </div>
-        <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-4 text-white text-center">
-          <p className="text-2xl font-bold">{totalReviews}</p>
-          <p className="text-xs text-white/70 mt-1">{locale === 'ko' ? '리뷰' : 'Reviews'}</p>
-        </div>
-      </div>
+      </AnimatedSection>
 
       {/* 3. Today's Trending */}
       {trendingSubjects.length > 0 && (
+        <AnimatedSection delay={0.15}>
         <section>
           <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
             <span className="text-lg">🔥</span>
@@ -237,82 +246,87 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             })}
           </div>
         </section>
+        </AnimatedSection>
       )}
 
       {/* 4. Popular Reviews */}
       {topReviews.length > 0 && (
+        <AnimatedSection delay={0.15}>
+          <section>
+            <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+              <span className="text-lg">⭐</span>
+              {locale === 'ko' ? '인기 리뷰' : 'Popular Reviews'}
+            </h2>
+            <div className="space-y-3">
+              {topReviews.map(review => {
+                const subjectName = review.subject_name?.[locale] ?? review.subject_name?.['ko'] ?? ''
+                return (
+                  <Link key={review.id} href={`/${locale}/subject/${review.subject_id}`}
+                    className="block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md hover:border-indigo-200 transition-all">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 text-xs text-gray-400 mb-1">
+                          <span className="font-medium text-gray-600">{review.nickname}</span>
+                          <span>•</span>
+                          <span>{subjectName}</span>
+                        </div>
+                        <h4 className="text-sm font-semibold text-gray-900 truncate">{review.title}</h4>
+                        <p className="text-xs text-gray-500 mt-1 line-clamp-2">{review.content}</p>
+                      </div>
+                      <div className="shrink-0 flex flex-col items-center">
+                        <div className="flex gap-0.5">
+                          {Array.from({length: 5}).map((_, i) => (
+                            <span key={i} className={`text-xs ${i < Math.round(review.overall_rating) ? 'text-yellow-400' : 'text-gray-200'}`}>★</span>
+                          ))}
+                        </div>
+                        <span className="text-xs text-gray-400 mt-1">👍 {review.helpful_count}</span>
+                      </div>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </section>
+        </AnimatedSection>
+      )}
+
+      {/* 5. Spotlight: "어떻게 생각하세요?" */}
+      <AnimatedSection delay={0.1}>
         <section>
           <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
-            <span className="text-lg">⭐</span>
-            {locale === 'ko' ? '인기 리뷰' : 'Popular Reviews'}
+            <span className="text-lg">💬</span>
+            {locale === 'ko' ? '이 대상에 대해 어떻게 생각하세요?' : 'What do you think about...?'}
           </h2>
-          <div className="space-y-3">
-            {topReviews.map(review => {
-              const subjectName = review.subject_name?.[locale] ?? review.subject_name?.['ko'] ?? ''
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {spotlights.map(subject => {
+              const name = subject.name[locale] ?? subject.name['ko']
+              const desc = subject.description?.[locale] ?? subject.description?.['ko'] ?? ''
+              const catName = subject.category_name[locale] ?? subject.category_name['ko']
               return (
-                <Link key={review.id} href={`/${locale}/subject/${review.subject_id}`}
-                  className="block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md hover:border-indigo-200 transition-all">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 text-xs text-gray-400 mb-1">
-                        <span className="font-medium text-gray-600">{review.nickname}</span>
-                        <span>•</span>
-                        <span>{subjectName}</span>
-                      </div>
-                      <h4 className="text-sm font-semibold text-gray-900 truncate">{review.title}</h4>
-                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">{review.content}</p>
-                    </div>
-                    <div className="shrink-0 flex flex-col items-center">
-                      <div className="flex gap-0.5">
-                        {Array.from({length: 5}).map((_, i) => (
-                          <span key={i} className={`text-xs ${i < Math.round(review.overall_rating) ? 'text-yellow-400' : 'text-gray-200'}`}>★</span>
-                        ))}
-                      </div>
-                      <span className="text-xs text-gray-400 mt-1">👍 {review.helpful_count}</span>
-                    </div>
+                <Link key={subject.id} href={`/${locale}/subject/${subject.id}`}
+                  className="relative bg-white rounded-2xl border border-gray-200 p-5 hover:border-indigo-300 hover:shadow-lg transition-all group overflow-hidden">
+                  {/* Category color top accent */}
+                  <div className={`absolute top-0 left-0 right-0 h-1 ${getCategoryColor(subject.category_slug)}`} />
+                  <div className="flex items-center gap-1.5 mb-3">
+                    <span className={`w-5 h-5 rounded-full ${getCategoryColor(subject.category_slug)} flex items-center justify-center`}>
+                      <CategoryIcon name={subject.category_icon} className="w-3 h-3 text-white" />
+                    </span>
+                    <span className="text-xs text-gray-400">r/{catName}</span>
                   </div>
+                  <h3 className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors text-lg mb-1">{name}</h3>
+                  {desc && <p className="text-xs text-gray-500 line-clamp-1 mb-3">{desc}</p>}
+                  <span className="text-xs font-medium text-indigo-600 bg-indigo-50 rounded-full px-3 py-1">
+                    {locale === 'ko' ? '평가하기 →' : 'Rate now →'}
+                  </span>
                 </Link>
               )
             })}
           </div>
         </section>
-      )}
-
-      {/* 5. Spotlight: "어떻게 생각하세요?" */}
-      <section>
-        <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
-          <span className="text-lg">💬</span>
-          {locale === 'ko' ? '이 대상에 대해 어떻게 생각하세요?' : 'What do you think about...?'}
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {spotlights.map(subject => {
-            const name = subject.name[locale] ?? subject.name['ko']
-            const desc = subject.description?.[locale] ?? subject.description?.['ko'] ?? ''
-            const catName = subject.category_name[locale] ?? subject.category_name['ko']
-            return (
-              <Link key={subject.id} href={`/${locale}/subject/${subject.id}`}
-                className="relative bg-white rounded-2xl border border-gray-200 p-5 hover:border-indigo-300 hover:shadow-lg transition-all group overflow-hidden">
-                {/* Category color top accent */}
-                <div className={`absolute top-0 left-0 right-0 h-1 ${getCategoryColor(subject.category_slug)}`} />
-                <div className="flex items-center gap-1.5 mb-3">
-                  <span className={`w-5 h-5 rounded-full ${getCategoryColor(subject.category_slug)} flex items-center justify-center`}>
-                    <CategoryIcon name={subject.category_icon} className="w-3 h-3 text-white" />
-                  </span>
-                  <span className="text-xs text-gray-400">r/{catName}</span>
-                </div>
-                <h3 className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors text-lg mb-1">{name}</h3>
-                {desc && <p className="text-xs text-gray-500 line-clamp-1 mb-3">{desc}</p>}
-                <span className="text-xs font-medium text-indigo-600 bg-indigo-50 rounded-full px-3 py-1">
-                  {locale === 'ko' ? '평가하기 →' : 'Rate now →'}
-                </span>
-              </Link>
-            )
-          })}
-        </div>
-      </section>
+      </AnimatedSection>
 
       {/* 6. Category Showcase - each category with its subjects */}
-      {cats.map(cat => {
+      {cats.map((cat, index) => {
         const catSubjects = subjectsByCategory[cat.id] ?? []
         if (catSubjects.length === 0) return null
         const catName = (cat.name as Record<string, string>)[locale] ?? (cat.name as Record<string, string>)['ko']
@@ -320,53 +334,57 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         const icon = (cat.icon ?? 'folder') as string
 
         return (
-          <section key={cat.id}>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
-                <span className={`w-7 h-7 rounded-full ${getCategoryColor(slug)} flex items-center justify-center`}>
-                  <CategoryIcon name={icon} className="w-4 h-4 text-white" />
-                </span>
-                {catName}
-                <span className="text-xs font-normal text-gray-400 ml-1">({catSubjects.length})</span>
-              </h2>
-              <Link href={`/${locale}/category/${slug}`} className="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1">
-                {locale === 'ko' ? '모두 보기' : 'See all'}
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
-              </Link>
-            </div>
+          <AnimatedSection key={cat.id} delay={0.05 * index}>
+            <section>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
+                  <span className={`w-7 h-7 rounded-full ${getCategoryColor(slug)} flex items-center justify-center`}>
+                    <CategoryIcon name={icon} className="w-4 h-4 text-white" />
+                  </span>
+                  {catName}
+                  <span className="text-xs font-normal text-gray-400 ml-1">({catSubjects.length})</span>
+                </h2>
+                <Link href={`/${locale}/category/${slug}`} className="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1">
+                  {locale === 'ko' ? '모두 보기' : 'See all'}
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+                </Link>
+              </div>
 
-            {/* Auto-scrolling subject cards */}
-            <AutoScrollRow
-              subjects={catSubjects.slice(0, 20).map(s => ({
-                id: s.id,
-                name: s.name,
-                description: s.description,
-                avg_rating: s.avg_rating,
-                review_count: s.review_count,
-                image_url: s.image_url,
-              }))}
-              categorySlug={slug}
-              categoryIcon={icon}
-              locale={locale}
-              speed={25}
-            />
-          </section>
+              {/* Auto-scrolling subject cards */}
+              <AutoScrollRow
+                subjects={catSubjects.slice(0, 20).map(s => ({
+                  id: s.id,
+                  name: s.name,
+                  description: s.description,
+                  avg_rating: s.avg_rating,
+                  review_count: s.review_count,
+                  image_url: s.image_url,
+                }))}
+                categorySlug={slug}
+                categoryIcon={icon}
+                locale={locale}
+                speed={25}
+              />
+            </section>
+          </AnimatedSection>
         )
       })}
 
       {/* 7. CTA Banner */}
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 rounded-2xl p-6 text-center text-white">
-        <h2 className="text-xl font-bold mb-2">
-          {locale === 'ko' ? '당신의 의견을 들려주세요' : 'Share Your Opinion'}
-        </h2>
-        <p className="text-sm text-white/80 mb-4">
-          {locale === 'ko' ? '첫 번째 리뷰어가 되어 다른 사람들에게 도움을 주세요!' : 'Be the first reviewer and help others!'}
-        </p>
-        <Link href={`/${locale}/explore`}
-          className="inline-block bg-white text-indigo-600 font-bold px-6 py-2.5 rounded-full hover:shadow-lg transition-all hover:scale-105 text-sm">
-          {locale === 'ko' ? '탐색하기' : 'Explore Now'}
-        </Link>
-      </div>
+      <AnimatedSection delay={0.1}>
+        <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 rounded-2xl p-6 text-center text-white">
+          <h2 className="text-xl font-bold mb-2">
+            {locale === 'ko' ? '당신의 의견을 들려주세요' : 'Share Your Opinion'}
+          </h2>
+          <p className="text-sm text-white/80 mb-4">
+            {locale === 'ko' ? '첫 번째 리뷰어가 되어 다른 사람들에게 도움을 주세요!' : 'Be the first reviewer and help others!'}
+          </p>
+          <Link href={`/${locale}/explore`}
+            className="inline-block bg-white text-indigo-600 font-bold px-6 py-2.5 rounded-full hover:shadow-lg transition-all hover:scale-105 text-sm">
+            {locale === 'ko' ? '탐색하기' : 'Explore Now'}
+          </Link>
+        </div>
+      </AnimatedSection>
     </div>
   )
 }
