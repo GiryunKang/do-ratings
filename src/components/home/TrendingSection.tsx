@@ -25,6 +25,12 @@ const periodLabels: Record<Period, { ko: string; en: string }> = {
   monthly: { ko: '월간', en: 'Monthly' },
 }
 
+const periodColors: Record<Period, string> = {
+  daily: 'bg-red-500 text-white',
+  weekly: 'bg-orange-500 text-white',
+  monthly: 'bg-amber-500 text-white',
+}
+
 const periodDays: Record<Period, number> = {
   daily: 1,
   weekly: 7,
@@ -32,7 +38,7 @@ const periodDays: Record<Period, number> = {
 }
 
 export default function TrendingSection({ locale }: TrendingSectionProps) {
-  const [period, setPeriod] = useState<Period>('weekly')
+  const [period, setPeriod] = useState<Period>('daily')
   const [items, setItems] = useState<TrendingItem[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -78,19 +84,19 @@ export default function TrendingSection({ locale }: TrendingSectionProps) {
   return (
     <section>
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-base font-bold text-foreground flex items-center gap-2">
-          <span className="text-lg">🔥</span>
-          {locale === 'ko' ? '인기 평가 대상' : 'Trending Subjects'}
+        <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5">
+          <span>🔥</span>
+          {locale === 'ko' ? '인기 Do! Ratings!' : 'Trending Do! Ratings!'}
         </h2>
-        <div className="flex gap-1 bg-muted rounded-lg p-0.5">
+        <div className="flex gap-1">
           {(['daily', 'weekly', 'monthly'] as Period[]).map(p => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all ${
+              className={`px-2.5 py-1 text-[11px] font-bold rounded-full transition-all ${
                 period === p
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
+                  ? periodColors[p]
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
               }`}
             >
               {locale === 'ko' ? periodLabels[p].ko : periodLabels[p].en}

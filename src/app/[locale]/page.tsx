@@ -218,13 +218,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         }))} locale={locale} />
       </AnimatedSection>
 
-      {/* 2. Trending + Popular Reviews (with daily/weekly/monthly tabs) */}
+      {/* 2. Trending + Popular Reviews — side by side */}
       <AnimatedSection delay={0.1}>
-        <TrendingSection locale={locale} />
-      </AnimatedSection>
-
-      <AnimatedSection delay={0.12}>
-        <PopularReviewsSection locale={locale} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <TrendingSection locale={locale} />
+          <PopularReviewsSection locale={locale} />
+        </div>
       </AnimatedSection>
 
       {/* 3. Quick Stats Banner */}

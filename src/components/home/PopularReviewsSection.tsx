@@ -34,8 +34,14 @@ const periodDays: Record<Period, number> = {
   monthly: 30,
 }
 
+const periodColors: Record<Period, string> = {
+  daily: 'bg-indigo-500 text-white',
+  weekly: 'bg-violet-500 text-white',
+  monthly: 'bg-purple-500 text-white',
+}
+
 export default function PopularReviewsSection({ locale }: PopularReviewsSectionProps) {
-  const [period, setPeriod] = useState<Period>('weekly')
+  const [period, setPeriod] = useState<Period>('daily')
   const [reviews, setReviews] = useState<ReviewItem[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -78,19 +84,19 @@ export default function PopularReviewsSection({ locale }: PopularReviewsSectionP
   return (
     <section>
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-base font-bold text-foreground flex items-center gap-2">
-          <span className="text-lg">⭐</span>
+        <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5">
+          <span>⭐</span>
           {locale === 'ko' ? '인기 리뷰' : 'Popular Reviews'}
         </h2>
-        <div className="flex gap-1 bg-muted rounded-lg p-0.5">
+        <div className="flex gap-1">
           {(['daily', 'weekly', 'monthly'] as Period[]).map(p => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all ${
+              className={`px-2.5 py-1 text-[11px] font-bold rounded-full transition-all ${
                 period === p
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
+                  ? periodColors[p]
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
               }`}
             >
               {locale === 'ko' ? periodLabels[p].ko : periodLabels[p].en}
