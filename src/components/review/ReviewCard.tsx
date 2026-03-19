@@ -10,6 +10,7 @@ import ImageGallery from './ImageGallery'
 import ReactionBar from './ReactionBar'
 import CommentSection from './CommentSection'
 import TrustBadge from '@/components/user/TrustBadge'
+import ReportButton from './ReportButton'
 import { timeAgo } from '@/lib/utils/timeAgo'
 import { countryCodeToFlag, getCountryName } from '@/lib/utils/country'
 import { getCategoryColor } from '@/lib/utils/category-colors'
@@ -202,6 +203,13 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
             </svg>
             {copied ? '복사됨' : '공유'}
           </Button>
+
+          {/* Report */}
+          {currentUserId && currentUserId !== review.user.id && (
+            <div className="ml-auto">
+              <ReportButton reviewId={review.id} />
+            </div>
+          )}
         </div>
 
         {/* Comment Section */}
