@@ -57,7 +57,7 @@ export default async function TrendingSubjects({ locale }: TrendingSubjectsProps
             <Link
               key={subject.id}
               href={`/${locale}/subject/${subject.id}`}
-              className="relative shrink-0 w-48 bg-white rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+              className="relative shrink-0 w-48 bg-card rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden"
             >
               {/* Gradient top border */}
               <div className="h-1 rounded-t-2xl gradient-primary" />

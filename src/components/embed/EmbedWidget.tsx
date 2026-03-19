@@ -57,7 +57,7 @@ export default function EmbedWidget({ subjectId, subjectName, avgRating, reviewC
   const ratingDisplay = avgRating ? avgRating.toFixed(1) : '—'
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-4">
+    <div className="bg-card border border-gray-200 rounded-xl p-4 space-y-4">
       <h3 className="text-sm font-semibold text-gray-900">{t('embedWidget')}</h3>
 
       {/* Size selector */}
@@ -71,7 +71,7 @@ export default function EmbedWidget({ subjectId, subjectName, avgRating, reviewC
               className={`px-3 py-1 rounded-lg text-xs font-medium border transition-colors ${
                 size === s.key
                   ? 'bg-indigo-600 text-white border-indigo-600'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600'
+                  : 'bg-background text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600'
               }`}
             >
               {t(s.labelKey)}

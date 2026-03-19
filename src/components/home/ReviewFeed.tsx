@@ -160,7 +160,7 @@ export default function ReviewFeed({ categories, locale, subjects }: ReviewFeedP
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="bg-white rounded-xl border border-gray-200 p-4 space-y-3"
+              className="bg-card rounded-xl border border-gray-200 p-4 space-y-3"
             >
               <div className="flex items-center gap-2">
                 <div className="skeleton w-6 h-6 rounded-full" />
@@ -183,7 +183,7 @@ export default function ReviewFeed({ categories, locale, subjects }: ReviewFeedP
               const catName = subject.category_name[locale] ?? subject.category_name['ko']
               return (
                 <Link key={subject.id} href={`/${locale}/subject/${subject.id}`}
-                  className="bg-white rounded-xl border border-gray-200 p-4 hover:border-indigo-300 hover:shadow-md transition-all group">
+                  className="bg-card rounded-xl border border-gray-200 p-4 hover:border-indigo-300 hover:shadow-md transition-all group">
                   <div className="flex items-center gap-2 mb-2">
                     <span className={`w-6 h-6 rounded-full ${getCategoryColor(subject.category_slug)} flex items-center justify-center`}>
                       <CategoryIcon name={subject.category_icon} className="w-3.5 h-3.5 text-white" />

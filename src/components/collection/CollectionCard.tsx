@@ -47,7 +47,7 @@ export default function CollectionCard({
   return (
     <Link
       href={`#`}
-      className="group block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+      className="group block bg-card rounded-xl border border-gray-200 p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
     >
       <div className="flex items-start justify-between gap-2 mb-2">
         <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 flex-1">

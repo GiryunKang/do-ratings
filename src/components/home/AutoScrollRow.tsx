@@ -90,7 +90,7 @@ export default function AutoScrollRow({
           >
           <Link
             href={`/${locale}/subject/${subject.id}`}
-            className="block w-44 bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-all group"
+            className="block w-44 bg-card rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-all group"
           >
             {/* Image or category color header */}
             {subject.image_url ? (
