@@ -118,14 +118,13 @@ export default function CategoryRequestModal({ locale, onClose }: CategoryReques
             {/* English name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                {isKo ? '카테고리 이름 (영어)' : 'Category Name (English)'} <span className="text-red-500">*</span>
+                {isKo ? '카테고리 이름 (영어, 선택)' : 'Category Name (English, optional)'}
               </label>
               <input
                 type="text"
                 value={nameEn}
                 onChange={e => setNameEn(e.target.value)}
-                placeholder={isKo ? '예: Movies' : 'e.g. Movies'}
-                required
+                placeholder={isKo ? '예: Movies (선택)' : 'e.g. Movies (optional)'}
                 className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
             </div>

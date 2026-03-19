@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { usePathname, useRouter } from 'next/navigation'
@@ -22,6 +23,7 @@ export default function Header() {
   const { user, loading } = useAuth()
   const pathname = usePathname()
   const router = useRouter()
+  const [searchOpen, setSearchOpen] = useState(false)
 
   // Detect current locale from path
   const locale = pathname.startsWith('/en') ? 'en' : 'ko'
@@ -45,7 +47,14 @@ export default function Header() {
           <SearchBar className="w-full" />
         </div>
 
-        <div className="ml-auto flex items-center gap-2 shrink-0">
+        {/* Mobile search icon */}
+        <button onClick={() => setSearchOpen(!searchOpen)} className="md:hidden p-2 text-muted-foreground hover:text-foreground ml-auto">
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
+
+        <div className="flex items-center gap-2 shrink-0">
           {/* Theme toggle */}
           <ThemeToggle />
 
@@ -108,6 +117,12 @@ export default function Header() {
           )}
         </div>
       </div>
+      {/* Mobile expandable search bar */}
+      {searchOpen && (
+        <div className="px-4 py-2 border-t border-border md:hidden">
+          <SearchBar className="w-full" />
+        </div>
+      )}
     </header>
   )
 }
