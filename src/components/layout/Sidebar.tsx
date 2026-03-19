@@ -7,6 +7,8 @@ import { createClient } from '@/lib/supabase/client'
 import { CategoryIcon } from '@/lib/icons'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { useAuth } from '@/lib/hooks/useAuth'
+import CategoryRequestModal from '@/components/category/CategoryRequestModal'
 
 interface Category {
   id: string
@@ -18,8 +20,10 @@ interface Category {
 export default function Sidebar({ locale }: { locale: string }) {
   const [categories, setCategories] = useState<Category[]>([])
   const [categoriesOpen, setCategoriesOpen] = useState(true)
+  const [categoryRequestOpen, setCategoryRequestOpen] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
+  const { user } = useAuth()
 
   useEffect(() => {
     const supabase = createClient()
@@ -78,6 +82,7 @@ export default function Sidebar({ locale }: { locale: string }) {
   ]
 
   return (
+    <>
     <aside className="hidden md:flex flex-col fixed left-0 top-14 bottom-0 w-64 bg-background border-r overflow-y-auto z-40">
       <div className="p-3 flex flex-col gap-0">
         {/* Main Navigation */}
@@ -143,6 +148,15 @@ export default function Sidebar({ locale }: { locale: string }) {
                 </Button>
               )
             })}
+            {user && (
+              <button
+                onClick={() => setCategoryRequestOpen(true)}
+                className="w-full text-left px-2 py-1.5 text-xs text-primary hover:bg-muted rounded-md transition-colors flex items-center gap-1.5"
+              >
+                <span>➕</span>
+                {locale === 'ko' ? '카테고리 추가 요청' : 'Request New Category'}
+              </button>
+            )}
           </nav>
         )}
 
@@ -181,5 +195,9 @@ export default function Sidebar({ locale }: { locale: string }) {
         </div>
       </div>
     </aside>
+    {categoryRequestOpen && (
+      <CategoryRequestModal locale={locale} onClose={() => setCategoryRequestOpen(false)} />
+    )}
+  </>
   )
 }

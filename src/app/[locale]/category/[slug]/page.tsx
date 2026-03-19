@@ -6,6 +6,7 @@ import { formatRating } from '@/lib/utils/rating'
 import ReviewList from '@/components/review/ReviewList'
 import { CategoryIcon } from '@/lib/icons'
 import PlaceSearch from '@/components/places/PlaceSearch'
+import AddSubjectButton from '@/components/category/AddSubjectButton'
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>
@@ -80,12 +81,15 @@ export default async function CategoryPage({ params }: PageProps) {
       <section className="mb-8">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base font-semibold text-gray-700">Top Subjects</h2>
-          <Link
-            href={`/${locale}/compare`}
-            className="text-xs text-indigo-500 hover:underline font-medium"
-          >
-            Compare →
-          </Link>
+          <div className="flex items-center gap-3">
+            <AddSubjectButton categorySlug={slug} locale={locale} />
+            <Link
+              href={`/${locale}/compare`}
+              className="text-xs text-indigo-500 hover:underline font-medium"
+            >
+              Compare →
+            </Link>
+          </div>
         </div>
         {!topSubjects || topSubjects.length === 0 ? (
           <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
