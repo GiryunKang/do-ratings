@@ -56,9 +56,14 @@ export default function LoginPage() {
             required
           />
           {error && <p className="text-red-500 text-sm">{error}</p>}
+          <div className="flex justify-end">
+            <Link href="/auth/forgot-password" className="text-xs text-primary hover:underline">
+              {t('forgotPassword') ?? '비밀번호를 잊으셨나요?'}
+            </Link>
+          </div>
           <button
             type="submit"
-            className="w-full rounded-lg bg-blue-600 p-3 text-white font-medium hover:bg-blue-700 transition"
+            className="w-full rounded-lg bg-primary p-3 text-primary-foreground font-medium hover:bg-primary/80 transition"
           >
             {tc('login')}
           </button>
