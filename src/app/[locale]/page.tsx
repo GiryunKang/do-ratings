@@ -294,7 +294,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     <span className={`w-5 h-5 rounded-full ${getCategoryColor(subject.category_slug)} flex items-center justify-center`}>
                       <CategoryIcon name={subject.category_icon} className="w-3 h-3 text-white" />
                     </span>
-                    <span className="text-xs text-gray-400">r/{catName}</span>
+                    <span className="text-xs text-gray-400">{catName}</span>
                   </div>
                   <h3 className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors text-lg mb-1">{name}</h3>
                   {desc && <p className="text-xs text-gray-500 line-clamp-1 mb-3">{desc}</p>}

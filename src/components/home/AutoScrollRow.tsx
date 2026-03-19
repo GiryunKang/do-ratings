@@ -124,7 +124,7 @@ export default function AutoScrollRow({
                 {subject.avg_rating ? (
                   <span className="text-yellow-500 font-medium">★ {subject.avg_rating.toFixed(1)}</span>
                 ) : (
-                  <span className="text-gray-300">{locale === 'ko' ? '평점 없음' : 'No rating'}</span>
+                  <span className="text-primary/60 text-[11px]">{locale === 'ko' ? '첫 평가를 남겨주세요 →' : 'Be the first to rate →'}</span>
                 )}
               </div>
             </div>

@@ -160,7 +160,7 @@
   "darkMode": {
     "light": "라이트",
     "dark": "다크",
-    "system": "시스템"
+    "system": "자동"
   },
   "onboarding": {
     "welcome": "Ratings에 오신 것을 환영합니다!",

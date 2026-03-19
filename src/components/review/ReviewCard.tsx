@@ -99,7 +99,7 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
                 variant="secondary"
                 className={`text-white text-[10px] px-1.5 py-0 h-4 ${categoryColor} border-0`}
               >
-                r/{categoryLabel}
+                {categoryLabel}
               </Badge>
               <span className="text-gray-300">•</span>
             </>

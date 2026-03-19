@@ -188,7 +188,7 @@ export default function ReviewFeed({ categories, locale, subjects }: ReviewFeedP
                     <span className={`w-6 h-6 rounded-full ${getCategoryColor(subject.category_slug)} flex items-center justify-center`}>
                       <CategoryIcon name={subject.category_icon} className="w-3.5 h-3.5 text-white" />
                     </span>
-                    <span className="text-xs text-gray-500">r/{catName}</span>
+                    <span className="text-xs text-gray-500">{catName}</span>
                   </div>
                   <h4 className="font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">{name}</h4>
                   {desc && <p className="text-xs text-gray-500 mt-1 line-clamp-1">{desc}</p>}

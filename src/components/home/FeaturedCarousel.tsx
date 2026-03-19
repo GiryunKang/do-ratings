@@ -85,7 +85,7 @@ export default function FeaturedCarousel({
                 <div className="flex items-center gap-2 mb-2">
                   <span className="flex items-center gap-1.5 bg-white/20 backdrop-blur-sm rounded-full px-2.5 py-1 text-xs text-white font-medium">
                     <CategoryIcon name={subject.category_icon} className="w-3.5 h-3.5" />
-                    r/{catName}
+                    {catName}
                   </span>
                   {subject.avg_rating != null && (
                     <span className="text-xs text-white/80">★ {subject.avg_rating.toFixed(1)}</span>
