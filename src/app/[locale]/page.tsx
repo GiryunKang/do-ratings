@@ -199,6 +199,21 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <div className="px-4 py-4 space-y-6">
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'Do! Ratings!',
+            url: 'https://do-ratings.com',
+            description: locale === 'ko' ? '세상 모든 것을 평가하는 글로벌 리뷰 플랫폼' : 'A global review platform to rate everything',
+            potentialAction: { '@type': 'SearchAction', target: `https://do-ratings.com/${locale}/explore?q={search_term_string}`, 'query-input': 'required name=search_term_string' },
+          }),
+        }}
+      />
+
       {/* 0. Hero Banner - Do! Ratings! */}
       <AnimatedSection delay={0}>
         <HeroBanner locale={locale} />
