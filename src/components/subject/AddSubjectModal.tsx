@@ -109,7 +109,7 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
       onClick={handleOverlayClick}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
     >
-      <div className="relative w-full max-w-lg rounded-2xl bg-white shadow-2xl">
+      <div className="relative w-full max-w-lg rounded-2xl bg-card shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100">
           <h2 className="text-lg font-bold text-gray-900">
@@ -137,7 +137,7 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
               value={categorySlug}
               onChange={e => setCategorySlug(e.target.value)}
               required
-              className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+              className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-background"
             >
               {categories.length === 0 && (
                 <option value="">{isKo ? '로딩 중...' : 'Loading...'}</option>

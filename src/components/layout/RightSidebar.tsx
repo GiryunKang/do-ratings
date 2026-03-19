@@ -31,7 +31,7 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
   const reviewers = reviewersRaw ?? []
 
   return (
-    <aside className="hidden lg:block fixed right-0 top-16 w-72 h-[calc(100vh-64px)] overflow-y-auto border-l border-gray-200 bg-white z-40">
+    <aside className="hidden lg:block fixed right-0 top-16 w-72 h-[calc(100vh-64px)] overflow-y-auto border-l border-gray-200 bg-background z-40">
       <div className="p-4 space-y-6">
         {/* 인기 카테고리 */}
         <div>

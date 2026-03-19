@@ -106,7 +106,7 @@ export default function AISummary({ subjectId }: AISummaryProps) {
   const MIN_REVIEWS = 3
 
   return (
-    <div className="bg-white rounded-xl p-5 shadow-sm">
+    <div className="bg-card rounded-xl p-5 shadow-sm">
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
         <span className="text-base">✨</span>

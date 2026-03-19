@@ -58,7 +58,7 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
 
   return (
     <div
-      className="relative overflow-hidden rounded-2xl p-6 md:p-8 text-white min-h-[200px] md:min-h-[220px]"
+      className="relative overflow-hidden rounded-2xl p-4 md:p-8 text-white min-h-[140px] md:min-h-[200px]"
       style={{
         background: 'linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #4f46e5, #7c3aed, #db2777)',
         backgroundSize: '400% 400%',
@@ -78,8 +78,8 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
       {/* Main layout: Hand + Text side by side */}
       <div className="relative z-10 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
 
-        {/* Pointing Hand — 3D style image */}
-        <div className="relative flex items-center justify-center" style={{ minWidth: '100px', minHeight: '100px' }}>
+        {/* Pointing Hand — hidden on small mobile */}
+        <div className="relative hidden sm:flex items-center justify-center" style={{ minWidth: '100px', minHeight: '100px' }}>
           <div
             className={`w-[80px] h-[80px] md:w-[120px] md:h-[120px] lg:w-[140px] lg:h-[140px] ${phase >= 1 ? '' : 'opacity-0'}`}
             style={phase >= 1 ? {
@@ -118,7 +118,7 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
         {/* Text content */}
         <div className="text-center md:text-left">
           {/* DO! RATINGS! */}
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-none">
+          <h1 className="text-2xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-none">
             <span
               className={`inline-block ${phase >= 1 ? '' : 'opacity-0'}`}
               style={phase >= 1 ? {

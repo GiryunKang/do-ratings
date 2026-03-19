@@ -235,7 +235,7 @@ export default function ReviewForm({
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Sub Ratings */}
       {criteria.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <div className="bg-card rounded-xl border border-gray-200 p-5">
           <h2 className="text-sm font-semibold text-gray-700 mb-4">Ratings</h2>
           <SubRatingInput
             criteria={criteria}
@@ -247,7 +247,7 @@ export default function ReviewForm({
       )}
 
       {/* Title */}
-      <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-2">
+      <div className="bg-card rounded-xl border border-gray-200 p-5 space-y-2">
         <div className="flex items-center justify-between">
           <label className="text-sm font-semibold text-gray-700">{t('title')}</label>
           <span className={`text-xs ${title.length > 100 ? 'text-red-500' : 'text-gray-400'}`}>
@@ -265,7 +265,7 @@ export default function ReviewForm({
       </div>
 
       {/* Content */}
-      <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-2">
+      <div className="bg-card rounded-xl border border-gray-200 p-5 space-y-2">
         <div className="flex items-center justify-between">
           <label className="text-sm font-semibold text-gray-700">{t('content')}</label>
           <span className={`text-xs ${content.length > 5000 ? 'text-red-500' : 'text-gray-400'}`}>
@@ -283,7 +283,7 @@ export default function ReviewForm({
       </div>
 
       {/* Photos */}
-      <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
+      <div className="bg-card rounded-xl border border-gray-200 p-5 space-y-3">
         <h2 className="text-sm font-semibold text-gray-700">Photos</h2>
 
         {/* Existing images thumbnails */}

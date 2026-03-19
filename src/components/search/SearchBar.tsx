@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import AddSubjectModal from '@/components/subject/AddSubjectModal'
 
 interface Subject {
   id: string
@@ -26,6 +27,7 @@ export default function SearchBar({ className }: SearchBarProps) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
+  const [showAddModal, setShowAddModal] = useState(false)
 
   const inputRef = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -110,6 +112,8 @@ export default function SearchBar({ className }: SearchBarProps) {
   }
 
   return (
+    <>
+    {showAddModal && <AddSubjectModal onClose={() => setShowAddModal(false)} />}
     <div ref={containerRef} className={`relative ${className ?? ''}`}>
       <div className="relative">
         <input
@@ -137,7 +141,7 @@ export default function SearchBar({ className }: SearchBarProps) {
       </div>
 
       {open && results.length > 0 && (
-        <ul className="absolute top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg z-50 max-h-72 overflow-y-auto animate-slideDown">
+        <ul className="absolute top-full mt-1 left-0 right-0 bg-card border border-gray-200 rounded-xl shadow-lg z-50 max-h-72 overflow-y-auto animate-slideDown">
           {results.map((subject, index) => (
             <li key={subject.id}>
               <button
@@ -173,10 +177,22 @@ export default function SearchBar({ className }: SearchBarProps) {
       )}
 
       {open && results.length === 0 && query.trim() && !loading && (
-        <div className="absolute top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg z-50 px-4 py-3 text-sm text-gray-400 animate-slideDown">
-          {t('noResults') ?? 'No results found'}
+        <div className="absolute top-full mt-1 left-0 right-0 bg-card border border-gray-200 rounded-xl shadow-lg z-50 px-4 py-3 text-sm animate-slideDown">
+          <p className="text-muted-foreground">{t('noResults') ?? 'No results found'}</p>
+          <button
+            onMouseDown={() => {
+              setOpen(false)
+              setShowAddModal(true)
+            }}
+            className="mt-1.5 text-xs text-indigo-600 hover:underline"
+          >
+            {currentLocale === 'ko'
+              ? '찾는 대상이 없나요? 직접 추가하기 →'
+              : "Can't find what you're looking for? Add it yourself →"}
+          </button>
         </div>
       )}
     </div>
+    </>
   )
 }

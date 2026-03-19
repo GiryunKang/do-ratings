@@ -127,7 +127,7 @@ export default function TrendChart({ subjectId }: TrendChartProps) {
   const periods: Period[] = ['week', 'month', 'quarter']
 
   return (
-    <div className="bg-white rounded-xl p-5 shadow-sm">
+    <div className="bg-card rounded-xl p-5 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-gray-700">{t('trendChart')}</h3>
         <div className="flex gap-1">

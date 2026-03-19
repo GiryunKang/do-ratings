@@ -26,7 +26,7 @@ const tabs = [
   { key: 'photos', ko: '사진', en: 'Photos' },
   { key: 'trend', ko: '트렌드', en: 'Trend' },
   { key: 'summary', ko: 'AI 요약', en: 'AI Summary' },
-  { key: 'embed', ko: '임베드', en: 'Embed' },
+  { key: 'embed', ko: '공유', en: 'Share' },
 ]
 
 export default function SubjectTabs({

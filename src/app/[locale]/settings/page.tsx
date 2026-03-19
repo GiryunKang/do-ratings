@@ -109,7 +109,7 @@ export default function SettingsPage() {
         {t('settings') ?? 'Settings'}
       </h1>
 
-      <form onSubmit={handleSave} className="space-y-6 bg-white rounded-2xl border border-gray-200 p-6">
+      <form onSubmit={handleSave} className="space-y-6 bg-card rounded-2xl border border-gray-200 p-6">
         {/* Nickname */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
@@ -137,6 +137,11 @@ export default function SettingsPage() {
             className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400"
             placeholder="https://example.com/avatar.png"
           />
+          <p className="mt-1.5 text-xs text-muted-foreground">
+            {currentLocale === 'ko'
+              ? '이미지 주소(URL)를 입력하세요. 무료 이미지 호스팅: imgur.com'
+              : 'Enter an image URL. Free image hosting: imgur.com'}
+          </p>
           {avatarUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -162,7 +167,7 @@ export default function SettingsPage() {
                 className={`flex-1 py-2.5 rounded-xl border text-sm font-medium transition-colors ${
                   language === lang
                     ? 'bg-indigo-600 text-white border-indigo-600'
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-indigo-400'
+                    : 'bg-card text-gray-700 border-gray-300 hover:border-indigo-400'
                 }`}
               >
                 {lang === 'ko' ? '한국어' : 'English'}

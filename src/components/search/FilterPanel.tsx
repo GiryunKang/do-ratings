@@ -58,7 +58,7 @@ export default function FilterPanel({
 
   return (
     <aside className="w-full md:w-56 shrink-0">
-      <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-5">
+      <div className="bg-card rounded-xl border border-gray-200 p-4 space-y-5">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-gray-800 text-sm">
             {t('filter') ?? 'Filters'}
