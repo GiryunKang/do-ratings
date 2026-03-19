@@ -1,5 +1,7 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
+
 interface TrustBadgeProps {
   score: number  // 0-100
   size?: 'sm' | 'md'  // default 'sm'
@@ -9,7 +11,7 @@ function getColorClasses(score: number) {
   if (score <= 30) {
     return { text: 'text-gray-400', dot: 'bg-gray-400', bar: 'bg-gray-400' }
   } else if (score <= 60) {
-    return { text: 'text-blue-500', dot: 'bg-blue-500', bar: 'bg-blue-500' }
+    return { text: 'text-primary', dot: 'bg-primary', bar: 'bg-primary' }
   } else if (score <= 80) {
     return { text: 'text-green-500', dot: 'bg-green-500', bar: 'bg-green-500' }
   } else {
@@ -18,6 +20,8 @@ function getColorClasses(score: number) {
 }
 
 export default function TrustBadge({ score, size = 'sm' }: TrustBadgeProps) {
+  const pathname = usePathname()
+  const locale = pathname?.startsWith('/en') ? 'en' : 'ko'
   const clampedScore = Math.min(100, Math.max(0, score))
   const colors = getColorClasses(clampedScore)
 
@@ -33,7 +37,7 @@ export default function TrustBadge({ score, size = 'sm' }: TrustBadgeProps) {
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-gray-600">Trust Score:</span>
+        <span className="text-sm font-medium text-gray-600">{locale === 'ko' ? '신뢰 점수:' : 'Trust Score:'}</span>
         <span className={`text-sm font-semibold ${colors.text}`}>{clampedScore}</span>
       </div>
       <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">

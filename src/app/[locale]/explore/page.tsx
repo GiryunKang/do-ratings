@@ -207,7 +207,7 @@ export default function ExplorePage() {
                 <path d="M24 24h8M24 30h5" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" />
               </svg>
               <p className="text-sm font-medium text-gray-600 mb-1">{t('noResults') ?? 'No results found'}</p>
-              <p className="text-xs text-gray-400">Try adjusting your filters or search term</p>
+              <p className="text-xs text-gray-400">{currentLocale === 'ko' ? '필터 또는 검색어를 조정해보세요' : 'Try adjusting your filters or search term'}</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">

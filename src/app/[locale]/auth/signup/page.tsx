@@ -40,7 +40,7 @@ export default function SignupPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6 rounded-xl bg-white p-8 shadow-lg">
+      <div className="w-full max-w-md space-y-6 rounded-xl bg-card p-8 shadow-lg">
         <h1 className="text-2xl font-bold text-center">{tc('signup')}</h1>
 
         <form onSubmit={handleSignup} className="space-y-4">
@@ -49,7 +49,7 @@ export default function SignupPage() {
             placeholder={t('nickname')}
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 p-3 focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-lg border border-border p-3 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none"
             required
           />
           <input
@@ -57,7 +57,7 @@ export default function SignupPage() {
             placeholder={t('email')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 p-3 focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-lg border border-border p-3 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none"
             required
           />
           <input
@@ -65,14 +65,14 @@ export default function SignupPage() {
             placeholder={t('password')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 p-3 focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-lg border border-border p-3 focus:ring-2 focus:ring-primary focus:border-transparent focus:outline-none"
             required
             minLength={6}
           />
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <button
             type="submit"
-            className="w-full rounded-lg bg-blue-600 p-3 text-white font-medium hover:bg-blue-700 transition"
+            className="w-full rounded-lg bg-primary p-3 text-primary-foreground font-medium hover:bg-primary/80 transition"
           >
             {tc('signup')}
           </button>
@@ -80,36 +80,36 @@ export default function SignupPage() {
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300" />
+            <div className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="bg-white px-2 text-gray-500">{t('orContinueWith')}</span>
+            <span className="bg-card px-2 text-muted-foreground">{t('orContinueWith')}</span>
           </div>
         </div>
 
         <div className="space-y-2">
           <button
             onClick={() => handleOAuth('google')}
-            className="w-full rounded-lg border border-gray-300 p-3 hover:bg-gray-50 transition"
+            className="w-full rounded-lg border border-border p-3 hover:bg-muted transition"
           >
             {t('signupWith', { provider: 'Google' })}
           </button>
           <button
             onClick={() => handleOAuth('kakao')}
-            className="w-full rounded-lg border border-gray-300 p-3 hover:bg-gray-50 transition"
+            className="w-full rounded-lg border border-border p-3 hover:bg-muted transition"
           >
             {t('signupWith', { provider: 'Kakao' })}
           </button>
           <button
             onClick={() => handleOAuth('apple')}
-            className="w-full rounded-lg border border-gray-300 p-3 hover:bg-gray-50 transition"
+            className="w-full rounded-lg border border-border p-3 hover:bg-muted transition"
           >
             {t('signupWith', { provider: 'Apple' })}
           </button>
         </div>
 
-        <p className="text-center text-sm text-gray-500">
-          <Link href="/auth/login" className="text-blue-600 hover:underline">
+        <p className="text-center text-sm text-muted-foreground">
+          <Link href="/auth/login" className="text-primary hover:underline">
             {tc('login')}
           </Link>
         </p>

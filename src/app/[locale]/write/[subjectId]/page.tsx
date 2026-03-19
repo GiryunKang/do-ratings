@@ -68,7 +68,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
         </Link>
         <div>
           <h1 className="text-lg font-bold text-gray-900">
-            {isEditing ? 'Edit Review' : 'Write Review'}
+            {isEditing ? (locale === 'ko' ? '리뷰 수정' : 'Edit Review') : (locale === 'ko' ? '리뷰 작성' : 'Write Review')}
           </h1>
           <p className="text-sm text-gray-500">{subjectName}</p>
         </div>

@@ -152,17 +152,17 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
         </div>
         <div>
           <p className="text-gray-600 font-medium text-sm mb-1">
-            Your feed is empty
+            {locale === 'ko' ? '피드가 비어 있습니다' : 'Your feed is empty'}
           </p>
           <p className="text-gray-400 text-sm max-w-xs">
-            Follow reviewers to see their reviews here
+            {locale === 'ko' ? '리뷰어를 팔로우하면 여기에 리뷰가 표시됩니다' : 'Follow reviewers to see their reviews here'}
           </p>
         </div>
         <Link
           href={`/${locale}/rankings`}
           className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full px-5 py-2.5 text-sm font-semibold hover:shadow-lg transition-all"
         >
-          Discover Reviewers
+          {locale === 'ko' ? '리뷰어 탐색' : 'Discover Reviewers'}
         </Link>
       </div>
     )

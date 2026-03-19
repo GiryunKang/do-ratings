@@ -43,7 +43,7 @@ export default function UserCard({ profile }: UserCardProps) {
             <h1 className="text-xl font-bold text-gray-900 truncate">{profile.nickname}</h1>
             <UserBadge level={profile.level} />
             {profile.level === 'platinum' && (
-              <span className="text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-semibold text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">
                 {t('topReviewer')}
               </span>
             )}

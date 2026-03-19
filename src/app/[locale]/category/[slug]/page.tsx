@@ -80,14 +80,14 @@ export default async function CategoryPage({ params }: PageProps) {
       {/* Top Subjects */}
       <section className="mb-8">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-semibold text-gray-700">Top Subjects</h2>
+          <h2 className="text-base font-semibold text-gray-700">{locale === 'ko' ? '인기 대상' : 'Top Subjects'}</h2>
           <div className="flex items-center gap-3">
             <AddSubjectButton categorySlug={slug} locale={locale} />
             <Link
               href={`/${locale}/compare`}
               className="text-xs text-indigo-500 hover:underline font-medium"
             >
-              Compare →
+              {locale === 'ko' ? '비교 →' : 'Compare →'}
             </Link>
           </div>
         </div>
@@ -96,8 +96,8 @@ export default async function CategoryPage({ params }: PageProps) {
             <svg className="w-16 h-16 mx-auto mb-4 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
             </svg>
-            <p className="text-sm font-medium text-gray-600 mb-1">Know a great place?</p>
-            <p className="text-sm text-gray-400">Be the first to review!</p>
+            <p className="text-sm font-medium text-gray-600 mb-1">{locale === 'ko' ? '좋은 곳을 알고 계신가요?' : 'Know a great place?'}</p>
+            <p className="text-sm text-gray-400">{locale === 'ko' ? '첫 번째 리뷰어가 되어보세요!' : 'Be the first to review!'}</p>
           </div>
         ) : (
           <ol className="space-y-2 bg-white rounded-xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
@@ -137,7 +137,7 @@ export default async function CategoryPage({ params }: PageProps) {
 
       {/* Latest Reviews */}
       <section>
-        <h2 className="text-base font-semibold text-gray-700 mb-3">Latest Reviews</h2>
+        <h2 className="text-base font-semibold text-gray-700 mb-3">{locale === 'ko' ? '최신 리뷰' : 'Latest Reviews'}</h2>
         <ReviewList />
       </section>
     </div>
