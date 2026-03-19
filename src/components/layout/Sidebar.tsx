@@ -148,15 +148,13 @@ export default function Sidebar({ locale }: { locale: string }) {
                 </Button>
               )
             })}
-            {user && (
-              <button
-                onClick={() => setCategoryRequestOpen(true)}
-                className="w-full text-left px-2 py-1.5 text-xs text-primary hover:bg-muted rounded-md transition-colors flex items-center gap-1.5"
-              >
-                <span>➕</span>
-                {locale === 'ko' ? '카테고리 추가 요청' : 'Request New Category'}
-              </button>
-            )}
+            <button
+              onClick={() => user ? setCategoryRequestOpen(true) : router.push(`/${locale}/auth/login`)}
+              className="w-full text-left px-2 py-1.5 text-xs text-primary hover:bg-muted rounded-md transition-colors flex items-center gap-1.5"
+            >
+              <span>➕</span>
+              {locale === 'ko' ? '카테고리 추가 요청' : 'Request New Category'}
+            </button>
           </nav>
         )}
 

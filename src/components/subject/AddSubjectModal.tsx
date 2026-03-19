@@ -26,6 +26,7 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
   const [nameEn, setNameEn] = useState('')
   const [descKo, setDescKo] = useState('')
   const [descEn, setDescEn] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -73,6 +74,7 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
           category_slug: categorySlug,
           description_ko: descKo || undefined,
           description_en: descEn || undefined,
+          image_url: imageUrl || undefined,
         }),
       })
 
@@ -190,6 +192,25 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
               rows={3}
               className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
             />
+          </div>
+
+          {/* Image URL */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              {isKo ? '이미지 URL (선택)' : 'Image URL (optional)'}
+            </label>
+            <input
+              type="url"
+              value={imageUrl}
+              onChange={e => setImageUrl(e.target.value)}
+              placeholder={isKo ? 'https://... 이미지 주소를 입력하세요' : 'https://... Enter image URL'}
+              className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+            <p className="mt-1 text-[11px] text-gray-400">
+              {isKo
+                ? '💡 입력하지 않으면 Wikipedia에서 자동으로 이미지를 가져옵니다. 저작권에 문제없는 이미지만 사용해주세요.'
+                : '💡 If left empty, an image will be auto-fetched from Wikipedia. Only use copyright-free images.'}
+            </p>
           </div>
 
           {/* Error */}
