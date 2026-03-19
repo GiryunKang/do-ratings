@@ -287,7 +287,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               const catName = subject.category_name[locale] ?? subject.category_name['ko']
               return (
                 <Link key={subject.id} href={`/${locale}/subject/${subject.id}`}
-                  className="relative bg-white rounded-2xl border border-gray-200 p-5 hover:border-indigo-300 hover:shadow-lg transition-all group overflow-hidden">
+                  className="relative bg-card rounded-2xl border border-gray-200 p-5 hover:border-indigo-300 hover:shadow-lg transition-all group overflow-hidden">
                   {/* Category color top accent */}
                   <div className={`absolute top-0 left-0 right-0 h-1 ${getCategoryColor(subject.category_slug)}`} />
                   <div className="flex items-center gap-1.5 mb-3">

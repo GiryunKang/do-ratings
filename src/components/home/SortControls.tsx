@@ -53,7 +53,7 @@ export default function SortControls({
           </svg>
         </button>
         {sortOpen && (
-          <div className="absolute top-full mt-1 left-0 bg-white border border-gray-200 rounded-xl shadow-lg z-50 min-w-[140px] py-1 animate-slideDown">
+          <div className="absolute top-full mt-1 left-0 bg-card border border-gray-200 rounded-xl shadow-lg z-50 min-w-[140px] py-1 animate-slideDown">
             {sortOptions.map((opt) => (
               <button
                 key={opt.value}

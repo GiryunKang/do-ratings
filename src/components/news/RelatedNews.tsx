@@ -68,7 +68,7 @@ export default function RelatedNews({ query, locale }: RelatedNewsProps) {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-white rounded-xl border border-gray-200 p-4">
+            <div key={i} className="bg-card rounded-xl border border-gray-200 p-4">
               <div className="skeleton w-3/4 h-4 mb-2" />
               <div className="skeleton w-1/3 h-3" />
             </div>
@@ -82,7 +82,7 @@ export default function RelatedNews({ query, locale }: RelatedNewsProps) {
               href={article.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="block bg-white rounded-xl border border-gray-200 p-4 hover:border-indigo-300 hover:shadow-sm transition-all group"
+              className="block bg-card rounded-xl border border-gray-200 p-4 hover:border-indigo-300 hover:shadow-sm transition-all group"
             >
               <h4 className="text-sm font-medium text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2">
                 {article.title}

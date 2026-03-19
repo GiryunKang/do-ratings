@@ -76,7 +76,7 @@ export default function ReportButton({ reviewId }: ReportButtonProps) {
           />
 
           {/* Modal */}
-          <div className="absolute right-0 mt-2 w-72 bg-white border border-gray-200 rounded-xl shadow-lg z-50 p-4">
+          <div className="absolute right-0 mt-2 w-72 bg-card border border-gray-200 rounded-xl shadow-lg z-50 p-4">
             {submitted ? (
               <p className="text-sm text-green-600 text-center py-2">
                 Report submitted. Thank you.

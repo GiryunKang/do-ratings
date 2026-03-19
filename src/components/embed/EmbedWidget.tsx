@@ -91,7 +91,7 @@ export default function EmbedWidget({ subjectId, subjectName, avgRating, reviewC
           style={{ width: selectedSize.width, height: selectedSize.height }}
         >
           <div
-            className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg h-full px-3"
+            className="flex items-center gap-2 bg-card border border-gray-200 rounded-lg h-full px-3"
             style={{ width: selectedSize.width, height: selectedSize.height }}
           >
             <div className="min-w-0 flex-1">
