@@ -108,7 +108,7 @@ export default function Sidebar({ locale }: { locale: string }) {
           className="w-full flex items-center justify-between px-1 mb-1"
         >
           <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-            Categories
+            {locale === 'ko' ? '카테고리' : 'Categories'}
           </span>
           <svg
             className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${categoriesOpen ? 'rotate-180' : ''}`}
@@ -168,6 +168,17 @@ export default function Sidebar({ locale }: { locale: string }) {
             )
           })}
         </nav>
+
+        {/* Legal links */}
+        <div className="mt-4 pt-3 border-t border-border flex gap-2 px-1 text-[10px] text-muted-foreground">
+          <Link href={`/${locale}/terms`} className="hover:text-foreground transition-colors">
+            {locale === 'ko' ? '이용약관' : 'Terms'}
+          </Link>
+          <span>·</span>
+          <Link href={`/${locale}/privacy`} className="hover:text-foreground transition-colors">
+            {locale === 'ko' ? '개인정보처리방침' : 'Privacy'}
+          </Link>
+        </div>
       </div>
     </aside>
   )

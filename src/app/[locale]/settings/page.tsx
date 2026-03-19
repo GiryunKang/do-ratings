@@ -196,6 +196,44 @@ export default function SettingsPage() {
           {saving ? (t('saving') ?? 'Saving...') : (t('save') ?? 'Save Changes')}
         </button>
       </form>
+
+      {/* Account Deletion */}
+      <div className="mt-8 pt-6 border-t border-red-200">
+        <h3 className="text-sm font-semibold text-red-600 mb-2">
+          {locale === 'ko' ? '위험 구역' : 'Danger Zone'}
+        </h3>
+        <p className="text-xs text-muted-foreground mb-3">
+          {locale === 'ko'
+            ? '계정을 삭제하면 모든 리뷰, 댓글, 활동 내역이 영구적으로 삭제되며 복구할 수 없습니다.'
+            : 'Deleting your account will permanently remove all reviews, comments, and activity. This cannot be undone.'}
+        </p>
+        <button
+          type="button"
+          onClick={async () => {
+            const msg = locale === 'ko'
+              ? '정말로 계정을 삭제하시겠습니까? 모든 데이터가 영구 삭제됩니다.'
+              : 'Are you sure you want to delete your account? All data will be permanently deleted.'
+            if (!window.confirm(msg)) return
+            const secondMsg = locale === 'ko'
+              ? '마지막 확인: 이 작업은 되돌릴 수 없습니다. 계속하시겠습니까?'
+              : 'Final confirmation: This action cannot be undone. Continue?'
+            if (!window.confirm(secondMsg)) return
+            try {
+              const res = await fetch('/api/account/delete', { method: 'DELETE' })
+              if (res.ok) {
+                window.location.href = '/'
+              } else {
+                alert(locale === 'ko' ? '계정 삭제에 실패했습니다.' : 'Failed to delete account.')
+              }
+            } catch {
+              alert(locale === 'ko' ? '오류가 발생했습니다.' : 'An error occurred.')
+            }
+          }}
+          className="px-4 py-2 text-sm font-medium text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors"
+        >
+          {locale === 'ko' ? '계정 영구 삭제' : 'Delete Account Permanently'}
+        </button>
+      </div>
     </div>
   )
 }
