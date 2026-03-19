@@ -8,6 +8,7 @@ import SubRatingChart from '@/components/review/SubRatingChart'
 import RelatedNews from '@/components/news/RelatedNews'
 import ImageAttribution from '@/components/ui/ImageAttribution'
 import SubjectTabs from '@/components/subject/SubjectTabs'
+import SubjectEditor from '@/components/subject/SubjectEditor'
 import ClaimButton from '@/components/business/ClaimButton'
 import AddToCollectionButton from '@/components/collection/AddToCollectionButton'
 import EmbedWidget from '@/components/embed/EmbedWidget'
@@ -59,6 +60,7 @@ export default async function SubjectPage({ params }: PageProps) {
     .select(`
       id,
       name,
+      description,
       image_url,
       avg_rating,
       review_count,
@@ -178,7 +180,15 @@ export default async function SubjectPage({ params }: PageProps) {
               <Link href={`/${locale}/category/${category?.slug ?? ''}`} className="inline-block px-2.5 py-0.5 text-xs font-medium bg-secondary text-secondary-foreground rounded-md hover:opacity-80">
                 {categoryName}
               </Link>
-              <h1 className="text-xl font-bold mt-1 mb-2">{subjectName}</h1>
+              <h1 className="text-xl font-bold mt-1 mb-1">{subjectName}</h1>
+              <div className="mb-2">
+                <SubjectEditor
+                  subjectId={id}
+                  currentDescription={typeof subject.description === 'object' && subject.description !== null ? subject.description as Record<string, string> : null}
+                  locale={locale}
+                  currentUserId={user?.id ?? null}
+                />
+              </div>
               <div className="flex items-center gap-2 golden-glow rounded-lg px-2 py-1 inline-flex">
                 <StarRating value={subject.avg_rating ?? 0} readonly size="lg" />
                 <span className="text-lg font-semibold text-foreground">
