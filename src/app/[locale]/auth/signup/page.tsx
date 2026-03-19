@@ -13,6 +13,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [nickname, setNickname] = useState('')
+  const [emailSent, setEmailSent] = useState(false)
   const [error, setError] = useState('')
 
   async function handleSignup(e: React.FormEvent) {
@@ -26,8 +27,7 @@ export default function SignupPage() {
     if (error) {
       setError(error.message)
     } else {
-      router.push('/')
-      router.refresh()
+      setEmailSent(true)
     }
   }
 
@@ -36,6 +36,28 @@ export default function SignupPage() {
       provider,
       options: { redirectTo: `${window.location.origin}/auth/callback` },
     })
+  }
+
+  if (emailSent) {
+    return (
+      <div className="flex min-h-screen items-center justify-center p-4">
+        <div className="w-full max-w-md rounded-xl bg-card p-8 shadow-lg text-center space-y-4">
+          <div className="w-16 h-16 mx-auto rounded-full bg-green-100 flex items-center justify-center">
+            <span className="text-3xl">✉️</span>
+          </div>
+          <h1 className="text-xl font-bold">{t('checkEmail') ?? '이메일을 확인해주세요'}</h1>
+          <p className="text-sm text-muted-foreground">
+            {t('confirmEmailSent') ?? `${email}로 확인 이메일을 보냈습니다. 이메일의 링크를 클릭하여 가입을 완료해주세요.`}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {t('checkSpam') ?? '이메일이 보이지 않으면 스팸 폴더를 확인해주세요.'}
+          </p>
+          <Link href="/auth/login" className="inline-block text-sm text-primary hover:underline mt-2">
+            {tc('login')}
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   return (
