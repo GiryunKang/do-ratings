@@ -74,7 +74,7 @@ function SkeletonCards() {
 
 function EmptyState({ message }: { message: string }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+    <div className="bg-card rounded-xl border border-gray-200 p-12 text-center">
       <svg className="w-12 h-12 mx-auto mb-3 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
       </svg>
@@ -300,7 +300,7 @@ export default function RankingsPage() {
             <select
               value={selectedCategoryId}
               onChange={(e) => handleCategoryChange(e.target.value)}
-              className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-background text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
             >
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
@@ -315,7 +315,7 @@ export default function RankingsPage() {
           ) : topSubjects.length === 0 ? (
             <EmptyState message={tCommon('noResults')} />
           ) : (
-            <ol className="space-y-2 bg-white rounded-xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+            <ol className="space-y-2 bg-card rounded-xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
               {topSubjects.map((subject, index) => {
                 const name = subject.name[locale as 'ko' | 'en'] ?? subject.name.en
                 const podiumStyle = index < 3 ? podiumStyles[index] : ''
@@ -408,7 +408,7 @@ export default function RankingsPage() {
           ) : topReviewers.length === 0 ? (
             <EmptyState message={tCommon('noResults')} />
           ) : (
-            <ol className="space-y-2 bg-white rounded-xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+            <ol className="space-y-2 bg-card rounded-xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
               {topReviewers.map((reviewer, index) => {
                 const podiumStyle = index < 3 ? podiumStyles[index] : ''
                 const badgeStyle = index < 3 ? badgeStyles[index] : 'bg-indigo-100 text-indigo-700'

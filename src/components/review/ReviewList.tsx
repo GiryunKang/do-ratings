@@ -163,7 +163,7 @@ export default function ReviewList({ subjectId, userId }: ReviewListProps) {
       {items.length === 0 && loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-white rounded-2xl p-4 space-y-3">
+            <div key={i} className="bg-card rounded-2xl p-4 space-y-3">
               <div className="flex items-center gap-3">
                 <div className="skeleton w-10 h-10 rounded-full" />
                 <div className="skeleton w-24 h-4" />

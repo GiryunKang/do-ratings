@@ -19,7 +19,7 @@ export default function UserCard({ profile }: UserCardProps) {
   const t = useTranslations('user')
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5">
+    <div className="bg-card rounded-xl border border-gray-200 p-5">
       <div className="flex items-start gap-4">
         {/* Avatar */}
         <div className="shrink-0">

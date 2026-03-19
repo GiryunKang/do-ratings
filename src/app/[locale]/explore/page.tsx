@@ -195,11 +195,11 @@ export default function ExplorePage() {
           {loading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-xl border border-gray-200 h-28 animate-pulse" />
+                <div key={i} className="bg-card rounded-xl border border-gray-200 h-28 animate-pulse" />
               ))}
             </div>
           ) : subjects.length === 0 ? (
-            <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+            <div className="bg-card rounded-xl border border-gray-200 p-12 text-center">
               <svg className="w-16 h-16 mx-auto mb-4" viewBox="0 0 64 64" fill="none">
                 <circle cx="28" cy="28" r="18" stroke="#c7d2fe" strokeWidth="3" />
                 <circle cx="28" cy="28" r="10" fill="#e0e7ff" />
@@ -217,7 +217,7 @@ export default function ExplorePage() {
                   <Link
                     key={subject.id}
                     href={`/${currentLocale}/subject/${subject.id}`}
-                    className={`bg-white rounded-xl border-l-4 border border-gray-200 p-4 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ${accentClass}`}
+                    className={`bg-card rounded-xl border-l-4 border border-gray-200 p-4 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ${accentClass}`}
                   >
                     <p className="font-semibold text-gray-900 text-sm line-clamp-2 mb-2">
                       {getSubjectName(subject)}

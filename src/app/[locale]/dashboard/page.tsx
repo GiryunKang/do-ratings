@@ -69,7 +69,7 @@ function StatCard({
   color: string
 }) {
   return (
-    <div className={`bg-white rounded-2xl border border-gray-100 shadow-sm p-5`}>
+    <div className={`bg-card rounded-2xl border border-gray-100 shadow-sm p-5`}>
       <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">{label}</p>
       <p className={`text-3xl font-bold ${color}`}>{value}</p>
     </div>
@@ -195,7 +195,7 @@ export default function DashboardPage() {
       {/* Charts row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Category breakdown */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+        <div className="bg-card rounded-2xl border border-gray-100 shadow-sm p-5">
           <h2 className="text-sm font-semibold text-gray-700 mb-4">{t('categoryBreakdown')}</h2>
           {categoryData.length === 0 ? (
             <p className="text-sm text-gray-400 text-center py-8">No data yet</p>
@@ -240,7 +240,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Monthly activity */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+        <div className="bg-card rounded-2xl border border-gray-100 shadow-sm p-5">
           <h2 className="text-sm font-semibold text-gray-700 mb-4">{t('monthlyActivity')}</h2>
           {reviews.length === 0 ? (
             <p className="text-sm text-gray-400 text-center py-8">No data yet</p>

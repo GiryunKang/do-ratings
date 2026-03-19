@@ -39,7 +39,7 @@ export default function CompareCard({
   const firstLetter = displayName.charAt(0).toUpperCase()
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4 relative flex flex-col gap-3 min-w-0">
+    <div className="bg-card rounded-xl border border-gray-200 p-4 relative flex flex-col gap-3 min-w-0">
       {/* Remove button */}
       <button
         onClick={onRemove}

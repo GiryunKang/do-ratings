@@ -92,7 +92,7 @@ export default async function CategoryPage({ params }: PageProps) {
           </div>
         </div>
         {!topSubjects || topSubjects.length === 0 ? (
-          <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+          <div className="bg-card rounded-xl border border-gray-200 p-12 text-center">
             <svg className="w-16 h-16 mx-auto mb-4 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
             </svg>
@@ -100,7 +100,7 @@ export default async function CategoryPage({ params }: PageProps) {
             <p className="text-sm text-gray-400">{locale === 'ko' ? '첫 번째 리뷰어가 되어보세요!' : 'Be the first to review!'}</p>
           </div>
         ) : (
-          <ol className="space-y-2 bg-white rounded-xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+          <ol className="space-y-2 bg-card rounded-xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
             {topSubjects.map((subject, index) => {
               const subjectName =
                 typeof subject.name === 'object' && subject.name !== null

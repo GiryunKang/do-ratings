@@ -137,7 +137,7 @@ export default function NotificationsPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-6">
         <div className="h-7 w-40 bg-gray-200 rounded animate-pulse mb-6" />
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+        <div className="bg-card rounded-2xl border border-gray-100 overflow-hidden">
           {Array.from({ length: 5 }).map((_, i) => (
             <SkeletonRow key={i} />
           ))}
@@ -165,7 +165,7 @@ export default function NotificationsPage() {
 
       {/* Content */}
       {loading ? (
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+        <div className="bg-card rounded-2xl border border-gray-100 overflow-hidden">
           {Array.from({ length: 6 }).map((_, i) => (
             <SkeletonRow key={i} />
           ))}
@@ -191,7 +191,7 @@ export default function NotificationsPage() {
         </div>
       ) : (
         <>
-          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+          <div className="bg-card rounded-2xl border border-gray-100 overflow-hidden">
             {notifications.map((notif) => (
               <button
                 key={notif.id}

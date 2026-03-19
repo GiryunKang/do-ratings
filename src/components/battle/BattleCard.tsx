@@ -97,7 +97,7 @@ export default function BattleCard({
             ? 'border-indigo-400 bg-indigo-50'
             : isWinner && isEnded
             ? 'border-yellow-400 bg-yellow-50'
-            : 'border-gray-200 bg-white'
+            : 'border-gray-200 bg-card'
         }`}
       >
         {/* Winner / voted badge */}
@@ -144,7 +144,7 @@ export default function BattleCard({
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow animate-fadeIn">
+    <div className="bg-card rounded-2xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow animate-fadeIn">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
