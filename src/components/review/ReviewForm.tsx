@@ -55,6 +55,7 @@ export default function ReviewForm({
   const [existingImages, setExistingImages] = useState<ExistingImage[]>([])
   const [removedImageIds, setRemovedImageIds] = useState<string[]>([])
   const [directRating, setDirectRating] = useState(existingReview?.overall_rating ?? 0)
+  const [photoUrl, setPhotoUrl] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -293,42 +294,34 @@ export default function ReviewForm({
         />
       </div>
 
-      {/* Photos */}
-      <div className="bg-card rounded-xl border border-gray-200 p-5 space-y-3">
-        <h2 className="text-sm font-semibold text-gray-700">Photos</h2>
-
-        {/* Existing images thumbnails */}
-        {existingImages.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {existingImages.map((img) => (
-              <div key={img.id} className="relative w-20 h-20 rounded-lg overflow-hidden group">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={img.url}
-                  alt="existing"
-                  className="w-full h-full object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveExistingImage(img.id)}
-                  className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80"
-                  aria-label="Remove image"
-                >
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            ))}
+      {/* Photo URL */}
+      <div className="bg-card rounded-xl border border-border p-5 space-y-3">
+        <h2 className="text-sm font-semibold text-foreground">
+          {locale === 'ko' ? '사진 URL (선택)' : 'Photo URL (optional)'}
+        </h2>
+        <input
+          type="url"
+          value={photoUrl}
+          onChange={(e) => setPhotoUrl(e.target.value)}
+          placeholder={locale === 'ko' ? 'https://... 이미지 주소를 붙여넣으세요' : 'https://... Paste image URL'}
+          className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+        {photoUrl && (
+          <div className="relative w-24 h-24 rounded-lg overflow-hidden border border-border">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={photoUrl}
+              alt="preview"
+              className="w-full h-full object-cover"
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+            />
           </div>
         )}
-
-        <ImageUpload
-          images={images}
-          onChange={setImages}
-          maxImages={maxImages}
-          disabled={submitting}
-        />
+        <p className="text-[11px] text-muted-foreground">
+          {locale === 'ko'
+            ? '💡 인터넷에서 이미지 주소를 복사하여 붙여넣으세요. 저작권에 문제없는 이미지만 사용해주세요.'
+            : '💡 Copy an image URL from the internet. Only use copyright-free images.'}
+        </p>
       </div>
 
       {/* Error */}
