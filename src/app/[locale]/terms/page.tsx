@@ -33,7 +33,7 @@ export default async function TermsPage({ params }: { params: Promise<{ locale: 
 
         <h2 className="text-base font-semibold text-foreground pt-2">{ko ? '5. 인물 평가 정책' : '5. People Rating Policy'}</h2>
         <p>{ko ? '인물 카테고리의 평가 대상은 정치인, 기업인, 국가원수 등 공적 활동을 하는 인물로 제한됩니다.' : 'Subjects in the People category are limited to public figures engaged in public activities, such as politicians, business leaders, and heads of state.'}</p>
-        <p className="font-medium">{ko ? '한국 연예인(가수, 배우, 방송인, 스포츠 선수 등)에 대한 평가는 관련 법률(정보통신망법, 명예훼손법 등)에 따라 엄격히 제한되며, 해당 대상의 등록 및 리뷰 작성이 금지됩니다.' : 'Rating Korean celebrities (singers, actors, broadcasters, athletes, etc.) is strictly restricted under applicable laws (Information and Communications Network Act, defamation laws, etc.). Registration of such subjects and writing reviews about them is prohibited.'}</p>
+        <p className="font-medium">{ko ? '한국 연예인(가수, 배우, 방송인, 스포츠 선수 등)에 대한 평가는 플랫폼 정책에 따라 엄격히 제한되며, 해당 대상의 등록 및 리뷰 작성이 금지됩니다.' : 'Rating Korean celebrities (singers, actors, broadcasters, athletes, etc.) is strictly restricted under our platform policy. Registration of such subjects and writing reviews about them is prohibited.'}</p>
         <p>{ko ? '해외 연예인 및 공인에 대한 평가는 허용되나, 해당 국가의 법률과 본 서비스의 이용약관을 준수해야 합니다.' : 'Ratings of international celebrities and public figures are permitted, subject to compliance with applicable local laws and these Terms of Service.'}</p>
 
         <h2 className="text-base font-semibold text-foreground pt-2">{ko ? '6. 계정 관리' : '6. Account Management'}</h2>

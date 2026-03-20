@@ -151,8 +151,8 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
             {categorySlug === 'people' && (
               <p className="mt-1.5 text-[11px] text-amber-600 bg-amber-50 border border-amber-200 rounded-md px-2.5 py-1.5">
                 {isKo
-                  ? '⚠️ 한국 연예인(가수, 배우, 방송인, 스포츠 선수 등)은 관련 법률에 따라 등록이 제한됩니다. 정치인, 기업인, 국가원수 등 공인과 해외 인물만 등록 가능합니다.'
-                  : '⚠️ Korean celebrities (singers, actors, broadcasters, athletes) are restricted under applicable laws. Only public figures (politicians, business leaders) and international figures may be registered.'}
+                  ? '⚠️ 한국 연예인(가수, 배우, 방송인, 스포츠 선수 등)은 플랫폼 정책에 따라 등록이 제한됩니다. 정치인, 기업인, 국가원수 등 공인과 해외 인물만 등록 가능합니다.'
+                  : '⚠️ Korean celebrities (singers, actors, broadcasters, athletes) are restricted under our platform policy. Only public figures (politicians, business leaders) and international figures may be registered.'}
               </p>
             )}
           </div>

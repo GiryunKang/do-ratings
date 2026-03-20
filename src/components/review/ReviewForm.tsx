@@ -349,8 +349,8 @@ export default function ReviewForm({
           />
           <span className="text-xs text-amber-800 leading-relaxed">
             {locale === 'ko'
-              ? '본 리뷰는 개인적인 의견이며, 타인의 명예를 훼손하거나 허위 사실을 유포하지 않겠습니다. 비방, 욕설, 차별적 표현이 포함된 리뷰는 삭제될 수 있으며, 법적 책임은 작성자 본인에게 있습니다. 한국 연예인에 대한 평가는 관련 법률에 따라 제한됩니다.'
-              : 'This review reflects my personal opinion. I will not defame others or spread false information. Reviews containing slander, profanity, or discriminatory language may be removed, and I accept legal responsibility for my content. Ratings of Korean celebrities are restricted under applicable laws.'}
+              ? '본 리뷰는 개인적인 의견이며, 타인의 명예를 훼손하거나 허위 사실을 유포하지 않겠습니다. 비방, 욕설, 차별적 표현이 포함된 리뷰는 삭제될 수 있으며, 법적 책임은 작성자 본인에게 있습니다. 한국 연예인에 대한 평가는 플랫폼 정책에 따라 제한됩니다.'
+              : 'This review reflects my personal opinion. I will not defame others or spread false information. Reviews containing slander, profanity, or discriminatory language may be removed, and I accept legal responsibility for my content. Ratings of Korean celebrities are restricted under our platform policy.'}
           </span>
         </label>
       </div>
