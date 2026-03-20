@@ -8,6 +8,7 @@ import SubRatingInput from '@/components/review/SubRatingInput'
 import ImageUpload, { ImageFile } from '@/components/review/ImageUpload'
 import { calculateOverallRating } from '@/lib/utils/rating'
 import { sanitizeText, validateReviewInput } from '@/lib/utils/sanitize'
+import { containsProfanity, getProfanityWarning } from '@/lib/utils/profanity'
 
 interface Criterion {
   key: string
@@ -56,6 +57,7 @@ export default function ReviewForm({
   const [removedImageIds, setRemovedImageIds] = useState<string[]>([])
   const [directRating, setDirectRating] = useState(existingReview?.overall_rating ?? 0)
   const [photoUrl, setPhotoUrl] = useState('')
+  const [agreed, setAgreed] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -96,6 +98,11 @@ export default function ReviewForm({
     const validationError = validateReviewInput(cleanTitle, cleanContent)
     if (validationError) {
       setError(validationError)
+      return
+    }
+
+    if (containsProfanity(cleanTitle) || containsProfanity(cleanContent)) {
+      setError(getProfanityWarning(locale))
       return
     }
 
@@ -331,19 +338,36 @@ export default function ReviewForm({
         </p>
       )}
 
+      {/* Disclaimer agreement */}
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+        <label className="flex items-start gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+            className="mt-0.5 w-4 h-4 rounded border-amber-300 text-primary focus:ring-primary"
+          />
+          <span className="text-xs text-amber-800 leading-relaxed">
+            {locale === 'ko'
+              ? '본 리뷰는 개인적인 의견이며, 타인의 명예를 훼손하거나 허위 사실을 유포하지 않겠습니다. 비방, 욕설, 차별적 표현이 포함된 리뷰는 삭제될 수 있으며, 법적 책임은 작성자 본인에게 있습니다.'
+              : 'This review reflects my personal opinion. I will not defame others or spread false information. Reviews containing slander, profanity, or discriminatory language may be removed, and I accept legal responsibility for my content.'}
+          </span>
+        </label>
+      </div>
+
       {/* Submit */}
       <div className="flex gap-3">
         <button
           type="button"
           onClick={() => router.back()}
-          className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+          className="flex-1 px-4 py-2.5 border border-border rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors"
         >
           {tCommon('cancel')}
         </button>
         <button
           type="submit"
-          disabled={submitting}
-          className="flex-1 px-4 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+          disabled={submitting || !agreed}
+          className="flex-1 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:bg-primary/80 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
         >
           {submitting ? tCommon('loading') : t('submit')}
         </button>
