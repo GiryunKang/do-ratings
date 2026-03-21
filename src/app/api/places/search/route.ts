@@ -56,11 +56,14 @@ export async function GET(request: NextRequest) {
   // Use Google Places API (New) - Text Search
   const url = `https://places.googleapis.com/v1/places:searchText`
 
+  // For restaurants, append "restaurant/맛집" to the query for better results
+  // instead of using includedType which is too restrictive for location-only queries
+  const enhancedQuery = type === 'restaurant' ? `${query} 맛집` : query
+
   const body = {
-    textQuery: query,
+    textQuery: enhancedQuery,
     languageCode: 'ko',
     maxResultCount: 10,
-    ...(type === 'restaurant' ? { includedType: 'restaurant' } : {}),
   }
 
   const response = await fetch(url, {
