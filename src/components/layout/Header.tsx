@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { usePathname, useRouter } from 'next/navigation'
@@ -24,6 +24,8 @@ export default function Header() {
   const pathname = usePathname()
   const router = useRouter()
   const [searchOpen, setSearchOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
 
   // Detect current locale from path
   const locale = pathname.startsWith('/en') ? 'en' : 'ko'
@@ -38,7 +40,15 @@ export default function Header() {
     <header className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
       <div className="max-w-7xl mx-auto flex items-center h-14 px-4 gap-4">
         {/* Logo */}
-        <Link href={`/${locale}`} className="shrink-0 text-lg font-bold text-primary">
+        <Link
+          href={`/${locale}`}
+          className="shrink-0 text-lg font-bold text-primary"
+          style={{
+            opacity: mounted ? 1 : 0,
+            transform: mounted ? 'translateY(0)' : 'translateY(-10px)',
+            transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+          }}
+        >
           Do! <ShimmerText>Ratings!</ShimmerText>
         </Link>
 

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import type { Metadata } from 'next'
 import Header from '@/components/layout/Header'
+import ScrollProgressBar from '@/components/ui/ScrollProgressBar'
 import BottomNav from '@/components/layout/BottomNav'
 import Sidebar from '@/components/layout/Sidebar'
 import RightSidebar from '@/components/layout/RightSidebar'
@@ -43,6 +44,7 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider messages={messages}>
       <ThemeProvider>
+        <ScrollProgressBar />
         <Header />
         <div className="flex">
           <div className="hidden md:block w-64 shrink-0">

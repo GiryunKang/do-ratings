@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { useState } from 'react'
 
 const tabs = [
   {
@@ -56,11 +57,18 @@ const tabs = [
 export default function BottomNav() {
   const t = useTranslations('nav')
   const pathname = usePathname()
+  const [ripple, setRipple] = useState<{ x: number; y: number; id: number; tabKey: string } | null>(null)
 
   // Detect locale prefix
   const localeMatch = pathname.match(/^\/(ko|en)/)
   const locale = localeMatch ? localeMatch[1] : 'ko'
   const basePath = `/${locale}`
+
+  function handleRipple(e: React.MouseEvent, tabKey: string) {
+    const rect = e.currentTarget.getBoundingClientRect()
+    setRipple({ x: e.clientX - rect.left, y: e.clientY - rect.top, id: Date.now(), tabKey })
+    setTimeout(() => setRipple(null), 600)
+  }
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-gray-100 md:hidden">
@@ -76,12 +84,28 @@ export default function BottomNav() {
             <Link
               key={tab.key}
               href={href}
-              className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-xs transition-colors ${
+              onClick={(e) => handleRipple(e, tab.key)}
+              className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-xs transition-colors relative overflow-hidden ${
                 isActive
                   ? 'text-indigo-600'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
+              {ripple && ripple.tabKey === tab.key && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    left: ripple.x - 20,
+                    top: ripple.y - 20,
+                    width: 40,
+                    height: 40,
+                    borderRadius: '50%',
+                    background: 'rgba(99, 102, 241, 0.3)',
+                    animation: 'ripple 0.6s ease-out forwards',
+                    pointerEvents: 'none',
+                  }}
+                />
+              )}
               <span className={isActive ? 'transform scale-110 transition-transform duration-200' : ''}>
                 {tab.icon}
               </span>
