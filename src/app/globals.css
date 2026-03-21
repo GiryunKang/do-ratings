@@ -47,6 +47,13 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* CTA Animated Gradient */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 /* Hero Banner Animations */
 @keyframes heroGradientShift {
   0% { background-position: 0% 50%; }
@@ -96,6 +103,12 @@
 @keyframes heroStarShoot {
   0% { transform: translate(0, 0) scale(1); opacity: 1; }
   100% { transform: translate(var(--shoot-x), var(--shoot-y)) scale(0.3); opacity: 0; }
+}
+
+/* Ripple Effect */
+@keyframes ripple {
+  from { transform: scale(0); opacity: 1; }
+  to { transform: scale(4); opacity: 0; }
 }
 
 /* Animations */
@@ -283,5 +296,24 @@
   }
   html {
     @apply font-sans;
+    transition: color-scheme 0.3s ease;
   }
+  body, .bg-background, .bg-card, .bg-muted {
+    transition: background-color 0.3s ease;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.5);
 }

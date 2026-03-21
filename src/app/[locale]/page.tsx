@@ -6,6 +6,8 @@ import TrendingSection from '@/components/home/TrendingSection'
 import PopularReviewsSection from '@/components/home/PopularReviewsSection'
 import AnimatedSection from '@/components/ui/AnimatedSection'
 import GlowCard from '@/components/ui/GlowCard'
+import CountUp from '@/components/ui/CountUp'
+import SpotlightCard from '@/components/home/SpotlightCard'
 import Link from 'next/link'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
@@ -259,15 +261,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <AnimatedSection delay={0.1}>
         <div className="grid grid-cols-3 gap-3">
           <GlowCard className="bg-gradient-to-br from-indigo-500 to-purple-600 p-4 text-white text-center border-0" glowColor="rgba(129, 140, 248, 0.4)">
-            <p className="text-2xl font-bold">{totalSubjects}</p>
+            <CountUp target={totalSubjects} className="text-2xl font-bold" />
             <p className="text-xs text-white/70 mt-1">{locale === 'ko' ? '등록된 대상' : 'Subjects'}</p>
           </GlowCard>
           <GlowCard className="bg-gradient-to-br from-pink-500 to-rose-600 p-4 text-white text-center border-0" glowColor="rgba(244, 114, 182, 0.4)">
-            <p className="text-2xl font-bold">{totalCategories}</p>
+            <CountUp target={totalCategories} className="text-2xl font-bold" />
             <p className="text-xs text-white/70 mt-1">{locale === 'ko' ? '카테고리' : 'Categories'}</p>
           </GlowCard>
           <GlowCard className="bg-gradient-to-br from-amber-500 to-orange-600 p-4 text-white text-center border-0" glowColor="rgba(251, 191, 36, 0.4)">
-            <p className="text-2xl font-bold">{totalReviews}</p>
+            <CountUp target={totalReviews} className="text-2xl font-bold" />
             <p className="text-xs text-white/70 mt-1">{locale === 'ko' ? '리뷰' : 'Reviews'}</p>
           </GlowCard>
         </div>
@@ -286,22 +288,16 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               const desc = subject.description?.[locale] ?? subject.description?.['ko'] ?? ''
               const catName = subject.category_name[locale] ?? subject.category_name['ko']
               return (
-                <Link key={subject.id} href={`/${locale}/subject/${subject.id}`}
-                  className="relative bg-card rounded-2xl border border-gray-200 p-5 hover:border-indigo-300 hover:shadow-lg transition-all group overflow-hidden">
-                  {/* Category color top accent */}
-                  <div className={`absolute top-0 left-0 right-0 h-1 ${getCategoryColor(subject.category_slug)}`} />
-                  <div className="flex items-center gap-1.5 mb-3">
-                    <span className={`w-5 h-5 rounded-full ${getCategoryColor(subject.category_slug)} flex items-center justify-center`}>
-                      <CategoryIcon name={subject.category_icon} className="w-3 h-3 text-white" />
-                    </span>
-                    <span className="text-xs text-gray-400">{catName}</span>
-                  </div>
-                  <h3 className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors text-lg mb-1">{name}</h3>
-                  {desc && <p className="text-xs text-gray-500 line-clamp-1 mb-3">{desc}</p>}
-                  <span className="text-xs font-medium text-indigo-600 bg-indigo-50 rounded-full px-3 py-1">
-                    {locale === 'ko' ? '평가하기 →' : 'Rate now →'}
-                  </span>
-                </Link>
+                <SpotlightCard
+                  key={subject.id}
+                  href={`/${locale}/subject/${subject.id}`}
+                  name={name}
+                  desc={desc}
+                  catName={catName}
+                  categorySlug={subject.category_slug}
+                  categoryIcon={subject.category_icon}
+                  rateLabel={locale === 'ko' ? '평가하기 →' : 'Rate now →'}
+                />
               )
             })}
           </div>
@@ -355,7 +351,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       {/* 7. CTA Banner */}
       <AnimatedSection delay={0.1}>
-        <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 rounded-2xl p-6 text-center text-white">
+        <div
+          className="rounded-2xl p-6 text-center text-white"
+          style={{
+            background: 'linear-gradient(-45deg, #6366f1, #8b5cf6, #ec4899, #f59e0b)',
+            backgroundSize: '300% 300%',
+            animation: 'gradientShift 6s ease infinite',
+          }}
+        >
           <h2 className="text-xl font-bold mb-2">
             {locale === 'ko' ? '당신의 의견을 들려주세요' : 'Share Your Opinion'}
           </h2>
