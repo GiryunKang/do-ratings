@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import Link from 'next/link'
 import { getCategoryColor } from '@/lib/utils/category-colors'
 import { CategoryIcon } from '@/lib/icons'
+import { proxyImageUrl } from '@/lib/utils/image-proxy'
 
 interface Subject {
   id: string
@@ -73,7 +74,7 @@ export default function FeaturedCarousel({
             >
               {subject.image_url ? (
                 <div className="absolute inset-0">
-                  <img src={subject.image_url} alt={subjectName} className="w-full h-full object-cover" />
+                  <img src={proxyImageUrl(subject.image_url) ?? ''} alt={subjectName} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
                 </div>
               ) : (

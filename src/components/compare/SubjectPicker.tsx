@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { proxyImageUrl } from '@/lib/utils/image-proxy'
 
 interface PickedSubject {
   id: string
@@ -177,7 +178,7 @@ export default function SubjectPicker({
                       {/* Thumbnail or placeholder */}
                       {subject.image_url ? (
                         <img
-                          src={subject.image_url}
+                          src={proxyImageUrl(subject.image_url) ?? ''}
                           alt={displayName}
                           className="w-10 h-10 rounded-md object-cover shrink-0"
                         />

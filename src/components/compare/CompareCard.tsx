@@ -1,5 +1,7 @@
 'use client'
 
+import { proxyImageUrl } from '@/lib/utils/image-proxy'
+
 interface CompareCardProps {
   subject: {
     id: string
@@ -53,7 +55,7 @@ export default function CompareCard({
       <div className="flex justify-center">
         {subject.image_url ? (
           <img
-            src={subject.image_url}
+            src={proxyImageUrl(subject.image_url) ?? ''}
             alt={displayName}
             className="w-20 h-20 rounded-lg object-cover"
           />

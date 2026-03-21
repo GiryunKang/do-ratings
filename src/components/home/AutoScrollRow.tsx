@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
+import { proxyImageUrl } from '@/lib/utils/image-proxy'
 
 interface SubjectItem {
   id: string
@@ -97,7 +98,7 @@ export default function AutoScrollRow({
               <div className="h-24 relative overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={subject.image_url}
+                  src={proxyImageUrl(subject.image_url) ?? ''}
                   alt={name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />

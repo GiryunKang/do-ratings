@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { proxyImageUrl } from '@/lib/utils/image-proxy'
 import FeaturedCarousel from '@/components/home/FeaturedCarousel'
 import HeroBanner from '@/components/home/HeroBanner'
 import AutoScrollRow from '@/components/home/AutoScrollRow'
@@ -245,7 +246,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           category_slug: s.category_slug,
           category_name: s.category_name,
           category_icon: s.category_icon,
-          image_url: s.image_url,
+          image_url: proxyImageUrl(s.image_url),
         }))} locale={locale} />
       </AnimatedSection>
 
@@ -337,7 +338,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   description: s.description,
                   avg_rating: s.avg_rating,
                   review_count: s.review_count,
-                  image_url: s.image_url,
+                  image_url: proxyImageUrl(s.image_url),
                 }))}
                 categorySlug={slug}
                 categoryIcon={icon}

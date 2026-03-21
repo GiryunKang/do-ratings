@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { formatRating } from '@/lib/utils/rating'
+import { proxyImageUrl } from '@/lib/utils/image-proxy'
 import AnimatedRating from '@/components/ui/AnimatedRating'
 import StarRating from '@/components/review/StarRating'
 import SubRatingChart from '@/components/review/SubRatingChart'
@@ -160,7 +161,7 @@ export default async function SubjectPage({ params }: PageProps) {
               {subject.image_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={subject.image_url as string}
+                  src={proxyImageUrl(subject.image_url as string) ?? ''}
                   alt={subjectName}
                   className="w-20 h-20 rounded-lg object-cover"
                 />
