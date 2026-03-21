@@ -24,6 +24,7 @@ export default function PlaceSearch({ categorySlug, locale }: PlaceSearchProps) 
   const [results, setResults] = useState<PlaceResult[]>([])
   const [loading, setLoading] = useState(false)
   const [adding, setAdding] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
@@ -50,6 +51,7 @@ export default function PlaceSearch({ categorySlug, locale }: PlaceSearchProps) 
 
   async function handleAddPlace(place: PlaceResult) {
     setAdding(place.google_place_id)
+    setError(null)
     try {
       const res = await fetch('/api/places/add', {
         method: 'POST',
@@ -65,11 +67,19 @@ export default function PlaceSearch({ categorySlug, locale }: PlaceSearchProps) 
         }),
       })
       const data = await res.json()
+      if (data.error) {
+        if (res.status === 401) {
+          setError(locale === 'ko' ? '로그인이 필요합니다' : 'Login required')
+        } else {
+          setError(data.error)
+        }
+        return
+      }
       if (data.id) {
         router.push(`/${locale}/subject/${data.id}`)
       }
     } catch {
-      // handle error silently
+      setError(locale === 'ko' ? '추가에 실패했습니다. 다시 시도해주세요.' : 'Failed to add. Please try again.')
     } finally {
       setAdding(null)
     }
@@ -131,6 +141,12 @@ export default function PlaceSearch({ categorySlug, locale }: PlaceSearchProps) 
             </li>
           ))}
         </ul>
+      )}
+
+      {error && (
+        <p className="text-sm text-red-500 text-center py-3 bg-red-50 rounded-lg mt-3">
+          {error}
+        </p>
       )}
 
       {query.length >= 2 && !loading && results.length === 0 && (

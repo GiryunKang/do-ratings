@@ -62,18 +62,22 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to add subject' }, { status: 500 })
   }
 
-  // Try to fetch an image (non-blocking — don't fail the request if image fetch fails)
+  // Try to fetch an image (non-blocking — NEVER fail the request if image fetch fails)
   let imageUrl: string | null = null
   let imageAttribution: { source: string; photographer?: string; url?: string; license?: string } | null = null
 
+  try {
   const apiKey = process.env.GOOGLE_PLACES_API_KEY
 
   // 1. Try Google Places Photos (for places with photo data)
   if (apiKey && google_place_id) {
     try {
       // Fetch place details to get photos
+      // Google Places API (New) returns IDs like "places/ChIJ..." from search,
+      // but the details endpoint needs just the ID without the "places/" prefix
+      const placeId = google_place_id.startsWith('places/') ? google_place_id.slice(7) : google_place_id
       const detailsRes = await fetch(
-        `https://places.googleapis.com/v1/places/${google_place_id}`,
+        `https://places.googleapis.com/v1/places/${placeId}`,
         {
           headers: {
             'X-Goog-Api-Key': apiKey,
@@ -178,6 +182,10 @@ export async function POST(request: NextRequest) {
         },
       })
       .eq('id', newSubject.id)
+  }
+  } catch (imgErr) {
+    console.error('Image fetch error (non-fatal):', imgErr)
+    // Image fetch failed but subject was created successfully — continue
   }
 
   return NextResponse.json({ id: newSubject.id, existing: false })
