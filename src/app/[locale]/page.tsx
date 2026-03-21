@@ -352,24 +352,28 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       {/* 7. CTA Banner */}
       <AnimatedSection delay={0.1}>
-        <div
-          className="rounded-2xl p-6 text-center text-white"
-          style={{
-            background: 'linear-gradient(-45deg, #6366f1, #8b5cf6, #ec4899, #f59e0b)',
-            backgroundSize: '300% 300%',
-            animation: 'gradientShift 6s ease infinite',
-          }}
-        >
-          <h2 className="text-xl font-bold mb-2">
-            {locale === 'ko' ? '당신의 의견을 들려주세요' : 'Share Your Opinion'}
-          </h2>
-          <p className="text-sm text-white/80 mb-4">
-            {locale === 'ko' ? '첫 번째 리뷰어가 되어 다른 사람들에게 도움을 주세요!' : 'Be the first reviewer and help others!'}
-          </p>
-          <Link href={`/${locale}/explore`}
-            className="inline-block bg-white text-indigo-600 font-bold px-6 py-2.5 rounded-full hover:shadow-lg transition-all hover:scale-105 text-sm">
-            {locale === 'ko' ? '탐색하기' : 'Explore Now'}
-          </Link>
+        <div className="relative overflow-hidden rounded-3xl p-8 md:p-10 text-center text-white" style={{ background: '#0c0a1a' }}>
+          {/* Decorative gradients */}
+          <div className="absolute inset-0 opacity-60" style={{
+            background: 'radial-gradient(ellipse at 30% 50%, rgba(139, 92, 246, 0.3), transparent 60%), radial-gradient(ellipse at 70% 50%, rgba(236, 72, 153, 0.2), transparent 60%)',
+          }} />
+          <div className="absolute inset-0 opacity-[0.04]" style={{
+            backgroundImage: 'radial-gradient(rgba(255,255,255,0.3) 1px, transparent 1px)',
+            backgroundSize: '20px 20px',
+          }} />
+
+          <div className="relative z-10">
+            <h2 className="text-xl md:text-2xl font-bold mb-2">
+              {locale === 'ko' ? '당신의 의견을 들려주세요' : 'Share Your Opinion'}
+            </h2>
+            <p className="text-sm text-white/50 mb-5 max-w-md mx-auto">
+              {locale === 'ko' ? '첫 번째 리뷰어가 되어 다른 사람들에게 도움을 주세요!' : 'Be the first reviewer and help others!'}
+            </p>
+            <Link href={`/${locale}/explore`}
+              className="inline-flex items-center gap-2 bg-white text-gray-900 font-bold px-6 py-2.5 rounded-full hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all hover:scale-105 text-sm">
+              {locale === 'ko' ? '탐색하기' : 'Explore Now'}
+            </Link>
+          </div>
         </div>
       </AnimatedSection>
     </div>

@@ -1,235 +1,133 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import PointingHand from './PointingHand'
 
 interface HeroBannerProps {
   locale: string
 }
 
-interface BurstStar {
-  id: number
-  x: number
-  y: number
-  size: number
-  angle: number
-  distance: number
-}
-
 export default function HeroBanner({ locale }: HeroBannerProps) {
-  const [phase, setPhase] = useState(0)
-  const [burstStars, setBurstStars] = useState<BurstStar[]>([])
-  const [burstKey, setBurstKey] = useState(0)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), 100)
-    const t2 = setTimeout(() => setPhase(2), 800)
-    const t3 = setTimeout(() => setPhase(3), 1400)
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
+    setMounted(true)
   }, [])
-
-  // Generate burst stars when phase 2 hits
-  useEffect(() => {
-    if (phase >= 2) {
-      triggerBurst()
-    }
-  }, [phase])
-
-  const triggerBurst = useCallback(() => {
-    const stars: BurstStar[] = Array.from({ length: 12 }, (_, i) => ({
-      id: i,
-      x: 0,
-      y: 0,
-      size: 12 + Math.random() * 20,
-      angle: (360 / 12) * i + (Math.random() * 20 - 10),
-      distance: 60 + Math.random() * 100,
-    }))
-    setBurstStars(stars)
-    setBurstKey(k => k + 1)
-  }, [])
-
-  // Recurring burst every 4 seconds
-  useEffect(() => {
-    if (phase < 2) return
-    const interval = setInterval(triggerBurst, 4000)
-    return () => clearInterval(interval)
-  }, [phase, triggerBurst])
 
   return (
-    <div
-      className="relative overflow-hidden rounded-2xl p-4 md:p-8 text-white min-h-[140px] md:min-h-[200px]"
-      style={{
-        background: 'linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #4f46e5, #7c3aed, #db2777)',
-        backgroundSize: '400% 400%',
-        animation: 'heroGradientShift 8s ease infinite',
-      }}
-    >
-      {/* Pulse rings behind the hand */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ transform: 'translateX(-15%)' }}>
-        {phase >= 2 && (
-          <>
-            <div className="absolute w-24 h-24 rounded-full border-2 border-yellow-300/20" style={{ animation: 'heroPulseRing 2.5s ease-out infinite' }} />
-            <div className="absolute w-24 h-24 rounded-full border border-white/15" style={{ animation: 'heroPulseRing 2.5s ease-out infinite 0.8s' }} />
-          </>
-        )}
-      </div>
+    <div className="relative overflow-hidden rounded-3xl min-h-[180px] md:min-h-[220px]">
+      {/* Animated mesh gradient background */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120, 119, 198, 0.3), transparent), radial-gradient(ellipse 60% 80% at 80% 50%, rgba(255, 107, 107, 0.15), transparent), radial-gradient(ellipse 60% 80% at 20% 50%, rgba(59, 130, 246, 0.15), transparent)',
+          backgroundColor: '#0c0a1a',
+        }}
+      />
 
-      {/* Main layout: Hand + Text side by side */}
-      <div className="relative z-10 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+      {/* Animated grid pattern */}
+      <div
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
+          backgroundSize: '60px 60px',
+        }}
+      />
 
-        {/* Pointing Hand — hidden on small mobile */}
-        <div className="relative hidden sm:flex items-center justify-center" style={{ minWidth: '100px', minHeight: '100px' }}>
-          <div
-            className={`w-[80px] h-[80px] md:w-[120px] md:h-[120px] lg:w-[140px] lg:h-[140px] ${phase >= 1 ? '' : 'opacity-0'}`}
-            style={phase >= 1 ? {
-              animation: 'heroHandPoint 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards, heroHandBob 3s ease-in-out 1.5s infinite',
-              filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.3))',
-            } : undefined}
-          >
-            <PointingHand className="w-full h-full object-contain" />
-          </div>
+      {/* Floating orbs */}
+      <motion.div
+        className="absolute w-72 h-72 rounded-full"
+        style={{ background: 'radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent 70%)', top: '-20%', right: '-10%' }}
+        animate={{ y: [0, 20, 0], x: [0, -10, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="absolute w-64 h-64 rounded-full"
+        style={{ background: 'radial-gradient(circle, rgba(59, 130, 246, 0.12), transparent 70%)', bottom: '-30%', left: '-5%' }}
+        animate={{ y: [0, -15, 0], x: [0, 15, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+      />
 
-          {/* Star bursts emanating from the fingertip (upper-right) */}
-          <div className="absolute -top-8 right-0 md:-top-10 md:right-[-10px] pointer-events-none" key={burstKey}>
-            {burstStars.map((star) => {
-              const rad = (star.angle * Math.PI) / 180
-              const bx = Math.cos(rad) * star.distance
-              const by = Math.sin(rad) * star.distance
-              return (
-                <span
-                  key={star.id}
-                  className="absolute text-yellow-300"
-                  style={{
-                    fontSize: star.size,
-                    '--burst-x': `${bx}px`,
-                    '--burst-y': `${by}px`,
-                    animation: `heroStarBurst 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${star.id * 0.04}s forwards`,
-                    filter: 'drop-shadow(0 0 6px rgba(250, 204, 21, 0.8))',
-                  } as React.CSSProperties}
-                >
-                  ★
-                </span>
-              )
-            })}
-          </div>
-        </div>
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center py-8 md:py-12 px-6 text-center">
+        {/* Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={mounted ? { opacity: 1, y: 0, scale: 1 } : {}}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="mb-4"
+        >
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold text-white/80 border border-white/10 bg-white/5 backdrop-blur-sm">
+            <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+            {locale === 'ko' ? '글로벌 리뷰 플랫폼' : 'Global Review Platform'}
+          </span>
+        </motion.div>
 
-        {/* Text content */}
-        <div className="text-center md:text-left">
-          {/* DO! RATINGS! */}
-          <h1 className="text-2xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-none">
-            <span
-              className={`inline-block ${phase >= 1 ? '' : 'opacity-0'}`}
-              style={phase >= 1 ? {
-                animation: 'heroSlam 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards',
-                textShadow: '0 4px 20px rgba(0,0,0,0.4)',
-              } : undefined}
-            >
-              DO!
-            </span>
-            <br className="md:hidden" />
-            {' '}
-            <span
-              className={`inline-block ${phase >= 1 ? '' : 'opacity-0'}`}
-              style={phase >= 1 ? {
-                animation: 'heroSlam 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both, heroGlow 3s ease-in-out 1s infinite',
-                color: '#facc15',
-              } : undefined}
-            >
-              RATINGS!
-            </span>
-          </h1>
+        {/* Main heading */}
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={mounted ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2, type: 'spring', stiffness: 100 }}
+          className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.1]"
+        >
+          <span>DO!</span>{' '}
+          <span className="bg-gradient-to-r from-yellow-300 via-amber-300 to-orange-400 bg-clip-text text-transparent">
+            RATINGS!
+          </span>
+        </motion.h1>
 
-          {/* Inline star rating with twinkle */}
-          <div className="flex justify-center md:justify-start gap-1.5 my-3">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <span
-                key={i}
-                className={`text-xl md:text-2xl text-yellow-300 ${phase >= 2 ? '' : 'opacity-0'}`}
-                style={phase >= 2 ? {
-                  animation: `heroStarExplode 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.06}s both, heroStarTwinkle 2s ease-in-out ${1.5 + i * 0.3}s infinite`,
-                  filter: 'drop-shadow(0 0 8px rgba(250,204,21,0.5))',
-                } : undefined}
-              >
-                ★
-              </span>
-            ))}
-          </div>
-
-          {/* Subtitle */}
-          <p
-            className={`text-sm md:text-base font-medium max-w-md mb-4 transition-all duration-700 ${
-              phase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-            }`}
-            style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}
-          >
-            {locale === 'ko'
-              ? '세상 모든 것에 별점을! 당신의 한 줄이 세상을 움직인다.'
-              : 'Rate everything! Your voice shapes the world.'}
-          </p>
-
-          {/* CTA Button */}
-          <Link
-            href={`/${locale}/explore`}
-            className={`inline-flex items-center gap-2 bg-yellow-400 text-gray-900 font-extrabold px-6 py-2.5 rounded-full text-xs md:text-sm shadow-[0_0_30px_rgba(250,204,21,0.4)] hover:shadow-[0_0_50px_rgba(250,204,21,0.7)] hover:scale-110 active:scale-95 transition-all duration-300 ${
-              phase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`}
-          >
-            ⚡ {locale === 'ko' ? '지금 평가하러 가기' : 'Start Rating Now'}
-          </Link>
-        </div>
-      </div>
-
-      {/* Ambient floating stars in background */}
-      {phase >= 2 && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {[
-            { top: '10%', left: '5%', size: '1.5rem', dur: '3s', delay: '0s' },
-            { top: '20%', right: '8%', size: '1rem', dur: '2.5s', delay: '0.5s' },
-            { top: '65%', left: '8%', size: '0.8rem', dur: '2.8s', delay: '1s' },
-            { top: '75%', right: '12%', size: '1.2rem', dur: '3.2s', delay: '0.3s' },
-            { top: '40%', right: '3%', size: '0.7rem', dur: '2.2s', delay: '1.5s' },
-            { top: '85%', left: '25%', size: '0.9rem', dur: '2.6s', delay: '0.8s' },
-          ].map((s, i) => (
-            <span
+        {/* Stars */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={mounted ? { opacity: 1, scale: 1 } : {}}
+          transition={{ duration: 0.5, delay: 0.4, type: 'spring', stiffness: 200 }}
+          className="flex gap-1 my-3"
+        >
+          {[1, 2, 3, 4, 5].map((i) => (
+            <motion.span
               key={i}
-              className="absolute text-yellow-300/40"
-              style={{
-                top: s.top,
-                left: s.left,
-                right: s.right,
-                fontSize: s.size,
-                animation: `heroStarTwinkle ${s.dur} ease-in-out ${s.delay} infinite`,
-              } as React.CSSProperties}
+              initial={{ opacity: 0, rotateY: 90 }}
+              animate={mounted ? { opacity: 1, rotateY: 0 } : {}}
+              transition={{ delay: 0.4 + i * 0.08, duration: 0.4, type: 'spring' }}
+              className="text-xl md:text-2xl text-yellow-400"
+              style={{ filter: 'drop-shadow(0 0 8px rgba(250, 204, 21, 0.4))' }}
             >
               ★
-            </span>
+            </motion.span>
           ))}
-        </div>
-      )}
+        </motion.div>
 
-      {/* Shooting stars */}
-      {phase >= 2 && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div
-            className="absolute w-16 h-0.5 bg-gradient-to-r from-transparent via-yellow-300/70 to-transparent rounded-full"
-            style={{
-              top: '15%', left: '20%',
-              '--shoot-x': '200px', '--shoot-y': '80px',
-              animation: 'heroStarShoot 1.5s linear infinite 2s',
-            } as React.CSSProperties}
-          />
-          <div
-            className="absolute w-12 h-0.5 bg-gradient-to-r from-transparent via-white/50 to-transparent rounded-full"
-            style={{
-              top: '55%', left: '60%',
-              '--shoot-x': '150px', '--shoot-y': '60px',
-              animation: 'heroStarShoot 2s linear infinite 3.5s',
-            } as React.CSSProperties}
-          />
-        </div>
-      )}
+        {/* Subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={mounted ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.6 }}
+          className="text-sm md:text-base text-white/60 max-w-md mb-5 font-medium"
+        >
+          {locale === 'ko'
+            ? '세상 모든 것에 별점을. 당신의 한 줄이 세상을 움직인다.'
+            : 'Rate everything. Your voice shapes the world.'}
+        </motion.p>
+
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={mounted ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.8 }}
+        >
+          <Link
+            href={`/${locale}/explore`}
+            className="group relative inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold text-black bg-gradient-to-r from-yellow-300 to-amber-400 hover:from-yellow-200 hover:to-amber-300 transition-all duration-300 shadow-[0_0_20px_rgba(250,204,21,0.3)] hover:shadow-[0_0_40px_rgba(250,204,21,0.5)] hover:scale-105 active:scale-95"
+          >
+            <span className="group-hover:translate-x-0.5 transition-transform">⚡</span>
+            {locale === 'ko' ? '지금 평가하러 가기' : 'Start Rating Now'}
+            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </Link>
+        </motion.div>
+      </div>
     </div>
   )
 }
