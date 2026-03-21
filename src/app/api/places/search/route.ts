@@ -56,14 +56,19 @@ export async function GET(request: NextRequest) {
   // Use Google Places API (New) - Text Search
   const url = `https://places.googleapis.com/v1/places:searchText`
 
-  // For restaurants, append "restaurant/맛집" to the query for better results
-  // instead of using includedType which is too restrictive for location-only queries
-  const enhancedQuery = type === 'restaurant' ? `${query} 맛집` : query
+  // For restaurants, append 맛집/음식점 for better Korean local search
+  const enhancedQuery = type === 'restaurant' ? `${query} 음식점` : query
 
-  const body = {
+  const body: Record<string, unknown> = {
     textQuery: enhancedQuery,
     languageCode: 'ko',
     maxResultCount: 10,
+    locationBias: {
+      rectangle: {
+        low: { latitude: 33.0, longitude: 124.5 },
+        high: { latitude: 38.6, longitude: 131.9 },
+      },
+    },
   }
 
   const response = await fetch(url, {
