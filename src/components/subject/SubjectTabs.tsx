@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import ReviewList from '@/components/review/ReviewList'
 import ImageGallery from '@/components/review/ImageGallery'
 import TrendChart from '@/components/analytics/TrendChart'
@@ -61,20 +62,29 @@ export default function SubjectTabs({
       </div>
 
       {/* Tab content */}
-      <div className="mt-4">
-        {activeTab === 'reviews' && <ReviewList subjectId={subjectId} />}
-        {activeTab === 'photos' && images.length > 0 && <ImageGallery images={images} />}
-        {activeTab === 'trend' && <TrendChart subjectId={subjectId} locale={locale} />}
-        {activeTab === 'summary' && <AISummary subjectId={subjectId} locale={locale} />}
-        {activeTab === 'embed' && subjectName && (
-          <EmbedWidget
-            subjectId={subjectId}
-            subjectName={subjectName}
-            avgRating={avgRating ?? null}
-            reviewCount={reviewCount ?? 0}
-          />
-        )}
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.2 }}
+          className="mt-4"
+        >
+          {activeTab === 'reviews' && <ReviewList subjectId={subjectId} />}
+          {activeTab === 'photos' && images.length > 0 && <ImageGallery images={images} />}
+          {activeTab === 'trend' && <TrendChart subjectId={subjectId} locale={locale} />}
+          {activeTab === 'summary' && <AISummary subjectId={subjectId} locale={locale} />}
+          {activeTab === 'embed' && subjectName && (
+            <EmbedWidget
+              subjectId={subjectId}
+              subjectName={subjectName}
+              avgRating={avgRating ?? null}
+              reviewCount={reviewCount ?? 0}
+            />
+          )}
+        </motion.div>
+      </AnimatePresence>
     </div>
   )
 }

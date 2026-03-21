@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useState } from 'react'
+import { motion } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
 import { useInfiniteScroll } from '@/lib/hooks/useInfiniteScroll'
 import { useAuth } from '@/lib/hooks/useAuth'
@@ -193,12 +194,18 @@ export default function ReviewList({ subjectId, userId }: ReviewListProps) {
       ) : (
         <InfiniteScroll onLoadMore={loadMore} hasMore={hasMore} loading={loading}>
           <div className="space-y-3">
-            {items.map((review) => (
-              <ReviewCard
+            {items.map((review, index) => (
+              <motion.div
                 key={review.id}
-                review={review}
-                currentUserId={currentUser?.id ?? null}
-              />
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05, duration: 0.4 }}
+              >
+                <ReviewCard
+                  review={review}
+                  currentUserId={currentUser?.id ?? null}
+                />
+              </motion.div>
             ))}
           </div>
         </InfiniteScroll>

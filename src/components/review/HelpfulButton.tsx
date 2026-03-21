@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
+
 interface HelpfulButtonProps {
   reviewId: string
   initialCount: number
@@ -21,12 +22,15 @@ export default function HelpfulButton({
   const [helpful, setHelpful] = useState(isHelpful)
   const [count, setCount] = useState(initialCount)
   const [pending, setPending] = useState(false)
+  const [bouncing, setBouncing] = useState(false)
 
   const isDisabled =
     !currentUserId || currentUserId === reviewUserId || pending
 
   async function toggle() {
     if (isDisabled) return
+    setBouncing(true)
+    setTimeout(() => setBouncing(false), 300)
     setPending(true)
     const supabase = createClient()
 
@@ -62,6 +66,7 @@ export default function HelpfulButton({
           ? 'bg-indigo-50 border-indigo-300 text-indigo-600'
           : 'border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700'
       } disabled:opacity-50 disabled:cursor-not-allowed`}
+      style={{ transform: bouncing ? 'scale(1.3)' : 'scale(1)', transition: 'transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)' }}
       title={!currentUserId ? 'Login to mark helpful' : undefined}
     >
       <svg

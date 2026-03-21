@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { formatRating } from '@/lib/utils/rating'
+import AnimatedRating from '@/components/ui/AnimatedRating'
 import StarRating from '@/components/review/StarRating'
 import SubRatingChart from '@/components/review/SubRatingChart'
 import RelatedNews from '@/components/news/RelatedNews'
@@ -191,9 +192,7 @@ export default async function SubjectPage({ params }: PageProps) {
               </div>
               <div className="flex items-center gap-2 golden-glow rounded-lg px-2 py-1 inline-flex">
                 <StarRating value={subject.avg_rating ?? 0} readonly size="lg" />
-                <span className="text-lg font-semibold text-foreground">
-                  {formatRating(subject.avg_rating)}
-                </span>
+                <AnimatedRating value={subject.avg_rating ?? 0} className="text-lg font-semibold text-foreground" />
                 <span className="text-sm text-muted-foreground">({subject.review_count} reviews)</span>
               </div>
             </div>
