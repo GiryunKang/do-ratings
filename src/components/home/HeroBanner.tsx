@@ -50,7 +50,27 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
       />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center py-8 md:py-12 px-6 text-center">
+      <div className="relative z-10 flex flex-col md:flex-row items-center justify-center py-8 md:py-12 px-6 gap-6 md:gap-10">
+        {/* Pointing Hand — animated */}
+        <motion.div
+          initial={{ opacity: 0, x: -60, rotate: -20 }}
+          animate={mounted ? { opacity: 1, x: 0, rotate: -25 } : {}}
+          transition={{ duration: 0.7, delay: 0.3, type: 'spring', stiffness: 120 }}
+          className="hidden md:block shrink-0"
+        >
+          <motion.span
+            animate={{ y: [0, -8, 0], rotate: [-25, -22, -25] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            className="block text-[100px] lg:text-[130px] select-none"
+            style={{ filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.4))' }}
+          >
+            👉
+          </motion.span>
+        </motion.div>
+
+        {/* Text content */}
+        <div className="text-center md:text-left flex flex-col items-center md:items-start">
+
         {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: 20, scale: 0.9 }}
@@ -127,6 +147,19 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
             </svg>
           </Link>
         </motion.div>
+
+        </div>{/* end text content */}
+
+        {/* Mobile hand — smaller, below text */}
+        <motion.span
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={mounted ? { opacity: 1, scale: 1 } : {}}
+          transition={{ duration: 0.5, delay: 0.6, type: 'spring' }}
+          className="md:hidden text-6xl select-none"
+          style={{ filter: 'drop-shadow(0 5px 15px rgba(0,0,0,0.3))' }}
+        >
+          👉
+        </motion.span>
       </div>
     </div>
   )
