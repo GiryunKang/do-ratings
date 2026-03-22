@@ -239,6 +239,21 @@ export default function SettingsPage() {
           {currentLocale === 'ko' ? '계정 영구 삭제' : 'Delete Account Permanently'}
         </button>
       </div>
+
+      {/* Logout */}
+      <div className="bg-card rounded-xl border border-border p-5">
+        <h2 className="text-sm font-semibold text-foreground mb-3">{currentLocale === 'ko' ? '로그아웃' : 'Logout'}</h2>
+        <button
+          onClick={async () => {
+            const supabase = createClient()
+            await supabase.auth.signOut()
+            window.location.href = `/${currentLocale}`
+          }}
+          className="px-4 py-2 text-sm font-medium text-foreground border border-border rounded-lg hover:bg-muted transition-colors"
+        >
+          {currentLocale === 'ko' ? '로그아웃' : 'Log out'}
+        </button>
+      </div>
     </div>
   )
 }
