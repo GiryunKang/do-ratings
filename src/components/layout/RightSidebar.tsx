@@ -95,7 +95,7 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
                       <span className="text-sm font-medium text-gray-900 truncate">{nickname}</span>
                       <UserBadge level={level} />
                     </div>
-                    <p className="text-xs text-gray-400">{reviewCount} reviews</p>
+                    <p className="text-xs text-gray-400">{reviewCount} {locale === 'ko' ? '개 리뷰' : reviewCount === 1 ? 'review' : 'reviews'}</p>
                   </div>
                 </li>
               )

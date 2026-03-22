@@ -194,7 +194,7 @@ export default async function SubjectPage({ params }: PageProps) {
               <div className="flex items-center gap-2 golden-glow rounded-lg px-2 py-1 inline-flex">
                 <StarRating value={subject.avg_rating ?? 0} readonly size="lg" />
                 <AnimatedRating value={subject.avg_rating ?? 0} className="text-lg font-semibold text-foreground" />
-                <span className="text-sm text-muted-foreground">({subject.review_count} reviews)</span>
+                <span className="text-sm text-muted-foreground">({subject.review_count} {locale === 'ko' ? '개 리뷰' : subject.review_count === 1 ? 'review' : 'reviews'})</span>
               </div>
             </div>
           </div>

@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from 'react'
 import { motion } from 'framer-motion'
+import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { useInfiniteScroll } from '@/lib/hooks/useInfiniteScroll'
 import { useAuth } from '@/lib/hooks/useAuth'
@@ -35,6 +36,8 @@ const PAGE_SIZE = 10
 
 export default function ReviewList({ subjectId, userId }: ReviewListProps) {
   const { user: currentUser } = useAuth()
+  const pathname = usePathname()
+  const locale = pathname?.startsWith('/en') ? 'en' : 'ko'
   const [sort, setSort] = useState('latest')
 
   const fetchReviews = useCallback(
@@ -188,8 +191,8 @@ export default function ReviewList({ subjectId, userId }: ReviewListProps) {
             <path d="M12 20h9" />
             <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
           </svg>
-          <p className="text-gray-500 font-medium mb-2">No reviews yet</p>
-          <p className="text-gray-400 text-sm">Be the first to share your experience!</p>
+          <p className="text-gray-500 font-medium mb-2">{locale === 'ko' ? '아직 리뷰가 없습니다' : 'No reviews yet'}</p>
+          <p className="text-gray-400 text-sm">{locale === 'ko' ? '첫 번째 리뷰를 남겨보세요!' : 'Be the first to share your experience!'}</p>
         </div>
       ) : (
         <InfiniteScroll onLoadMore={loadMore} hasMore={hasMore} loading={loading}>

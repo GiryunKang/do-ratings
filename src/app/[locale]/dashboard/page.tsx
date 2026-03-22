@@ -275,7 +275,7 @@ export default function DashboardPage() {
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
         <h2 className="text-sm font-semibold text-gray-700 mb-4">{t('recentActivity')}</h2>
         {recentReviews.length === 0 ? (
-          <p className="text-sm text-gray-400 text-center py-6">No reviews yet</p>
+          <p className="text-sm text-gray-400 text-center py-6">{currentLocale === 'ko' ? '아직 리뷰가 없습니다' : 'No reviews yet'}</p>
         ) : (
           <ul className="divide-y divide-gray-50">
             {recentReviews.map((review) => (
