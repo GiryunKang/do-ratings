@@ -18,9 +18,6 @@
     "minRating": "Min Rating",
     "any": "Any"
   },
-  "auth": {
-    "forgotPassword": "Forgot password?"
-  },
   "nav": {
     "home": "Home",
     "explore": "Explore",
@@ -66,7 +63,8 @@
     "nickname": "Nickname",
     "loginWith": "Log in with {provider}",
     "signupWith": "Sign up with {provider}",
-    "orContinueWith": "or"
+    "orContinueWith": "or",
+    "forgotPassword": "Forgot password?"
   },
   "report": {
     "spam": "Spam",

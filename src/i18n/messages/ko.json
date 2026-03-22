@@ -18,9 +18,6 @@
     "minRating": "최소 평점",
     "any": "전체"
   },
-  "auth": {
-    "forgotPassword": "비밀번호를 잊으셨나요?"
-  },
   "nav": {
     "home": "홈",
     "explore": "탐색",
@@ -66,7 +63,8 @@
     "nickname": "닉네임",
     "loginWith": "{provider}로 로그인",
     "signupWith": "{provider}로 회원가입",
-    "orContinueWith": "또는"
+    "orContinueWith": "또는",
+    "forgotPassword": "비밀번호를 잊으셨나요?"
   },
   "report": {
     "spam": "스팸",
