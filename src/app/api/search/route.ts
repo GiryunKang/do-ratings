@@ -31,7 +31,8 @@ export async function GET(request: NextRequest) {
   let query = supabase.from('subjects').select('*, categories(name, slug)')
 
   if (q) {
-    query = query.or(`name->ko.ilike.%${q}%,name->en.ilike.%${q}%`)
+    // JSONB fields need cast to text for ILIKE
+    query = query.or(`name->>ko.ilike.%${q}%,name->>en.ilike.%${q}%`)
   }
 
   if (category) {
