@@ -57,7 +57,7 @@ export default function ReviewList({ subjectId, userId }: ReviewListProps) {
           subject_id,
           user_id,
           country_code,
-          public_profiles(id, nickname, level, avatar_url)
+          public_profiles!reviews_user_id_fkey(id, nickname, level, avatar_url)
         `)
         .limit(PAGE_SIZE)
 
