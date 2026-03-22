@@ -13,8 +13,10 @@ export default function RootLayout({
   return (
     <html className={cn("font-sans", geist.variable)}>
       <head>
+        <link rel="icon" type="image/png" sizes="48x48" href="/ko/icon" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/ko/apple-icon" />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#2563eb" />
+        <meta name="theme-color" content="#4f46e5" />
       </head>
       <body className="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white min-h-screen">
         {children}
