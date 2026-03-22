@@ -11,7 +11,15 @@
     "delete": "Delete",
     "edit": "Edit",
     "loading": "Loading...",
-    "noResults": "No results found"
+    "noResults": "No results found",
+    "explore": "Explore",
+    "filter": "Filter",
+    "category": "Category",
+    "minRating": "Min Rating",
+    "any": "Any"
+  },
+  "auth": {
+    "forgotPassword": "Forgot password?"
   },
   "nav": {
     "home": "Home",
