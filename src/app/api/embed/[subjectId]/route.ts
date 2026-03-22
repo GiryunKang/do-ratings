@@ -1,10 +1,33 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+const rateLimit = new Map<string, { count: number; resetAt: number }>()
+function checkRateLimit(ip: string, limit: number, windowMs: number): boolean {
+  const now = Date.now()
+  const entry = rateLimit.get(ip)
+  if (!entry || now > entry.resetAt) { rateLimit.set(ip, { count: 1, resetAt: now + windowMs }); return true }
+  if (entry.count >= limit) return false
+  entry.count++; return true
+}
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ subjectId: string }> }
 ) {
+  const ip = request.headers.get('x-forwarded-for') ?? 'unknown'
+  if (!checkRateLimit(ip, 60, 60000)) {
+    return new NextResponse('Rate limit exceeded', { status: 429 })
+  }
+
   const { subjectId } = await params
   const { searchParams } = new URL(request.url)
   const size = searchParams.get('size') ?? 'md'
@@ -18,21 +41,25 @@ export async function GET(
 
   if (!subject) return new NextResponse('Not found', { status: 404 })
 
-  const name =
+  const rawName =
     typeof subject.name === 'object'
       ? ((subject.name as Record<string, string>).en ??
         (subject.name as Record<string, string>).ko)
       : String(subject.name)
 
+  const name = escapeHtml(rawName ?? '')
   const rating = subject.avg_rating ? Number(subject.avg_rating).toFixed(1) : '—'
+  const safeRating = escapeHtml(rating)
   const roundedRating = Math.round(Number(subject.avg_rating ?? 0))
   const stars = '★'.repeat(roundedRating) + '☆'.repeat(5 - roundedRating)
+  const reviewCount = Number(subject.review_count ?? 0)
 
   const nameFontSize = size === 'sm' ? '12px' : size === 'lg' ? '16px' : '14px'
   const starFontSize = size === 'sm' ? '12px' : size === 'lg' ? '18px' : '14px'
   const metaFontSize = size === 'sm' ? '10px' : '12px'
 
   const baseUrl = request.url.split('/api')[0]
+  const safeSubjectId = escapeHtml(subjectId)
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -63,15 +90,15 @@ export async function GET(
   </style>
 </head>
 <body>
-<a href="${baseUrl}/subject/${subjectId}" target="_blank" rel="noopener noreferrer">
+<a href="${baseUrl}/subject/${safeSubjectId}" target="_blank" rel="noopener noreferrer">
   <div class="badge">
     <div>
       <div class="name">${name}</div>
       <div class="rating-row">
         <span class="stars">${stars}</span>
-        <span class="score">${rating}</span>
+        <span class="score">${safeRating}</span>
       </div>
-      <div class="meta">${subject.review_count} reviews &bull; Ratings</div>
+      <div class="meta">${reviewCount} reviews &bull; Ratings</div>
     </div>
   </div>
 </a>

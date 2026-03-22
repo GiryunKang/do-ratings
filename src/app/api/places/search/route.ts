@@ -48,6 +48,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ results: [] })
   }
 
+  if (query.length > 200) {
+    return NextResponse.json({ error: 'Query too long' }, { status: 400 })
+  }
+
   const apiKey = process.env.GOOGLE_PLACES_API_KEY
   if (!apiKey) {
     return NextResponse.json({ error: 'API key not configured' }, { status: 500 })

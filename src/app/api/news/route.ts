@@ -17,6 +17,8 @@ export async function GET(request: NextRequest) {
 
   if (!query) return NextResponse.json({ articles: [] })
 
+  if (query.length > 200) return NextResponse.json({ error: 'Query too long' }, { status: 400 })
+
   try {
     // Use Google News RSS feed converted to JSON via a proxy
     const encodedQuery = encodeURIComponent(query)

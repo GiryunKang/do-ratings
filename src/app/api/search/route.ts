@@ -26,6 +26,13 @@ export async function GET(request: NextRequest) {
   const category = searchParams.get('category')
   const ratingMin = searchParams.get('rating_min')
 
+  if (q.length > 200) return NextResponse.json({ error: 'Query too long' }, { status: 400 })
+
+  if (ratingMin !== null) {
+    const rating = parseFloat(ratingMin)
+    if (isNaN(rating)) return NextResponse.json({ error: 'Invalid rating_min' }, { status: 400 })
+  }
+
   const supabase = await createClient()
 
   let query = supabase.from('subjects').select('*, categories(name, slug)')

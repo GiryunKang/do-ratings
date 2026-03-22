@@ -5,7 +5,21 @@ const ALLOWED_HOSTS = [
   'commons.wikimedia.org',
 ]
 
+const rateLimit = new Map<string, { count: number; resetAt: number }>()
+function checkRateLimit(ip: string, limit: number, windowMs: number): boolean {
+  const now = Date.now()
+  const entry = rateLimit.get(ip)
+  if (!entry || now > entry.resetAt) { rateLimit.set(ip, { count: 1, resetAt: now + windowMs }); return true }
+  if (entry.count >= limit) return false
+  entry.count++; return true
+}
+
 export async function GET(request: NextRequest) {
+  const ip = request.headers.get('x-forwarded-for') ?? 'unknown'
+  if (!checkRateLimit(ip, 30, 60000)) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
+  }
+
   const url = request.nextUrl.searchParams.get('url')
   if (!url) return NextResponse.json({ error: 'Missing url param' }, { status: 400 })
 

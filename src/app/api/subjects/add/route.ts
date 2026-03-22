@@ -1,7 +1,21 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+const rateLimit = new Map<string, { count: number; resetAt: number }>()
+function checkRateLimit(ip: string, limit: number, windowMs: number): boolean {
+  const now = Date.now()
+  const entry = rateLimit.get(ip)
+  if (!entry || now > entry.resetAt) { rateLimit.set(ip, { count: 1, resetAt: now + windowMs }); return true }
+  if (entry.count >= limit) return false
+  entry.count++; return true
+}
+
 export async function POST(request: NextRequest) {
+  const ip = request.headers.get('x-forwarded-for') ?? 'unknown'
+  if (!checkRateLimit(ip, 10, 60000)) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
+  }
+
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -11,6 +25,12 @@ export async function POST(request: NextRequest) {
 
   if (!name_ko && !name_en) return NextResponse.json({ error: 'Name required' }, { status: 400 })
   if (!category_slug) return NextResponse.json({ error: 'Category required' }, { status: 400 })
+
+  if (name_ko && name_ko.length > 200) return NextResponse.json({ error: 'name_ko too long' }, { status: 400 })
+  if (name_en && name_en.length > 200) return NextResponse.json({ error: 'name_en too long' }, { status: 400 })
+  if (description_ko && description_ko.length > 2000) return NextResponse.json({ error: 'description_ko too long' }, { status: 400 })
+  if (description_en && description_en.length > 2000) return NextResponse.json({ error: 'description_en too long' }, { status: 400 })
+  if (image_url && !/^https?:\/\//.test(image_url)) return NextResponse.json({ error: 'Invalid image_url' }, { status: 400 })
 
   const { data: category } = await supabase
     .from('categories').select('id').eq('slug', category_slug).single()
