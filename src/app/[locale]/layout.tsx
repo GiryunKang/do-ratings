@@ -11,6 +11,7 @@ import RightSidebar from '@/components/layout/RightSidebar'
 import AdBanner from '@/components/layout/AdBanner'
 import { ThemeProvider } from '@/components/ui/ThemeProvider'
 import OnboardingTrigger from '@/components/onboarding/OnboardingTrigger'
+import SplashScreen from '@/components/ui/SplashScreen'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
@@ -44,6 +45,7 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider messages={messages}>
       <ThemeProvider>
+        <SplashScreen locale={locale} />
         <ScrollProgressBar />
         <Header />
         <div className="flex">
