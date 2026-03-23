@@ -16,7 +16,7 @@ export default function AchievementBadge({
   return (
     <div className={`group relative inline-flex flex-col items-center gap-1 ${earned ? '' : 'opacity-40 grayscale'}`}>
       {/* Badge pill */}
-      <span className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-xl border border-gray-200 cursor-default select-none">
+      <span className={`flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-xl border border-gray-200 cursor-default select-none${earned ? ' animate-pulse-gold' : ''}`}>
         {icon}
       </span>
 

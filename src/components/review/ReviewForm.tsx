@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { motion } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
 import SubRatingInput from '@/components/review/SubRatingInput'
 import ImageUpload, { ImageFile } from '@/components/review/ImageUpload'
@@ -229,13 +230,62 @@ export default function ReviewForm({
 
   if (success) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 gap-3">
-        <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-          <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+      <div className="flex flex-col items-center justify-center py-16 gap-3 relative overflow-hidden">
+        {/* Confetti particles */}
+        {Array.from({ length: 30 }).map((_, i) => (
+          <motion.div
+            key={i}
+            initial={{
+              opacity: 1,
+              x: 0,
+              y: 0,
+              scale: 1,
+              rotate: 0,
+            }}
+            animate={{
+              opacity: 0,
+              x: (Math.random() - 0.5) * 300,
+              y: -(Math.random() * 200 + 50),
+              scale: Math.random() * 0.5 + 0.5,
+              rotate: Math.random() * 720 - 360,
+            }}
+            transition={{
+              duration: 1.5 + Math.random(),
+              delay: Math.random() * 0.3,
+              ease: 'easeOut',
+            }}
+            className="absolute"
+            style={{
+              left: '50%',
+              top: '40%',
+              width: 8 + Math.random() * 8,
+              height: 8 + Math.random() * 8,
+              borderRadius: Math.random() > 0.5 ? '50%' : '2px',
+              background: ['#facc15', '#f59e0b', '#6366f1', '#ec4899', '#10b981', '#3b82f6'][Math.floor(Math.random() * 6)],
+            }}
+          />
+        ))}
+
+        {/* Success icon with pop */}
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: [0, 1.3, 1] }}
+          transition={{ duration: 0.5, type: 'spring', stiffness: 200 }}
+          className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center z-10"
+        >
+          <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
           </svg>
-        </div>
-        <p className="text-gray-700 font-medium">Review submitted!</p>
+        </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="text-foreground font-bold text-lg z-10"
+        >
+          {locale === 'ko' ? '리뷰가 등록되었습니다! 🎉' : 'Review submitted! 🎉'}
+        </motion.p>
       </div>
     )
   }

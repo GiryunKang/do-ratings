@@ -23,6 +23,7 @@ export default function HelpfulButton({
   const [count, setCount] = useState(initialCount)
   const [pending, setPending] = useState(false)
   const [bouncing, setBouncing] = useState(false)
+  const [glowing, setGlowing] = useState(false)
 
   const isDisabled =
     !currentUserId || currentUserId === reviewUserId || pending
@@ -49,6 +50,8 @@ export default function HelpfulButton({
           .insert({ review_id: reviewId, user_id: currentUserId! })
         setHelpful(true)
         setCount((c) => c + 1)
+        setGlowing(true)
+        setTimeout(() => setGlowing(false), 600)
       }
     } catch {
       // Revert on error — state unchanged
@@ -66,7 +69,11 @@ export default function HelpfulButton({
           ? 'bg-indigo-50 border-indigo-300 text-indigo-600'
           : 'border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700'
       } disabled:opacity-50 disabled:cursor-not-allowed`}
-      style={{ transform: bouncing ? 'scale(1.3)' : 'scale(1)', transition: 'transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)' }}
+      style={{
+        transform: bouncing ? 'scale(1.3)' : 'scale(1)',
+        transition: 'transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55), box-shadow 0.3s',
+        ...(glowing ? { boxShadow: '0 0 16px rgba(250, 204, 21, 0.6)' } : {}),
+      }}
       title={!currentUserId ? 'Login to mark helpful' : undefined}
     >
       <svg
