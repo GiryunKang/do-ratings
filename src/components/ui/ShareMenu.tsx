@@ -38,7 +38,9 @@ export default function ShareMenu({ url, title, type, locale }: ShareMenuProps) 
     }
   }
 
-  const shareOptions = [
+  type ShareOption = { name: string; icon: string; action?: () => void; href?: string; label?: string }
+
+  const shareOptions: ShareOption[] = [
     {
       name: ko ? 'URL 복사' : 'Copy URL',
       icon: copied ? '✅' : '🔗',
@@ -93,10 +95,10 @@ export default function ShareMenu({ url, title, type, locale }: ShareMenuProps) 
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           <div className="absolute bottom-full left-0 mb-2 bg-card border border-border rounded-xl shadow-xl z-50 py-1 min-w-[180px] animate-in fade-in slide-in-from-bottom-2 duration-200">
             {shareOptions.map((opt, i) => (
-              'action' in opt && opt.action !== undefined ? (
+              opt.action ? (
                 <button
                   key={i}
-                  onClick={() => { opt.action!(); if (opt.name !== (ko ? 'URL 복사' : 'Copy URL')) setOpen(false) }}
+                  onClick={() => { opt.action?.(); if (!opt.label) setOpen(false) }}
                   className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-muted transition-colors text-left"
                 >
                   <span className="text-base w-5 text-center">{opt.icon}</span>
@@ -105,7 +107,7 @@ export default function ShareMenu({ url, title, type, locale }: ShareMenuProps) 
               ) : (
                 <a
                   key={i}
-                  href={'href' in opt ? opt.href : '#'}
+                  href={opt.href ?? '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setOpen(false)}
