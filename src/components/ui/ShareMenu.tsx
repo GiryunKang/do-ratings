@@ -93,7 +93,7 @@ export default function ShareMenu({ url, title, type, locale }: ShareMenuProps) 
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           <div className="absolute bottom-full left-0 mb-2 bg-card border border-border rounded-xl shadow-xl z-50 py-1 min-w-[180px] animate-in fade-in slide-in-from-bottom-2 duration-200">
             {shareOptions.map((opt, i) => (
-              'action' in opt && opt.action ? (
+              'action' in opt && opt.action !== undefined ? (
                 <button
                   key={i}
                   onClick={() => { opt.action!(); if (opt.name !== (ko ? 'URL 복사' : 'Copy URL')) setOpen(false) }}
