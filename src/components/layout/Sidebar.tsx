@@ -182,7 +182,11 @@ export default function Sidebar({ locale }: { locale: string }) {
         </nav>
 
         {/* Legal links */}
-        <div className="mt-4 pt-3 border-t border-border flex gap-2 px-1 text-[10px] text-muted-foreground">
+        <div className="mt-4 pt-3 border-t border-border flex gap-2 px-1 text-[10px] text-muted-foreground flex-wrap">
+          <Link href={`/${locale}/about`} className="hover:text-foreground transition-colors">
+            {locale === 'ko' ? '서비스 소개' : 'About'}
+          </Link>
+          <span>·</span>
           <Link href={`/${locale}/terms`} className="hover:text-foreground transition-colors">
             {locale === 'ko' ? '이용약관' : 'Terms'}
           </Link>
