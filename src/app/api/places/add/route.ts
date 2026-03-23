@@ -10,6 +10,17 @@ function checkRateLimit(ip: string, limit: number, windowMs: number): boolean {
   entry.count++; return true
 }
 
+// Global daily Google API call limit
+const DAILY_LIMIT = 500
+let dailyCalls = { count: 0, resetAt: Date.now() + 86400000 }
+function checkDailyLimit(): boolean {
+  const now = Date.now()
+  if (now > dailyCalls.resetAt) { dailyCalls = { count: 0, resetAt: now + 86400000 }; }
+  if (dailyCalls.count >= DAILY_LIMIT) return false
+  dailyCalls.count++
+  return true
+}
+
 export async function POST(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for') ?? 'unknown'
   if (!checkRateLimit(ip, 10, 60000)) {
@@ -83,7 +94,7 @@ export async function POST(request: NextRequest) {
   let imageAttribution: { source: string; photographer?: string; url?: string; license?: string } | null = null
 
   try {
-  const apiKey = process.env.GOOGLE_PLACES_API_KEY
+  const apiKey = checkDailyLimit() ? process.env.GOOGLE_PLACES_API_KEY : null
 
   // 1. Try Google Places Photos (for places with photo data)
   if (apiKey && google_place_id) {

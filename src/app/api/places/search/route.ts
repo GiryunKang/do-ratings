@@ -37,9 +37,21 @@ function checkRateLimit(ip: string): boolean {
   entry.count++; return true
 }
 
+// Global daily Google API call limit (prevent billing surprises)
+const DAILY_LIMIT = 500
+let dailyCalls = { count: 0, resetAt: Date.now() + 86400000 }
+function checkDailyLimit(): boolean {
+  const now = Date.now()
+  if (now > dailyCalls.resetAt) { dailyCalls = { count: 0, resetAt: now + 86400000 }; }
+  if (dailyCalls.count >= DAILY_LIMIT) return false
+  dailyCalls.count++
+  return true
+}
+
 export async function GET(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for') ?? 'unknown'
   if (!checkRateLimit(ip)) return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
+  if (!checkDailyLimit()) return NextResponse.json({ error: 'Daily API limit reached. Please try again tomorrow.' }, { status: 429 })
   const { searchParams } = new URL(request.url)
   const query = searchParams.get('q') ?? ''
   const type = searchParams.get('type') ?? '' // 'restaurant' or empty for general places
