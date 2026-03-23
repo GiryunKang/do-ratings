@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface ShareMenuProps {
   url: string
@@ -69,14 +69,9 @@ export default function ShareMenu({ url, title, type, locale }: ShareMenuProps) 
     },
   ]
 
-  // Add native share if available
-  if (typeof navigator !== 'undefined' && navigator.share) {
-    shareOptions.unshift({
-      name: ko ? '공유하기' : 'Share',
-      icon: '📤',
-      action: handleNativeShare,
-    })
-  }
+  // Native share added at render time (client only)
+  const [hasNativeShare, setHasNativeShare] = useState(false)
+  useEffect(() => { setHasNativeShare(!!navigator.share) }, [])
 
   return (
     <div className="relative">
@@ -94,6 +89,15 @@ export default function ShareMenu({ url, title, type, locale }: ShareMenuProps) 
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           <div className="absolute bottom-full left-0 mb-2 bg-card border border-border rounded-xl shadow-xl z-50 py-1 min-w-[180px] animate-in fade-in slide-in-from-bottom-2 duration-200">
+            {hasNativeShare && (
+              <button
+                onClick={() => { handleNativeShare(); setOpen(false) }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-muted transition-colors text-left"
+              >
+                <span className="text-base w-5 text-center">📤</span>
+                <span>{ko ? '공유하기' : 'Share'}</span>
+              </button>
+            )}
             {shareOptions.map((opt, i) => (
               opt.action ? (
                 <button
