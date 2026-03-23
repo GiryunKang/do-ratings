@@ -52,7 +52,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           </div>
           <div className="bg-card rounded-2xl border border-border p-6 space-y-3">
             <div className="w-12 h-12 rounded-xl bg-green-400/10 flex items-center justify-center text-2xl">🗳️</div>
-            <h3 className="font-bold text-lg">{ko ? '평가의 민주화' : 'Democratic Ratings'}</h3>
+            <h3 className="font-bold text-lg">{ko ? '누구나 참여하는 평가' : 'Ratings by Everyone'}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
               {ko
                 ? '한 사람의 평가가 모여 세상을 바꿉니다. 모든 사람의 목소리에는 동등한 가치가 있습니다.'
