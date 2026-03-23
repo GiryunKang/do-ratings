@@ -4,6 +4,12 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* 어절 단위 줄 바꿈 — 한국어/일본어/중국어 텍스트가 글자 단위로 끊기지 않도록 */
+* {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
