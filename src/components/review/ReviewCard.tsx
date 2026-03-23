@@ -14,6 +14,7 @@ import ReportButton from './ReportButton'
 import { timeAgo } from '@/lib/utils/timeAgo'
 import { countryCodeToFlag, getCountryName } from '@/lib/utils/country'
 import { getCategoryColor } from '@/lib/utils/category-colors'
+import ShareMenu from '@/components/ui/ShareMenu'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -180,29 +181,12 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
             initialReactions={review.reactions ?? {}}
             userReaction={review.user_reaction ?? null}
           />
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={handleShare}
-            className="flex items-center gap-1.5 text-muted-foreground hover:text-gray-700 px-2"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-4 h-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.8}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-              />
-            </svg>
-            {copied ? '복사됨' : '공유'}
-          </Button>
+          <ShareMenu
+            url={subjectHref}
+            title={review.title}
+            type="review"
+            locale={locale}
+          />
 
           {/* Report */}
           {currentUserId && currentUserId !== review.user.id && (

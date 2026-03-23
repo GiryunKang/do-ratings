@@ -11,6 +11,7 @@ import RelatedNews from '@/components/news/RelatedNews'
 import ImageAttribution from '@/components/ui/ImageAttribution'
 import SubjectTabs from '@/components/subject/SubjectTabs'
 import SubjectEditor from '@/components/subject/SubjectEditor'
+import ShareMenu from '@/components/ui/ShareMenu'
 import ClaimButton from '@/components/business/ClaimButton'
 import AddToCollectionButton from '@/components/collection/AddToCollectionButton'
 import EmbedWidget from '@/components/embed/EmbedWidget'
@@ -225,6 +226,7 @@ export default async function SubjectPage({ params }: PageProps) {
               </svg>
               {locale === 'ko' ? '비교하기' : 'Compare'}
             </Link>
+            <ShareMenu url={`/${locale}/subject/${id}`} title={subjectName} type="subject" locale={locale} />
             <ClaimButton subjectId={id} currentUserId={user?.id ?? null} locale={locale} />
             <AddToCollectionButton subjectId={id} currentUserId={user?.id ?? null} />
           </div>
