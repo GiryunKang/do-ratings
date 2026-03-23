@@ -1,8 +1,5 @@
-// Proxy Wikimedia images through our API to avoid hotlink blocking
+// Return image URL directly — browsers can load Wikipedia images fine
+// Proxy was causing 500 errors from server-side rate limiting
 export function proxyImageUrl(url: string | null): string | null {
-  if (!url) return null
-  if (url.includes('upload.wikimedia.org') || url.includes('commons.wikimedia.org')) {
-    return `/api/image-proxy?url=${encodeURIComponent(url)}`
-  }
   return url
 }
