@@ -1,16 +1,16 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { useRouter, usePathname } from 'next/navigation'
+import Link from 'next/link'
+
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { useInfiniteScroll } from '@/lib/hooks/useInfiniteScroll'
 import { encodeCursor, decodeCursor } from '@/lib/utils/cursor'
 import InfiniteScroll from '@/components/ui/InfiniteScroll'
 import ReviewCard from '@/components/review/ReviewCard'
-import { useEffect } from 'react'
-import Link from 'next/link'
 
 interface FeedReview {
   id: string
@@ -29,6 +29,14 @@ interface FeedReview {
   is_helpful: boolean
 }
 
+interface TopReviewer {
+  id: string
+  nickname: string
+  review_count: number
+  level: string
+  avatar_url: string | null
+}
+
 const PAGE_SIZE = 10
 
 function FeedSkeletonCards() {
@@ -42,6 +50,10 @@ function FeedSkeletonCards() {
 }
 
 function FeedContent({ userId, locale }: { userId: string; locale: string }) {
+  const [topReviewers, setTopReviewers] = useState<TopReviewer[]>([])
+  const [followingIds, setFollowingIds] = useState<Set<string>>(new Set())
+  const [followLoading, setFollowLoading] = useState<Set<string>>(new Set())
+
   const fetchFeed = useCallback(
     async (cursor: string | null) => {
       const supabase = createClient()
@@ -142,10 +154,47 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
 
   const { items, loading, hasMore, loadMore } = useInfiniteScroll(fetchFeed)
 
+  useEffect(() => {
+    if (loading || items.length > 0) return
+    async function loadTopReviewers() {
+      const supabase = createClient()
+      const [{ data: reviewers }, { data: follows }] = await Promise.all([
+        supabase
+          .from('public_profiles')
+          .select('id, nickname, review_count, level, avatar_url')
+          .order('review_count', { ascending: false })
+          .limit(3),
+        supabase
+          .from('follows')
+          .select('following_id')
+          .eq('follower_id', userId),
+      ])
+      if (reviewers) setTopReviewers(reviewers as TopReviewer[])
+      if (follows) setFollowingIds(new Set(follows.map((f) => f.following_id)))
+    }
+    loadTopReviewers()
+  }, [loading, items.length, userId])
+
+  async function handleFollow(targetId: string) {
+    setFollowLoading((prev) => new Set(prev).add(targetId))
+    try {
+      const supabase = createClient()
+      if (followingIds.has(targetId)) {
+        await supabase.from('follows').delete().eq('follower_id', userId).eq('following_id', targetId)
+        setFollowingIds((prev) => { const next = new Set(prev); next.delete(targetId); return next })
+      } else {
+        await supabase.from('follows').insert({ follower_id: userId, following_id: targetId })
+        setFollowingIds((prev) => new Set(prev).add(targetId))
+      }
+    } finally {
+      setFollowLoading((prev) => { const next = new Set(prev); next.delete(targetId); return next })
+    }
+  }
+
   if (!loading && items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 gap-4 text-center px-6">
-        <div className="w-20 h-20 rounded-full bg-indigo-50 flex items-center justify-center animate-pulse-gentle">
+      <div className="flex flex-col items-center justify-center py-12 gap-6 text-center px-6">
+        <div className="w-20 h-20 rounded-full bg-indigo-50 flex items-center justify-center">
           <svg className="w-10 h-10 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
@@ -158,11 +207,58 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
             {locale === 'ko' ? '리뷰어를 팔로우하면 여기에 리뷰가 표시됩니다' : 'Follow reviewers to see their reviews here'}
           </p>
         </div>
+
+        {topReviewers.length > 0 && (
+          <div className="w-full max-w-sm">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+              {locale === 'ko' ? '추천 리뷰어' : 'Recommended Reviewers'}
+            </p>
+            <div className="space-y-3">
+              {topReviewers.map((reviewer) => (
+                <div key={reviewer.id} className="flex items-center gap-3 bg-card rounded-xl border border-gray-100 px-4 py-3">
+                  <Link href={`/${locale}/user/${reviewer.id}`} className="shrink-0">
+                    {reviewer.avatar_url ? (
+                      <img src={reviewer.avatar_url} alt={reviewer.nickname} className="w-10 h-10 rounded-full object-cover" />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm">
+                        {reviewer.nickname.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </Link>
+                  <div className="flex-1 min-w-0 text-left">
+                    <Link href={`/${locale}/user/${reviewer.id}`}>
+                      <p className="text-sm font-semibold text-gray-800 truncate">{reviewer.nickname}</p>
+                    </Link>
+                    <p className="text-xs text-gray-400">
+                      {locale === 'ko' ? `리뷰 ${reviewer.review_count}개` : `${reviewer.review_count} reviews`}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleFollow(reviewer.id)}
+                    disabled={followLoading.has(reviewer.id)}
+                    className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+                      followingIds.has(reviewer.id)
+                        ? 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                        : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                    }`}
+                  >
+                    {followLoading.has(reviewer.id)
+                      ? '...'
+                      : followingIds.has(reviewer.id)
+                        ? (locale === 'ko' ? '팔로잉' : 'Following')
+                        : (locale === 'ko' ? '팔로우' : 'Follow')}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <Link
           href={`/${locale}/rankings`}
           className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full px-5 py-2.5 text-sm font-semibold hover:shadow-lg transition-all"
         >
-          {locale === 'ko' ? '리뷰어 탐색' : 'Discover Reviewers'}
+          {locale === 'ko' ? '더 많은 리뷰어 탐색' : 'Discover More Reviewers'}
         </Link>
       </div>
     )

@@ -178,21 +178,14 @@ export default function ReviewList({ subjectId, userId }: ReviewListProps) {
           ))}
         </div>
       ) : items.length === 0 && !loading ? (
-        <div className="text-center py-16">
-          <svg
-            className="w-16 h-16 mx-auto text-gray-300 mb-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M12 20h9" />
-            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-          </svg>
-          <p className="text-gray-500 font-medium mb-2">{locale === 'ko' ? '아직 리뷰가 없습니다' : 'No reviews yet'}</p>
-          <p className="text-gray-400 text-sm">{locale === 'ko' ? '첫 번째 리뷰를 남겨보세요!' : 'Be the first to share your experience!'}</p>
+        <div className="text-center py-10">
+          <div className="text-4xl mb-3">⭐</div>
+          <p className="text-foreground font-bold text-base mb-1">
+            {locale === 'ko' ? '첫 평가의 주인공이 되세요!' : 'Be the first to rate!'}
+          </p>
+          <p className="text-sm text-muted-foreground mb-4">
+            {locale === 'ko' ? '당신의 솔직한 평가가 다른 사람들에게 도움이 됩니다.' : 'Your honest rating helps others make better choices.'}
+          </p>
         </div>
       ) : (
         <InfiniteScroll onLoadMore={loadMore} hasMore={hasMore} loading={loading}>

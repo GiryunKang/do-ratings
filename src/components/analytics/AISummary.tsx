@@ -72,7 +72,7 @@ const sentimentConfig = {
   negative: { label: '😞', color: 'text-red-600', bg: 'bg-red-50', border: 'border-red-200' },
 }
 
-export default function AISummary({ subjectId }: AISummaryProps) {
+export default function AISummary({ subjectId, locale }: AISummaryProps) {
   const t = useTranslations('aiSummary')
   const tAnalytics = useTranslations('analytics')
 
@@ -138,8 +138,15 @@ export default function AISummary({ subjectId }: AISummaryProps) {
 
       {/* Not enough data */}
       {!loading && !generating && reviews.length < MIN_REVIEWS && (
-        <div className="h-[160px] flex items-center justify-center text-sm text-gray-400">
-          {tAnalytics('noData')}
+        <div className="text-center py-6">
+          <p className="text-muted-foreground text-sm mb-2">
+            {locale === 'ko'
+              ? `AI 분석을 위해 리뷰 ${MIN_REVIEWS - reviews.length}개가 더 필요합니다`
+              : `${MIN_REVIEWS - reviews.length} more review${MIN_REVIEWS - reviews.length === 1 ? '' : 's'} needed for AI analysis`}
+          </p>
+          <div className="w-full bg-muted rounded-full h-2 max-w-xs mx-auto">
+            <div className="bg-primary rounded-full h-2" style={{ width: `${(reviews.length / MIN_REVIEWS) * 100}%` }} />
+          </div>
         </div>
       )}
 
