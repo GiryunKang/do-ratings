@@ -32,10 +32,7 @@ export default function CategoryRequestModal({ locale, onClose }: CategoryReques
       setError(isKo ? '카테고리 이름 (한국어)을 입력해 주세요.' : 'Please enter the Korean category name.')
       return
     }
-    if (!nameEn.trim()) {
-      setError(isKo ? '카테고리 이름 (영어)를 입력해 주세요.' : 'Please enter the English category name.')
-      return
-    }
+    // 영어 이름은 선택사항
     if (!user) {
       setError(isKo ? '로그인이 필요합니다.' : 'You must be logged in.')
       return

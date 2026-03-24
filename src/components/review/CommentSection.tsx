@@ -203,7 +203,7 @@ export default function CommentSection({
                       <button
                         type="button"
                         onClick={() => handleDelete(comment.id)}
-                        className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all p-0.5 rounded shrink-0"
+                        className="opacity-60 sm:opacity-0 sm:group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all p-0.5 rounded shrink-0"
                         aria-label="Delete comment"
                       >
                         <svg
