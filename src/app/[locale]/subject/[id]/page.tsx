@@ -133,6 +133,23 @@ export default async function SubjectPage({ params }: PageProps) {
     .slice(0, 12)
     .map((img: any) => ({ id: img.id as string, url: storageBase + (img.storage_path as string) }))
 
+  // Calculate rank/percentile within category
+  const { count: higherCount } = await supabase
+    .from('subjects')
+    .select('id', { count: 'exact', head: true })
+    .eq('category_id', subject.category_id)
+    .gt('avg_rating', subject.avg_rating ?? 0)
+
+  const { count: totalInCategory } = await supabase
+    .from('subjects')
+    .select('id', { count: 'exact', head: true })
+    .eq('category_id', subject.category_id)
+    .not('avg_rating', 'is', null)
+
+  const rank = (higherCount ?? 0) + 1
+  const total = totalInCategory ?? 1
+  const percentile = Math.round((1 - (rank - 1) / total) * 100)
+
   // Check if current user already reviewed (server-side via cookie session)
   const { data: { user } } = await supabase.auth.getUser()
   let existingReviewId: string | null = null
@@ -195,6 +212,11 @@ export default async function SubjectPage({ params }: PageProps) {
               <div className="flex items-center gap-2 golden-glow rounded-lg px-2 py-1 inline-flex">
                 <StarRating value={subject.avg_rating ?? 0} readonly size="lg" />
                 <AnimatedRating value={subject.avg_rating ?? 0} className="text-lg font-semibold text-foreground" />
+                {subject.avg_rating && totalInCategory && totalInCategory > 1 && (
+                  <span className="text-xs text-muted-foreground ml-1">
+                    {locale === 'ko' ? `상위 ${percentile}%` : `Top ${percentile}%`}
+                  </span>
+                )}
                 <span className="text-sm text-muted-foreground">({subject.review_count} {locale === 'ko' ? '개 리뷰' : subject.review_count === 1 ? 'review' : 'reviews'})</span>
               </div>
             </div>

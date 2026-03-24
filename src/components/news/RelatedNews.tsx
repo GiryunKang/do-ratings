@@ -30,7 +30,7 @@ export default function RelatedNews({ query, locale }: RelatedNewsProps) {
 
     let isActive = true
 
-    fetch(`/api/news?q=${encodeURIComponent(query)}`)
+    fetch(`/api/news?q=${encodeURIComponent(query)}&locale=${encodeURIComponent(locale)}`)
       .then(res => res.json())
       .then(data => {
         if (!isActive) {

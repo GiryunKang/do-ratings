@@ -8,9 +8,9 @@ export default function ThemeToggle() {
   const t = useTranslations('darkMode')
 
   const options = [
-    { value: 'light', label: t('light'), icon: '☀️' },
-    { value: 'dark', label: t('dark'), icon: '🌙' },
-    { value: 'system', label: t('system'), icon: '💻' },
+    { value: 'light', label: t('light'), icon: '☀️', title: undefined },
+    { value: 'dark', label: t('dark'), icon: '🌙', title: undefined },
+    { value: 'system', label: null, icon: '💻', title: t('systemTitle') },
   ] as const
 
   return (
@@ -19,16 +19,17 @@ export default function ThemeToggle() {
         <button
           key={option.value}
           onClick={() => setTheme(option.value)}
+          title={option.title}
           className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium transition-all ${
             theme === option.value
               ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
               : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
           }`}
-          aria-label={option.label}
+          aria-label={option.label ?? option.title}
           aria-pressed={theme === option.value}
         >
           <span>{option.icon}</span>
-          <span className="hidden sm:inline">{option.label}</span>
+          {option.label && <span className="hidden sm:inline">{option.label}</span>}
         </button>
       ))}
     </div>

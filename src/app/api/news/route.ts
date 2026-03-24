@@ -14,15 +14,17 @@ export async function GET(request: NextRequest) {
   if (!checkRateLimit(ip)) return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
   const { searchParams } = new URL(request.url)
   const query = searchParams.get('q') ?? ''
+  const locale = searchParams.get('locale') ?? 'ko'
 
   if (!query) return NextResponse.json({ articles: [] })
 
   if (query.length > 200) return NextResponse.json({ error: 'Query too long' }, { status: 400 })
 
   try {
-    // Use Google News RSS feed converted to JSON via a proxy
-    const encodedQuery = encodeURIComponent(query)
-    const rssUrl = `https://news.google.com/rss/search?q=${encodedQuery}&hl=ko&gl=KR&ceid=KR:ko`
+    const hl = locale === 'en' ? 'en' : 'ko'
+    const gl = locale === 'en' ? 'US' : 'KR'
+    const ceid = locale === 'en' ? 'US:en' : 'KR:ko'
+    const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=${hl}&gl=${gl}&ceid=${ceid}`
 
     const response = await fetch(rssUrl, { next: { revalidate: 600 } }) // cache 10 min
     const xmlText = await response.text()

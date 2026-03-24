@@ -178,7 +178,8 @@
   "darkMode": {
     "light": "Light",
     "dark": "Dark",
-    "system": "System"
+    "system": "System",
+    "systemTitle": "Follow system preference"
   },
   "onboarding": {
     "welcome": "Welcome to Ratings!",

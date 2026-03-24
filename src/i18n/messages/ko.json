@@ -178,7 +178,8 @@
   "darkMode": {
     "light": "라이트",
     "dark": "다크",
-    "system": "자동"
+    "system": "자동",
+    "systemTitle": "시스템 설정 따라가기"
   },
   "onboarding": {
     "welcome": "Ratings에 오신 것을 환영합니다!",
