@@ -223,17 +223,21 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </AnimatedSection>
 
       {/* Mobile category quick links */}
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide md:hidden pb-1 -mt-2">
-        {cats.map(cat => {
-          const catName = (cat.name as Record<string, string>)[locale] ?? (cat.name as Record<string, string>)['ko']
-          return (
-            <Link key={cat.id} href={`/${locale}/category/${cat.slug}`}
-              className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 bg-card ring-1 ring-foreground/10 rounded-full text-xs font-medium hover:bg-muted transition-colors">
-              <CategoryIcon name={(cat.icon ?? 'folder') as string} className="w-3.5 h-3.5" />
-              {catName}
-            </Link>
-          )
-        })}
+      <div className="relative md:hidden">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mt-2">
+          {cats.map(cat => {
+            const catName = (cat.name as Record<string, string>)[locale] ?? (cat.name as Record<string, string>)['ko']
+            return (
+              <Link key={cat.id} href={`/${locale}/category/${cat.slug}`}
+                className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 bg-card ring-1 ring-foreground/10 rounded-full text-xs font-medium hover:bg-muted transition-colors">
+                <CategoryIcon name={(cat.icon ?? 'folder') as string} className="w-3.5 h-3.5" />
+                {catName}
+              </Link>
+            )
+          })}
+        </div>
+        {/* Fade hint */}
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none" />
       </div>
 
       {/* 1. Featured Carousel */}

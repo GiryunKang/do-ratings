@@ -44,7 +44,7 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
   }, [mounted, cycle])
 
   return (
-    <div className="relative overflow-hidden rounded-3xl min-h-[200px] md:min-h-[240px]">
+    <div className="relative overflow-hidden rounded-3xl min-h-[120px] md:min-h-[200px]">
       {/* Dark mesh gradient background */}
       <div
         className="absolute inset-0"
@@ -78,7 +78,7 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
       />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col md:flex-row items-center justify-center py-8 md:py-12 px-6 gap-4 md:gap-10">
+      <div className="relative z-10 flex flex-col md:flex-row items-center justify-center py-4 md:py-8 px-6 gap-4 md:gap-10">
 
         {/* Left: Star Rating Demo Animation */}
         <motion.div

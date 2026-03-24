@@ -32,6 +32,11 @@
     "feed": "Feed",
     "profile": "Profile"
   },
+  "rankings": {
+    "tabSubjects": "Subjects",
+    "tabReviews": "Reviews",
+    "tabReviewers": "Reviewers"
+  },
   "review": {
     "writeReview": "Write Review",
     "editReview": "Edit Review",

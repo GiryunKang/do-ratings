@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import UserCard from '@/components/user/UserCard'
 import FollowButton from '@/components/user/FollowButton'
@@ -89,6 +90,7 @@ export default async function ProfilePage({ params }: PageProps) {
   }
 
   const trustScore = profile.trust_score ?? 0
+  const isOwnProfile = currentUser?.id === userId
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
@@ -104,6 +106,28 @@ export default async function ProfilePage({ params }: PageProps) {
           </div>
         )}
       </div>
+
+      {/* Mobile menu - only on own profile */}
+      {isOwnProfile && (
+        <div className="md:hidden bg-card rounded-xl ring-1 ring-foreground/10 p-4 mb-4">
+          <h3 className="text-sm font-bold mb-3">{locale === 'ko' ? '내 메뉴' : 'My Menu'}</h3>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { href: `/${locale}/dashboard`, icon: '📊', label: locale === 'ko' ? '대시보드' : 'Dashboard' },
+              { href: `/${locale}/collections`, icon: '📚', label: locale === 'ko' ? '컬렉션' : 'Collections' },
+              { href: `/${locale}/battles`, icon: '⚔️', label: locale === 'ko' ? '배틀' : 'Battles' },
+              { href: `/${locale}/notifications`, icon: '🔔', label: locale === 'ko' ? '알림' : 'Notifications' },
+              { href: `/${locale}/settings`, icon: '⚙️', label: locale === 'ko' ? '설정' : 'Settings' },
+              { href: `/${locale}/about`, icon: '💡', label: locale === 'ko' ? '소개' : 'About' },
+            ].map(item => (
+              <Link key={item.href} href={item.href} className="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-muted transition-colors">
+                <span className="text-lg">{item.icon}</span>
+                <span className="text-[10px] text-muted-foreground">{item.label}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Achievements */}
       <section className="mb-6">

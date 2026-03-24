@@ -96,6 +96,7 @@ export default function RankingsPage() {
   const locale = (params?.locale as string) ?? 'ko'
   const t = useTranslations('nav')
   const tCommon = useTranslations('common')
+  const tRankings = useTranslations('rankings')
 
   const [activeTab, setActiveTab] = useState<Tab>('subjects')
 
@@ -245,9 +246,9 @@ export default function RankingsPage() {
   }, [activeTab, topReviewers.length])
 
   const tabs: { key: Tab; label: string }[] = [
-    { key: 'subjects', label: 'Subjects' },
-    { key: 'reviews', label: 'Reviews' },
-    { key: 'reviewers', label: 'Reviewers' },
+    { key: 'subjects', label: tRankings('tabSubjects') },
+    { key: 'reviews', label: tRankings('tabReviews') },
+    { key: 'reviewers', label: tRankings('tabReviewers') },
   ]
 
   function handleTabChange(nextTab: Tab) {

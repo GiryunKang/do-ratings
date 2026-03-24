@@ -32,6 +32,11 @@
     "feed": "피드",
     "profile": "프로필"
   },
+  "rankings": {
+    "tabSubjects": "주제",
+    "tabReviews": "리뷰",
+    "tabReviewers": "리뷰어"
+  },
   "review": {
     "writeReview": "리뷰 작성",
     "editReview": "리뷰 수정",

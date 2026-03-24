@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
@@ -9,6 +10,8 @@ interface RightSidebarProps {
 }
 
 export default async function RightSidebar({ locale }: RightSidebarProps) {
+  const t = await getTranslations({ locale, namespace: 'rightSidebar' })
+  const tUser = await getTranslations({ locale, namespace: 'user' })
   const supabase = await createClient()
 
   const categoryOrder = ['people', 'places', 'companies', 'restaurants', 'airlines', 'hotels']
@@ -36,7 +39,7 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
         {/* 인기 카테고리 */}
         <div>
           <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
-            인기 카테고리
+            {t('popularCategories')}
           </h3>
           <ul className="space-y-2">
             {categories.map((cat) => {
@@ -56,7 +59,7 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
                     href={`/${locale}/category/${cat.slug}`}
                     className="text-xs font-medium text-indigo-600 border border-indigo-200 rounded-full px-3 py-1 hover:bg-indigo-50 transition-colors shrink-0"
                   >
-                    탐색
+                    {t('explore')}
                   </Link>
                 </li>
               )
@@ -67,7 +70,7 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
         {/* 인기 리뷰어 */}
         <div>
           <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
-            인기 리뷰어
+            {t('popularReviewers')}
           </h3>
           <ul className="space-y-2">
             {reviewers.map((reviewer) => {
@@ -95,7 +98,7 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
                       <span className="text-sm font-medium text-gray-900 truncate">{nickname}</span>
                       <UserBadge level={level} />
                     </div>
-                    <p className="text-xs text-gray-400">{reviewCount} {locale === 'ko' ? '개 리뷰' : reviewCount === 1 ? 'review' : 'reviews'}</p>
+                    <p className="text-xs text-gray-400">{reviewCount} {tUser('reviews')}</p>
                   </div>
                 </li>
               )

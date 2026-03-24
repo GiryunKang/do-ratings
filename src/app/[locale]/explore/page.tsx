@@ -65,6 +65,7 @@ export default function ExplorePage() {
   const initialQ = searchParams.get('q') ?? ''
 
   const [subjects, setSubjects] = useState<Subject[]>([])
+  const [popularSubjects, setPopularSubjects] = useState<Subject[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState<FilterState>({ category: null, ratingMin: null })
@@ -72,16 +73,22 @@ export default function ExplorePage() {
   const [showAddModal, setShowAddModal] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  // Load categories and auth state once
+  // Load categories, auth state, and popular subjects once
   useEffect(() => {
     async function loadData() {
       const supabase = createClient()
-      const [{ data: catData }, { data: { user } }] = await Promise.all([
+      const [{ data: catData }, { data: { user } }, { data: popularData }] = await Promise.all([
         supabase.from('categories').select('id, name, slug').order('slug'),
         supabase.auth.getUser(),
+        supabase
+          .from('subjects')
+          .select('id, name, avg_rating, review_count, categories(id, name, slug)')
+          .order('review_count', { ascending: false })
+          .limit(12),
       ])
       if (catData) setCategories(catData)
       setIsLoggedIn(!!user)
+      if (popularData) setPopularSubjects(popularData as unknown as Subject[])
     }
     loadData()
   }, [])
@@ -197,6 +204,51 @@ export default function ExplorePage() {
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="bg-card rounded-xl border border-gray-200 h-28 animate-pulse" />
               ))}
+            </div>
+          ) : !initialQ && !filters.category && !filters.ratingMin ? (
+            /* No search active — show popular subjects */
+            <div>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+                {currentLocale === 'ko' ? '인기 항목' : 'Popular'}
+              </p>
+              {popularSubjects.length === 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="bg-card rounded-xl border border-gray-200 h-28 animate-pulse" />
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {popularSubjects.map((subject, index) => {
+                    const accentClass = getCategoryAccent(subject.categories?.slug, index)
+                    return (
+                      <Link
+                        key={subject.id}
+                        href={`/${currentLocale}/subject/${subject.id}`}
+                        className={`bg-card rounded-xl border-l-4 border border-gray-200 p-4 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ${accentClass}`}
+                      >
+                        <p className="font-semibold text-gray-900 text-sm line-clamp-2 mb-2">
+                          {getSubjectName(subject)}
+                        </p>
+                        {getCategoryName(subject) && (
+                          <p className="text-xs text-gray-400 mb-1">{getCategoryName(subject)}</p>
+                        )}
+                        <div className="flex items-center gap-1.5 mt-auto">
+                          {subject.avg_rating != null ? (
+                            <>
+                              <span className="text-yellow-400 text-sm">★</span>
+                              <span className="text-sm font-bold text-gray-800">{subject.avg_rating.toFixed(1)}</span>
+                              <span className="text-xs text-gray-400">({subject.review_count})</span>
+                            </>
+                          ) : (
+                            <span className="text-xs text-gray-400">{t('noReviews') ?? 'No reviews'}</span>
+                          )}
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
+              )}
             </div>
           ) : subjects.length === 0 ? (
             <div className="bg-card rounded-xl border border-gray-200 p-12 text-center">
