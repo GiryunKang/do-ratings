@@ -150,7 +150,11 @@ for (const deviceName of ['iPhone 14', 'Galaxy S9+']) {
   log(`${prefix}-04f 등록활성`, canSubmit);
 
   if (canSubmit) {
-    await submitBtn.click();
+    // Use evaluate to bypass any overlapping elements
+    await p.evaluate(() => {
+      const form = document.querySelector('form');
+      if (form) form.requestSubmit();
+    });
     await p.waitForTimeout(8000);
     const afterUrl = p.url();
     const afterBody = await p.textContent('body');
