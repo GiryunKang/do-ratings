@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
@@ -9,6 +9,8 @@ export default function LoginPage() {
   const t = useTranslations('auth')
   const tc = useTranslations('common')
   const router = useRouter()
+  const pathname = usePathname()
+  const locale = pathname.startsWith('/en') ? 'en' : 'ko'
   const supabase = createClient()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -90,7 +92,7 @@ export default function LoginPage() {
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)' }} />
           {error && <p className="text-red-300 text-sm">{error}</p>}
           <div className="flex justify-end">
-            <Link href="/auth/forgot-password" className="text-xs text-white/70 hover:text-white">
+            <Link href={`/${locale}/auth/forgot-password`} className="text-xs text-white/70 hover:text-white">
               {t('forgotPassword') ?? '비밀번호를 잊으셨나요?'}
             </Link>
           </div>
@@ -100,7 +102,7 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center text-sm text-white/60">
-          <Link href="/auth/signup" className="text-white hover:text-white/80">
+          <Link href={`/${locale}/auth/signup`} className="text-white hover:text-white/80">
             {tc('signup')}
           </Link>
         </p>

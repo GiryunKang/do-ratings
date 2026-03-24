@@ -16,7 +16,13 @@
     "filter": "필터",
     "category": "카테고리",
     "minRating": "최소 평점",
-    "any": "전체"
+    "any": "전체",
+    "nickname": "닉네임",
+    "nicknamePlaceholder": "닉네임을 입력하세요",
+    "avatarUrl": "프로필 이미지 URL",
+    "language": "언어",
+    "email": "이메일",
+    "saving": "저장 중..."
   },
   "nav": {
     "home": "홈",

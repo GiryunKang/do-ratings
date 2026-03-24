@@ -16,7 +16,13 @@
     "filter": "Filter",
     "category": "Category",
     "minRating": "Min Rating",
-    "any": "Any"
+    "any": "Any",
+    "nickname": "Nickname",
+    "nicknamePlaceholder": "Enter your nickname",
+    "avatarUrl": "Profile Image URL",
+    "language": "Language",
+    "email": "Email",
+    "saving": "Saving..."
   },
   "nav": {
     "home": "Home",
