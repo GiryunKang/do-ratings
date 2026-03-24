@@ -11,7 +11,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html className={cn("font-sans", geist.variable)}>
+    <html className={cn("font-sans", geist.variable)} suppressHydrationWarning>
       <head>
         <link rel="icon" type="image/png" sizes="48x48" href="/ko/icon" />
         <link rel="apple-touch-icon" sizes="180x180" href="/ko/apple-icon" />
