@@ -291,7 +291,7 @@ export default function ReviewForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-5 [&>*]:relative [&>*]:z-auto">
       {/* Overall Rating */}
       <div className="bg-card rounded-xl border border-border p-5">
         <h2 className="text-base font-bold text-foreground mb-4">{locale === 'ko' ? '평점' : 'Rating'}</h2>

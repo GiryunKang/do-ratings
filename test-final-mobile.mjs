@@ -139,8 +139,11 @@ for (const deviceName of ['iPhone 14', 'Galaxy S9+']) {
   await p.waitForTimeout(200);
   log(`${prefix}-04d 내용`, true);
 
-  // 면책 동의
-  await p.locator('input[type="checkbox"]').click();
+  // 면책 동의 — evaluate로 직접 클릭 (모바일 겹침 문제 우회)
+  await p.evaluate(() => {
+    const cb = document.querySelector('input[type="checkbox"]');
+    if (cb && !cb.checked) cb.click();
+  });
   await p.waitForTimeout(300);
   log(`${prefix}-04e 면책`, true);
 
