@@ -286,6 +286,15 @@ export default function ReviewForm({
         >
           {locale === 'ko' ? '리뷰가 등록되었습니다! 🎉' : 'Review submitted! 🎉'}
         </motion.p>
+        <motion.a
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          href={`/${locale}/subject/${subjectId}`}
+          className="mt-2 px-5 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:bg-primary/80 transition-colors z-10"
+        >
+          {locale === 'ko' ? '내 리뷰 보러가기 →' : 'View my review →'}
+        </motion.a>
       </div>
     )
   }

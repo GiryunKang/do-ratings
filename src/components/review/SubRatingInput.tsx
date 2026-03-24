@@ -75,13 +75,24 @@ export default function SubRatingInput({
 
         return (
           <div key={criterion.key} className="flex items-center justify-between gap-4">
-            <span
-              className="text-sm text-gray-700 w-24 shrink-0 cursor-help"
-              title={tooltip}
-            >
+            <span className="text-sm text-gray-700 w-24 shrink-0">
               {label}
               {tooltip && (
-                <span className="ml-0.5 text-gray-400 text-xs">ⓘ</span>
+                <button
+                  type="button"
+                  className="ml-0.5 text-gray-400 text-xs hover:text-primary inline-flex"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    const el = e.currentTarget.nextElementSibling
+                    if (el) el.classList.toggle('hidden')
+                  }}
+                  title={tooltip}
+                >
+                  ⓘ
+                </button>
+              )}
+              {tooltip && (
+                <span className="hidden text-[10px] text-muted-foreground block mt-0.5">{tooltip}</span>
               )}
             </span>
             <StarRating
