@@ -115,7 +115,8 @@ export default function TrendingSection({ locale }: TrendingSectionProps) {
       ) : items.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {items.map((item, index) => {
-            const name = item.name[locale] ?? item.name['ko'] ?? item.name['en'] ?? ''
+            const nameObj = typeof item.name === 'object' && item.name !== null ? item.name : {}
+            const name = String(nameObj[locale] ?? nameObj['ko'] ?? nameObj['en'] ?? '')
             return (
               <Link key={item.id} href={`/${locale}/subject/${item.id}`}
                 className="bg-card rounded-xl ring-1 ring-foreground/10 overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all group">
