@@ -5,7 +5,6 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/api/', '/auth/callback'],
     },
     sitemap: 'https://do-ratings.com/sitemap.xml',
   }
