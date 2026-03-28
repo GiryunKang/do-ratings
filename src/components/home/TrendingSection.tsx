@@ -123,7 +123,7 @@ export default function TrendingSection({ locale }: TrendingSectionProps) {
                 {item.image_url ? (
                   <div className="h-24 relative overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={proxyImageUrl(item.image_url) ?? ''} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    <img src={proxyImageUrl(item.image_url) ?? ''} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                     <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
                       🔥 {index + 1}
                     </div>
