@@ -39,17 +39,28 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const rating = formatRating(subject.avg_rating)
 
+  const desc = locale === 'ko'
+    ? `${name}에 대한 솔직한 리뷰와 별점을 확인하세요. 평균 ${rating}점`
+    : `Read honest reviews and ratings for ${name}. Average ${rating} stars`
+
   return {
-    title: `${name} (${rating}) — Ratings`,
-    description: `Reviews and ratings for ${name}`,
+    title: `${name} ${rating} ★ — Do! Ratings!`,
+    description: desc,
     openGraph: {
       title: `${name} — ${rating} ★`,
-      description: `${name} has ${rating} average rating on Ratings`,
+      description: desc,
       type: 'website',
+      url: `https://do-ratings.com/${locale}/subject/${id}`,
+      siteName: 'Do! Ratings!',
     },
     twitter: {
       card: 'summary_large_image',
       title: `${name} — ${rating} ★`,
+      description: desc,
+    },
+    alternates: {
+      canonical: `https://do-ratings.com/${locale}/subject/${id}`,
+      languages: { ko: `https://do-ratings.com/ko/subject/${id}`, en: `https://do-ratings.com/en/subject/${id}` },
     },
   }
 }
@@ -91,6 +102,11 @@ export default async function SubjectPage({ params }: PageProps) {
   const categoryName = category
     ? (category.name[locale as 'ko' | 'en'] ?? category.name.en)
     : ''
+
+  const subjectDesc =
+    typeof subject.description === 'object' && subject.description !== null
+      ? ((subject.description as Record<string, string>)[locale] ?? (subject.description as Record<string, string>).en ?? '')
+      : ''
 
   const criteria: Array<{ key: string; ko: string; en: string }> =
     Array.isArray(category?.sub_rating_criteria) ? category.sub_rating_criteria : []
@@ -168,8 +184,29 @@ export default async function SubjectPage({ params }: PageProps) {
   // First letter of subject name for placeholder
   const firstLetter = subjectName.charAt(0).toUpperCase()
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: subjectName,
+    description: subjectDesc || `${subjectName} — ${categoryName}`,
+    ...(subject.image_url ? { image: subject.image_url } : {}),
+    ...(subject.avg_rating != null && subject.review_count > 0 ? {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: Number(subject.avg_rating).toFixed(1),
+        bestRating: '5',
+        worstRating: '1',
+        ratingCount: subject.review_count,
+      }
+    } : {}),
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Subject Header Card */}
       <div className="bg-card rounded-xl shadow-sm ring-1 ring-foreground/[0.06] overflow-hidden">
         <div className="px-4 py-6">
