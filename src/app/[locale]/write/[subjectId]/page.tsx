@@ -76,7 +76,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
       </div>
 
       {!isLoggedIn && (
-        <div className="mb-4 p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800">
+        <div className="mb-4 p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 dark:border-indigo-800">
           <p className="text-sm font-medium text-indigo-900 dark:text-indigo-200 mb-2">
             {locale === 'ko' ? '로그인하면 리뷰를 저장할 수 있습니다' : 'Sign in to save your review'}
           </p>

@@ -325,7 +325,7 @@ export default function RankingsPage() {
                   <li key={subject.id} className={podiumStyle}>
                     <Link
                       href={`/${locale}/subject/${subject.id}`}
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-white/60 transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-card/60 transition-colors"
                     >
                       <span className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${badgeStyle}`}>
                         {index + 1}
@@ -417,7 +417,7 @@ export default function RankingsPage() {
                   <li key={reviewer.id} className={podiumStyle}>
                     <Link
                       href={`/${locale}/profile/${reviewer.id}`}
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-white/60 transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-card/60 transition-colors"
                     >
                       <span className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${badgeStyle}`}>
                         {index + 1}

@@ -57,7 +57,7 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
                   </div>
                   <Link
                     href={`/${locale}/category/${cat.slug}`}
-                    className="text-xs font-medium text-indigo-600 border border-indigo-200 rounded-full px-3 py-1 hover:bg-indigo-50 transition-colors shrink-0"
+                    className="text-xs font-medium text-indigo-600 border border-indigo-200 dark:border-indigo-800 rounded-full px-3 py-1 hover:bg-indigo-50 dark:bg-indigo-950/30 transition-colors shrink-0"
                   >
                     {t('explore')}
                   </Link>

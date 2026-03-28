@@ -251,7 +251,7 @@ export default function AdminPage() {
               >
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700 capitalize">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 dark:bg-red-950/30 text-red-700 capitalize">
                       {report.reason}
                     </span>
                     <span className="text-xs text-muted-foreground">
@@ -277,7 +277,7 @@ export default function AdminPage() {
                   <button
                     onClick={() => handleReportAction(report.id, 'resolved')}
                     disabled={actionLoading === report.id}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 text-green-700 hover:bg-green-100 disabled:opacity-50 transition-colors"
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 dark:bg-green-950/30 text-green-700 hover:bg-green-100 disabled:opacity-50 transition-colors"
                   >
                     {t('resolve')}
                   </button>
@@ -327,14 +327,14 @@ export default function AdminPage() {
                   <button
                     onClick={() => handleClaimAction(claim.id, 'approved')}
                     disabled={actionLoading === claim.id}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-50 text-indigo-700 hover:bg-indigo-100 disabled:opacity-50 transition-colors"
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 hover:bg-indigo-100 disabled:opacity-50 transition-colors"
                   >
                     {t('approve')}
                   </button>
                   <button
                     onClick={() => handleClaimAction(claim.id, 'rejected')}
                     disabled={actionLoading === claim.id}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-50 text-red-700 hover:bg-red-100 disabled:opacity-50 transition-colors"
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-50 dark:bg-red-950/30 text-red-700 hover:bg-red-100 disabled:opacity-50 transition-colors"
                   >
                     {t('reject')}
                   </button>

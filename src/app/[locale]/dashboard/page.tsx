@@ -281,7 +281,7 @@ export default function DashboardPage() {
             {recentReviews.map((review) => (
               <li key={review.id} className="py-3 flex items-start gap-3">
                 {/* Rating badge */}
-                <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-full bg-indigo-50 text-indigo-700 font-bold text-sm">
+                <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-full bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 font-bold text-sm">
                   {review.overall_rating}
                 </span>
                 <div className="flex-1 min-w-0">

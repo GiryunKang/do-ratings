@@ -104,7 +104,7 @@ export default function FilterPanel({
           <select
             value={ratingMin ?? ''}
             onChange={handleRatingChange}
-            className="w-full border border-border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-indigo-400 bg-white"
+            className="w-full border border-border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-indigo-400 bg-card"
           >
             <option value="">{t('any') ?? 'Any'}</option>
             {[1, 2, 3, 4, 5].map((r) => (

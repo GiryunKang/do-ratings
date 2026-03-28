@@ -398,13 +398,13 @@ export default function ReviewForm({
 
       {/* Error */}
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+        <p className="text-sm text-red-600 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg px-4 py-3">
           {error}
         </p>
       )}
 
       {/* Disclaimer agreement */}
-      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 overflow-hidden">
+      <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg p-4 overflow-hidden">
         <label className="flex items-start gap-2 cursor-pointer">
           <input
             type="checkbox"

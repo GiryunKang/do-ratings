@@ -215,7 +215,7 @@ export default function CollectionsPage() {
         </div>
       ) : activeCollections.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="w-16 h-16 rounded-full bg-indigo-50 flex items-center justify-center mb-4">
+          <div className="w-16 h-16 rounded-full bg-indigo-50 dark:bg-indigo-950/30 flex items-center justify-center mb-4">
             <svg
               className="w-8 h-8 text-indigo-300"
               fill="none"
@@ -386,7 +386,7 @@ export default function CollectionsPage() {
               </div>
 
               {formError && (
-                <p className="text-xs text-red-600 bg-red-50 rounded-lg px-3 py-2">
+                <p className="text-xs text-red-600 bg-red-50 dark:bg-red-950/30 rounded-lg px-3 py-2">
                   {formError}
                 </p>
               )}

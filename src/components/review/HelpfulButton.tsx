@@ -66,7 +66,7 @@ export default function HelpfulButton({
       disabled={isDisabled}
       className={`flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border transition-colors ${
         helpful
-          ? 'bg-indigo-50 border-indigo-300 text-indigo-600'
+          ? 'bg-indigo-50 dark:bg-indigo-950/30 border-indigo-300 text-indigo-600'
           : 'border-border text-muted-foreground hover:border-border hover:text-foreground/80'
       } disabled:opacity-50 disabled:cursor-not-allowed`}
       style={{

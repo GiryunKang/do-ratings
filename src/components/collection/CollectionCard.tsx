@@ -58,7 +58,7 @@ export default function CollectionCard({
           <button
             onClick={handleDelete}
             aria-label={t('removeFromCollection')}
-            className="shrink-0 p-1 rounded-md text-muted-foreground hover:text-red-500 hover:bg-red-50 transition-colors opacity-0 group-hover:opacity-100"
+            className="shrink-0 p-1 rounded-md text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:bg-red-950/30 transition-colors opacity-0 group-hover:opacity-100"
           >
             <svg
               className="w-4 h-4"
@@ -82,7 +82,7 @@ export default function CollectionCard({
       )}
 
       <div className="flex items-center gap-2 mt-auto">
-        <span className="inline-flex items-center gap-1 bg-indigo-50 text-indigo-700 text-xs font-medium px-2 py-0.5 rounded-full">
+        <span className="inline-flex items-center gap-1 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 text-xs font-medium px-2 py-0.5 rounded-full">
           <svg
             className="w-3 h-3"
             fill="none"
@@ -102,7 +102,7 @@ export default function CollectionCard({
         <span
           className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${
             collection.is_public
-              ? 'bg-green-50 text-green-700'
+              ? 'bg-green-50 dark:bg-green-950/30 text-green-700'
               : 'bg-muted text-muted-foreground'
           }`}
         >

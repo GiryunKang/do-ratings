@@ -144,7 +144,7 @@ export default function PlaceSearch({ categorySlug, locale }: PlaceSearchProps) 
       )}
 
       {error && (
-        <p className="text-sm text-red-500 text-center py-3 bg-red-50 rounded-lg mt-3">
+        <p className="text-sm text-red-500 text-center py-3 bg-red-50 dark:bg-red-950/30 rounded-lg mt-3">
           {error}
         </p>
       )}

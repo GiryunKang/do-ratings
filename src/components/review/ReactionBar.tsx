@@ -96,7 +96,7 @@ export default function ReactionBar({
             }
             className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-xs transition-colors ${
               isActive
-                ? 'bg-indigo-50 border-indigo-200 text-indigo-700'
+                ? 'bg-indigo-50 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-800 text-indigo-700'
                 : 'bg-card border-border text-muted-foreground hover:border-border hover:bg-muted/50'
             } ${!currentUserId ? 'cursor-default' : 'cursor-pointer'} disabled:opacity-60`}
           >

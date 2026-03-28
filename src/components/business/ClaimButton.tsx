@@ -70,7 +70,7 @@ export default function ClaimButton({
 
   if (claimStatus === 'approved') {
     return (
-      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 border border-green-200 rounded-full text-sm font-medium text-green-700">
+      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-full text-sm font-medium text-green-700">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="w-4 h-4 text-green-500"

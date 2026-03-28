@@ -124,7 +124,7 @@ export default function ImageUpload({
       >
         {/* Compressing overlay */}
         {compressing && (
-          <div className="absolute inset-0 rounded-xl bg-white/70 flex items-center justify-center z-10">
+          <div className="absolute inset-0 rounded-xl bg-card/70 flex items-center justify-center z-10">
             <span className="text-sm text-indigo-600 font-medium animate-pulse">
               Compressing…
             </span>

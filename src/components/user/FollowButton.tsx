@@ -56,7 +56,7 @@ export default function FollowButton({ targetUserId, isFollowing: initialIsFollo
       disabled={isDisabled}
       className={`px-5 py-2 rounded-lg text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
         following
-          ? 'bg-muted text-foreground/80 border border-border hover:bg-red-50 hover:text-red-600 hover:border-red-300'
+          ? 'bg-muted text-foreground/80 border border-border hover:bg-red-50 dark:bg-red-950/30 hover:text-red-600 hover:border-red-300'
           : 'bg-indigo-600 text-white hover:bg-indigo-700'
       }`}
     >

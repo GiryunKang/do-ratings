@@ -104,12 +104,12 @@ export default function AddToCollectionButton({
         onClick={handleOpen}
         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
           feedback === 'success'
-            ? 'bg-green-50 text-green-700 border-green-200'
+            ? 'bg-green-50 dark:bg-green-950/30 text-green-700 border-green-200'
             : feedback === 'error'
-            ? 'bg-red-50 text-red-600 border-red-200'
+            ? 'bg-red-50 dark:bg-red-950/30 text-red-600 border-red-200'
             : feedback === 'already'
-            ? 'bg-yellow-50 text-yellow-700 border-yellow-200'
-            : 'bg-card text-foreground/80 border-border hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200'
+            ? 'bg-yellow-50 dark:bg-yellow-950/30 text-yellow-700 border-yellow-200'
+            : 'bg-card text-foreground/80 border-border hover:bg-indigo-50 dark:bg-indigo-950/30 hover:text-indigo-700 hover:border-indigo-200'
         }`}
       >
         <svg
@@ -154,7 +154,7 @@ export default function AddToCollectionButton({
                     <button
                       onClick={() => void handleAddToCollection(col.id)}
                       disabled={adding === col.id}
-                      className="w-full text-left px-3 py-2 text-sm text-foreground/80 hover:bg-indigo-50 hover:text-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full text-left px-3 py-2 text-sm text-foreground/80 hover:bg-indigo-50 dark:bg-indigo-950/30 hover:text-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {adding === col.id ? (
                         <span className="flex items-center gap-2">

@@ -62,7 +62,7 @@ export default function NotHelpfulButton({
       disabled={isDisabled}
       className={`flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border transition-colors ${
         isNotHelpful
-          ? 'bg-red-50 border-red-300 text-red-600'
+          ? 'bg-red-50 dark:bg-red-950/30 border-red-300 text-red-600'
           : 'border-border text-muted-foreground hover:border-border hover:text-foreground/80'
       } disabled:opacity-50 disabled:cursor-not-allowed`}
       style={{ transform: bouncing ? 'scale(1.3)' : 'scale(1)', transition: 'transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)' }}

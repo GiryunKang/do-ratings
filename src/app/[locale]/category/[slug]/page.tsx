@@ -113,7 +113,7 @@ export default async function CategoryPage({ params }: PageProps) {
                 <li key={subject.id} className={style ? style.row : ''}>
                   <Link
                     href={`/${locale}/subject/${subject.id}`}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/60 transition-colors"
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-card/60 transition-colors"
                   >
                     <span className={`w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${style ? style.badge : 'bg-indigo-100 text-indigo-700'}`}>
                       {index + 1}
