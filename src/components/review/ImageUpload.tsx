@@ -117,7 +117,7 @@ export default function ImageUpload({
         className={[
           'relative border-2 border-dashed rounded-xl px-4 py-6 flex flex-col items-center justify-center gap-2 transition-colors',
           isDragOver && canAdd
-            ? 'border-indigo-400 bg-indigo-50'
+            ? 'border-indigo-400 bg-indigo-50 dark:bg-indigo-950/30'
             : 'border-border bg-muted/50',
           !canAdd ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
         ].join(' ')}

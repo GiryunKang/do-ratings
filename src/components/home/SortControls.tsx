@@ -45,7 +45,7 @@ export default function SortControls({
             setSortOpen(!sortOpen)
             setCatOpen(false)
           }}
-          className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm text-foreground/80 hover:border-gray-400 transition-colors"
+          className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm text-foreground/80 hover:border-foreground/30 transition-colors"
         >
           {currentSort.label}
           <svg className="w-3.5 h-3.5 text-muted-foreground" viewBox="0 0 20 20" fill="currentColor">
@@ -81,7 +81,7 @@ export default function SortControls({
             setCatOpen(!catOpen)
             setSortOpen(false)
           }}
-          className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm text-foreground/80 hover:border-gray-400 transition-colors"
+          className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm text-foreground/80 hover:border-foreground/30 transition-colors"
         >
           {currentCatLabel}
           <svg className="w-3.5 h-3.5 text-muted-foreground" viewBox="0 0 20 20" fill="currentColor">

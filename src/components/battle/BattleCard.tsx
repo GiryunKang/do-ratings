@@ -94,7 +94,7 @@ export default function BattleCard({
       <div
         className={`flex-1 flex flex-col gap-2 p-3 rounded-xl border transition-colors ${
           isMyVote
-            ? 'border-indigo-400 bg-indigo-50'
+            ? 'border-indigo-400 bg-indigo-50 dark:bg-indigo-950/30'
             : isWinner && isEnded
             ? 'border-yellow-400 bg-yellow-50'
             : 'border-border bg-card'

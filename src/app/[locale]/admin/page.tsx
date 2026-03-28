@@ -327,7 +327,7 @@ export default function AdminPage() {
                   <button
                     onClick={() => handleClaimAction(claim.id, 'approved')}
                     disabled={actionLoading === claim.id}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 hover:bg-indigo-100 disabled:opacity-50 transition-colors"
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 disabled:opacity-50 transition-colors"
                   >
                     {t('approve')}
                   </button>

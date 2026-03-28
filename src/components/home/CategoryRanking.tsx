@@ -72,7 +72,7 @@ export default async function CategoryRanking({ locale }: CategoryRankingProps) 
 
           {category.subjects.length === 0 ? (
             <div className="flex flex-col items-center py-8 text-center">
-              <svg className="w-12 h-12 text-gray-200 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg className="w-12 h-12 text-muted-foreground/40 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 20h9" />
                 <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
               </svg>

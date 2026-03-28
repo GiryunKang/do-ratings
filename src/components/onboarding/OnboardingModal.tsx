@@ -122,7 +122,7 @@ export default function OnboardingModal({ locale, onComplete }: OnboardingModalP
                       onClick={() => toggleCategory(cat.id)}
                       className={`relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 p-4 transition-all duration-150 ${
                         isSelected
-                          ? 'border-indigo-500 bg-indigo-50'
+                          ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30'
                           : 'border-border bg-card hover:border-border'
                       }`}
                     >

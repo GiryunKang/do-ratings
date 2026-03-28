@@ -224,8 +224,8 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
                   <li key={notif.id}>
                     <button
                       onClick={() => handleNotificationClick(notif)}
-                      className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-muted/50 transition-colors border-b border-gray-50 last:border-0 ${
-                        !notif.is_read ? 'bg-indigo-50/40' : ''
+                      className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-muted/50 transition-colors border-b border-border/50 last:border-0 ${
+                        !notif.is_read ? 'bg-indigo-50/40 dark:bg-indigo-950/20' : ''
                       }`}
                     >
                       {/* Type icon */}

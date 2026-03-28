@@ -196,8 +196,8 @@ export default function NotificationsPage() {
               <button
                 key={notif.id}
                 onClick={() => handleNotificationClick(notif)}
-                className={`w-full text-left flex items-start gap-3 px-4 py-4 border-b border-gray-50 last:border-0 hover:bg-muted/50 transition-colors ${
-                  !notif.is_read ? 'bg-indigo-50/40' : ''
+                className={`w-full text-left flex items-start gap-3 px-4 py-4 border-b border-border/50 last:border-0 hover:bg-muted/50 transition-colors ${
+                  !notif.is_read ? 'bg-indigo-50/40 dark:bg-indigo-950/20' : ''
                 }`}
               >
                 {/* Type icon */}

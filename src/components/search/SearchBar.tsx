@@ -146,7 +146,7 @@ export default function SearchBar({ className }: SearchBarProps) {
             <li key={subject.id}>
               <button
                 className={`w-full text-left px-4 py-2.5 transition-colors flex items-center justify-between gap-2 ${
-                  index === activeIndex ? 'bg-indigo-50' : 'hover:bg-indigo-50'
+                  index === activeIndex ? 'bg-indigo-50 dark:bg-indigo-950/30' : 'hover:bg-indigo-50 dark:bg-indigo-950/30'
                 }`}
                 onMouseDown={() => {
                   setOpen(false)
