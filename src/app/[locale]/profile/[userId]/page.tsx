@@ -109,7 +109,7 @@ export default async function ProfilePage({ params }: PageProps) {
 
       {/* Mobile menu - only on own profile */}
       {isOwnProfile && (
-        <div className="md:hidden bg-card rounded-xl ring-1 ring-foreground/10 p-4 mb-4">
+        <div className="md:hidden bg-card rounded-xl shadow-sm ring-1 ring-foreground/[0.06] p-4 mb-4">
           <h3 className="text-sm font-bold mb-3">{locale === 'ko' ? '내 메뉴' : 'My Menu'}</h3>
           <div className="grid grid-cols-3 gap-2">
             {[

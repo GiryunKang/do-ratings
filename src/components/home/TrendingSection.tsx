@@ -109,7 +109,7 @@ export default function TrendingSection({ locale }: TrendingSectionProps) {
       {loading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-card rounded-xl ring-1 ring-foreground/10 h-32 animate-pulse" />
+            <div key={i} className="bg-card rounded-xl shadow-sm ring-1 ring-foreground/[0.06] h-32 animate-pulse" />
           ))}
         </div>
       ) : items.length > 0 ? (
@@ -119,7 +119,7 @@ export default function TrendingSection({ locale }: TrendingSectionProps) {
             const name = String(nameObj[locale] ?? nameObj['ko'] ?? nameObj['en'] ?? '')
             return (
               <Link key={item.id} href={`/${locale}/subject/${item.id}`}
-                className="bg-card rounded-xl ring-1 ring-foreground/10 overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all group">
+                className="bg-card rounded-xl shadow-sm ring-1 ring-foreground/[0.06] overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all group">
                 {item.image_url ? (
                   <div className="h-24 relative overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -146,7 +146,7 @@ export default function TrendingSection({ locale }: TrendingSectionProps) {
           })}
         </div>
       ) : (
-        <div className="bg-card rounded-xl ring-1 ring-foreground/10 p-6 text-center">
+        <div className="bg-card rounded-xl shadow-sm ring-1 ring-foreground/[0.06] p-6 text-center">
           <p className="text-3xl mb-2">🔥</p>
           <p className="text-sm font-medium text-foreground mb-1">
             {locale === 'ko' ? '아직 이 기간의 리뷰가 없습니다' : 'No reviews for this period yet'}

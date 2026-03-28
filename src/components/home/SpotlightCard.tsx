@@ -32,7 +32,7 @@ export default function SpotlightCard({
     >
       <Link
         href={href}
-        className="relative bg-card rounded-2xl border border-gray-200 p-5 hover:border-indigo-300 hover:shadow-lg transition-all group overflow-hidden block"
+        className="relative bg-card rounded-2xl shadow-sm ring-1 ring-foreground/[0.06] p-5 hover:ring-indigo-300 hover:shadow-lg transition-all group overflow-hidden block"
       >
         {/* Category color top accent */}
         <div className={`absolute top-0 left-0 right-0 h-1 ${getCategoryColor(categorySlug)}`} />
@@ -44,7 +44,7 @@ export default function SpotlightCard({
         </div>
         <h3 className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors text-lg mb-1">{name}</h3>
         {desc && <p className="text-xs text-gray-500 line-clamp-1 mb-3">{desc}</p>}
-        <span className="text-xs font-medium text-indigo-600 bg-indigo-50 rounded-full px-3 py-1">
+        <span className="inline-flex items-center gap-1 text-xs font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full px-4 py-1.5 shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all">
           {rateLabel}
         </span>
       </Link>

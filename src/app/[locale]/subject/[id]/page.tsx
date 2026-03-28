@@ -171,7 +171,7 @@ export default async function SubjectPage({ params }: PageProps) {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       {/* Subject Header Card */}
-      <div className="bg-card rounded-xl ring-1 ring-foreground/10 overflow-hidden">
+      <div className="bg-card rounded-xl shadow-sm ring-1 ring-foreground/[0.06] overflow-hidden">
         <div className="px-4 py-6">
           {/* Subject info row */}
           <div className="flex gap-4">

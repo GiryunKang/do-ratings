@@ -125,7 +125,7 @@ export default function AutoScrollRow({
                 {subject.avg_rating ? (
                   <span className="text-yellow-500 font-medium">★ {subject.avg_rating.toFixed(1)}</span>
                 ) : (
-                  <span className="text-primary/60 text-[11px]">{locale === 'ko' ? '첫 평가를 남겨주세요 →' : 'Be the first to rate →'}</span>
+                  <span className="text-[11px] font-medium text-white bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full px-2.5 py-0.5">{locale === 'ko' ? '첫 평가하기' : 'Rate now'}</span>
                 )}
               </div>
             </div>

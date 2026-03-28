@@ -108,7 +108,7 @@ export default function PopularReviewsSection({ locale }: PopularReviewsSectionP
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-card rounded-xl ring-1 ring-foreground/10 h-20 animate-pulse" />
+            <div key={i} className="bg-card rounded-xl shadow-sm ring-1 ring-foreground/[0.06] h-20 animate-pulse" />
           ))}
         </div>
       ) : reviews.length > 0 ? (
@@ -117,7 +117,7 @@ export default function PopularReviewsSection({ locale }: PopularReviewsSectionP
             const subjectName = review.subject_name[locale] ?? review.subject_name['ko'] ?? ''
             return (
               <Link key={review.id} href={`/${locale}/subject/${review.subject_id}`}
-                className="block bg-card rounded-xl ring-1 ring-foreground/10 p-4 hover:shadow-md hover:ring-primary/30 transition-all">
+                className="block bg-card rounded-xl shadow-sm ring-1 ring-foreground/[0.06] p-4 hover:shadow-md hover:ring-primary/30 transition-all">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
@@ -142,7 +142,7 @@ export default function PopularReviewsSection({ locale }: PopularReviewsSectionP
           })}
         </div>
       ) : (
-        <div className="bg-card rounded-xl ring-1 ring-foreground/10 p-6 text-center">
+        <div className="bg-card rounded-xl shadow-sm ring-1 ring-foreground/[0.06] p-6 text-center">
           <p className="text-3xl mb-2">⭐</p>
           <p className="text-sm font-medium text-foreground mb-1">
             {locale === 'ko' ? '아직 이 기간의 인기 리뷰가 없습니다' : 'No popular reviews for this period'}
