@@ -111,7 +111,7 @@ export default function SubjectPicker({
       onClick={onClose}
     >
       <div
-        className="max-w-md mx-auto mt-20 bg-white rounded-xl p-4 shadow-xl"
+        className="max-w-md mx-auto mt-20 bg-card rounded-xl p-4 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search input */}
@@ -121,7 +121,7 @@ export default function SubjectPicker({
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder={locale === 'ko' ? '검색...' : 'Search...'}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 mb-2"
+          className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 mb-2"
         />
 
         {/* Category lock note */}
@@ -134,7 +134,7 @@ export default function SubjectPicker({
         {/* Results */}
         <div className="max-h-72 overflow-y-auto">
           {loading ? (
-            <div className="flex items-center justify-center py-8 text-sm text-gray-400">
+            <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
               <svg
                 className="animate-spin h-5 w-5 mr-2 text-indigo-400"
                 xmlns="http://www.w3.org/2000/svg"
@@ -158,11 +158,11 @@ export default function SubjectPicker({
               {locale === 'ko' ? '로딩 중...' : 'Loading...'}
             </div>
           ) : results.length === 0 ? (
-            <div className="py-8 text-center text-sm text-gray-400">
+            <div className="py-8 text-center text-sm text-muted-foreground">
               {locale === 'ko' ? '결과가 없습니다' : 'No results found'}
             </div>
           ) : (
-            <ul className="divide-y divide-gray-100">
+            <ul className="divide-y divide-border">
               {results.map((subject) => {
                 const displayName =
                   subject.name[locale] ??
@@ -190,10 +190,10 @@ export default function SubjectPicker({
 
                       {/* Name + stats */}
                       <div className="flex flex-col min-w-0">
-                        <span className="text-sm font-medium text-gray-800 truncate">
+                        <span className="text-sm font-medium text-foreground truncate">
                           {displayName}
                         </span>
-                        <span className="text-xs text-gray-400 flex items-center gap-1">
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
                           <span className="text-yellow-400">★</span>
                           {subject.avg_rating !== null
                             ? subject.avg_rating.toFixed(1)
@@ -214,7 +214,7 @@ export default function SubjectPicker({
         {/* Close button */}
         <button
           onClick={onClose}
-          className="mt-3 w-full text-center text-sm text-gray-400 hover:text-gray-600 transition-colors"
+          className="mt-3 w-full text-center text-sm text-muted-foreground hover:text-muted-foreground transition-colors"
         >
           {locale === 'ko' ? '닫기' : 'Close'}
         </button>

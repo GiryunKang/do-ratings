@@ -35,7 +35,7 @@ export default async function TrendingSubjects({ locale }: TrendingSubjectsProps
 
   return (
     <section className="px-4 py-6">
-      <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+      <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
         <span aria-hidden="true">🔥</span>
         {locale === 'ko' ? '지금 뜨는 곳' : 'Trending Now'}
       </h2>
@@ -73,10 +73,10 @@ export default async function TrendingSubjects({ locale }: TrendingSubjectsProps
 
               <div className="p-3">
                 <p className="text-xs text-indigo-500 font-medium mb-1 truncate">{categoryName}</p>
-                <h3 className="font-semibold text-gray-900 text-sm mb-2 line-clamp-2">{subjectName}</h3>
+                <h3 className="font-semibold text-foreground text-sm mb-2 line-clamp-2">{subjectName}</h3>
                 <div className="flex items-center gap-1.5">
                   <StarRating value={subject.avg_rating ?? 0} readonly size="sm" />
-                  <span className="text-xs text-gray-500">({subject.review_count})</span>
+                  <span className="text-xs text-muted-foreground">({subject.review_count})</span>
                 </div>
               </div>
             </Link>

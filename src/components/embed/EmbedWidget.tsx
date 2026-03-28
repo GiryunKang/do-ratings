@@ -57,12 +57,12 @@ export default function EmbedWidget({ subjectId, subjectName, avgRating, reviewC
   const ratingDisplay = avgRating ? avgRating.toFixed(1) : '—'
 
   return (
-    <div className="bg-card border border-gray-200 rounded-xl p-4 space-y-4">
-      <h3 className="text-sm font-semibold text-gray-900">{t('embedWidget')}</h3>
+    <div className="bg-card border border-border rounded-xl p-4 space-y-4">
+      <h3 className="text-sm font-semibold text-foreground">{t('embedWidget')}</h3>
 
       {/* Size selector */}
       <div className="space-y-1">
-        <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('size')}</label>
+        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t('size')}</label>
         <div className="flex gap-2">
           {SIZES.map((s) => (
             <button
@@ -71,7 +71,7 @@ export default function EmbedWidget({ subjectId, subjectName, avgRating, reviewC
               className={`px-3 py-1 rounded-lg text-xs font-medium border transition-colors ${
                 size === s.key
                   ? 'bg-indigo-600 text-white border-indigo-600'
-                  : 'bg-background text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600'
+                  : 'bg-background text-muted-foreground border-border hover:border-indigo-300 hover:text-indigo-600'
               }`}
             >
               {t(s.labelKey)}
@@ -85,18 +85,18 @@ export default function EmbedWidget({ subjectId, subjectName, avgRating, reviewC
 
       {/* Preview */}
       <div className="space-y-1">
-        <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('preview')}</label>
+        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t('preview')}</label>
         <div
           className="overflow-hidden"
           style={{ width: selectedSize.width, height: selectedSize.height }}
         >
           <div
-            className="flex items-center gap-2 bg-card border border-gray-200 rounded-lg h-full px-3"
+            className="flex items-center gap-2 bg-card border border-border rounded-lg h-full px-3"
             style={{ width: selectedSize.width, height: selectedSize.height }}
           >
             <div className="min-w-0 flex-1">
               <div
-                className="font-semibold text-gray-900 truncate"
+                className="font-semibold text-foreground truncate"
                 style={{
                   fontSize: size === 'sm' ? '12px' : size === 'lg' ? '16px' : '14px',
                 }}
@@ -108,10 +108,10 @@ export default function EmbedWidget({ subjectId, subjectName, avgRating, reviewC
                 style={{ fontSize: size === 'sm' ? '12px' : size === 'lg' ? '18px' : '14px' }}
               >
                 <span className="text-amber-400">{'★'.repeat(filled)}{'☆'.repeat(empty)}</span>
-                <span className="text-gray-700 font-medium">{ratingDisplay}</span>
+                <span className="text-foreground/80 font-medium">{ratingDisplay}</span>
               </div>
               <div
-                className="text-gray-500"
+                className="text-muted-foreground"
                 style={{ fontSize: size === 'sm' ? '10px' : '12px' }}
               >
                 {reviewCount} reviews · Ratings
@@ -123,9 +123,9 @@ export default function EmbedWidget({ subjectId, subjectName, avgRating, reviewC
 
       {/* Embed code */}
       <div className="space-y-1">
-        <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Code</label>
+        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Code</label>
         <div className="relative">
-          <pre className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-xs text-gray-700 overflow-x-auto whitespace-pre-wrap break-all">
+          <pre className="bg-muted/50 border border-border rounded-lg p-3 text-xs text-foreground/80 overflow-x-auto whitespace-pre-wrap break-all">
             {embedCode}
           </pre>
           <button

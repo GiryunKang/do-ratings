@@ -37,7 +37,7 @@ export default function SortControls({
       : (categories.find((c) => c.slug === category)?.name[locale] ?? category)
 
   return (
-    <div className="flex items-center gap-2 py-3 border-b border-gray-200 mb-4">
+    <div className="flex items-center gap-2 py-3 border-b border-border mb-4">
       {/* Sort dropdown */}
       <div className="relative">
         <button
@@ -45,15 +45,15 @@ export default function SortControls({
             setSortOpen(!sortOpen)
             setCatOpen(false)
           }}
-          className="flex items-center gap-1.5 rounded-full border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:border-gray-400 transition-colors"
+          className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm text-foreground/80 hover:border-gray-400 transition-colors"
         >
           {currentSort.label}
-          <svg className="w-3.5 h-3.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+          <svg className="w-3.5 h-3.5 text-muted-foreground" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
           </svg>
         </button>
         {sortOpen && (
-          <div className="absolute top-full mt-1 left-0 bg-card border border-gray-200 rounded-xl shadow-lg z-50 min-w-[140px] py-1 animate-slideDown">
+          <div className="absolute top-full mt-1 left-0 bg-card border border-border rounded-xl shadow-lg z-50 min-w-[140px] py-1 animate-slideDown">
             {sortOptions.map((opt) => (
               <button
                 key={opt.value}
@@ -64,7 +64,7 @@ export default function SortControls({
                 className={`w-full text-left px-4 py-2 text-sm transition-colors ${
                   sort === opt.value
                     ? 'text-indigo-600 bg-indigo-50 font-medium'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    : 'text-foreground/80 hover:bg-muted/50'
                 }`}
               >
                 {opt.label}
@@ -81,15 +81,15 @@ export default function SortControls({
             setCatOpen(!catOpen)
             setSortOpen(false)
           }}
-          className="flex items-center gap-1.5 rounded-full border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:border-gray-400 transition-colors"
+          className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm text-foreground/80 hover:border-gray-400 transition-colors"
         >
           {currentCatLabel}
-          <svg className="w-3.5 h-3.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+          <svg className="w-3.5 h-3.5 text-muted-foreground" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
           </svg>
         </button>
         {catOpen && (
-          <div className="absolute top-full mt-1 left-0 bg-white border border-gray-200 rounded-xl shadow-lg z-50 min-w-[160px] py-1 animate-slideDown max-h-64 overflow-y-auto">
+          <div className="absolute top-full mt-1 left-0 bg-card border border-border rounded-xl shadow-lg z-50 min-w-[160px] py-1 animate-slideDown max-h-64 overflow-y-auto">
             <button
               onClick={() => {
                 onCategoryChange('all')
@@ -98,7 +98,7 @@ export default function SortControls({
               className={`w-full text-left px-4 py-2 text-sm ${
                 category === 'all'
                   ? 'text-indigo-600 bg-indigo-50 font-medium'
-                  : 'text-gray-700 hover:bg-gray-50'
+                  : 'text-foreground/80 hover:bg-muted/50'
               }`}
             >
               {locale === 'ko' ? '전체' : 'All'}
@@ -113,7 +113,7 @@ export default function SortControls({
                 className={`w-full text-left px-4 py-2 text-sm ${
                   category === cat.slug
                     ? 'text-indigo-600 bg-indigo-50 font-medium'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    : 'text-foreground/80 hover:bg-muted/50'
                 }`}
               >
                 {cat.name[locale] ?? cat.name['ko']}

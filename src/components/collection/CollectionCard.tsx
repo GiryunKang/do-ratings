@@ -47,10 +47,10 @@ export default function CollectionCard({
   return (
     <Link
       href={`#`}
-      className="group block bg-card rounded-xl border border-gray-200 p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+      className="group block bg-card rounded-xl border border-border p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
     >
       <div className="flex items-start justify-between gap-2 mb-2">
-        <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 flex-1">
+        <h3 className="font-semibold text-foreground text-sm line-clamp-2 flex-1">
           {title}
         </h3>
 
@@ -58,7 +58,7 @@ export default function CollectionCard({
           <button
             onClick={handleDelete}
             aria-label={t('removeFromCollection')}
-            className="shrink-0 p-1 rounded-md text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors opacity-0 group-hover:opacity-100"
+            className="shrink-0 p-1 rounded-md text-muted-foreground hover:text-red-500 hover:bg-red-50 transition-colors opacity-0 group-hover:opacity-100"
           >
             <svg
               className="w-4 h-4"
@@ -78,7 +78,7 @@ export default function CollectionCard({
       </div>
 
       {description && (
-        <p className="text-xs text-gray-500 line-clamp-2 mb-3">{description}</p>
+        <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{description}</p>
       )}
 
       <div className="flex items-center gap-2 mt-auto">
@@ -103,7 +103,7 @@ export default function CollectionCard({
           className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${
             collection.is_public
               ? 'bg-green-50 text-green-700'
-              : 'bg-gray-100 text-gray-600'
+              : 'bg-muted text-muted-foreground'
           }`}
         >
           {collection.is_public ? (

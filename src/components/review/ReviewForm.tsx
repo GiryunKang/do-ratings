@@ -325,10 +325,10 @@ export default function ReviewForm({
       </div>
 
       {/* Title */}
-      <div className="bg-card rounded-xl border border-gray-200 p-5 space-y-2">
+      <div className="bg-card rounded-xl border border-border p-5 space-y-2">
         <div className="flex items-center justify-between">
-          <label className="text-sm font-semibold text-gray-700">{t('title')}</label>
-          <span className={`text-xs ${title.length > 100 ? 'text-red-500' : 'text-gray-400'}`}>
+          <label className="text-sm font-semibold text-foreground/80">{t('title')}</label>
+          <span className={`text-xs ${title.length > 100 ? 'text-red-500' : 'text-muted-foreground'}`}>
             {title.length}/100
           </span>
         </div>
@@ -338,15 +338,15 @@ export default function ReviewForm({
           onChange={(e) => setTitle(e.target.value)}
           placeholder={t('titlePlaceholder')}
           maxLength={100}
-          className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
         />
       </div>
 
       {/* Content */}
-      <div className="bg-card rounded-xl border border-gray-200 p-5 space-y-2">
+      <div className="bg-card rounded-xl border border-border p-5 space-y-2">
         <div className="flex items-center justify-between">
-          <label className="text-sm font-semibold text-gray-700">{t('content')}</label>
-          <span className={`text-xs ${content.length > 5000 ? 'text-red-500' : 'text-gray-400'}`}>
+          <label className="text-sm font-semibold text-foreground/80">{t('content')}</label>
+          <span className={`text-xs ${content.length > 5000 ? 'text-red-500' : 'text-muted-foreground'}`}>
             {content.length}/5000
           </span>
         </div>
@@ -356,7 +356,7 @@ export default function ReviewForm({
           placeholder={t('contentPlaceholder')}
           rows={6}
           maxLength={5000}
-          className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+          className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
         />
       </div>
 

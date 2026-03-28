@@ -92,7 +92,7 @@ export default function ClaimButton({
     return (
       <button
         disabled
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 border border-gray-200 rounded-full text-sm text-gray-500 cursor-not-allowed"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted border border-border rounded-full text-sm text-muted-foreground cursor-not-allowed"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -121,7 +121,7 @@ export default function ClaimButton({
         <button
           type="button"
           onClick={() => setShowForm(true)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 rounded-full text-sm text-gray-600 hover:border-indigo-400 hover:text-indigo-600 transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-border rounded-full text-sm text-muted-foreground hover:border-indigo-400 hover:text-indigo-600 transition-colors"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -142,10 +142,10 @@ export default function ClaimButton({
       ) : (
         <form
           onSubmit={handleSubmit}
-          className="border border-gray-200 rounded-xl p-4 bg-gray-50 space-y-3 max-w-sm"
+          className="border border-border rounded-xl p-4 bg-muted/50 space-y-3 max-w-sm"
         >
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-foreground/80 mb-1">
               {t('businessName')}
             </label>
             <input
@@ -153,11 +153,11 @@ export default function ClaimButton({
               value={businessName}
               onChange={(e) => setBusinessName(e.target.value)}
               required
-              className="w-full text-sm rounded-lg border border-gray-200 bg-white px-3 py-2 focus:outline-none focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200"
+              className="w-full text-sm rounded-lg border border-border bg-card px-3 py-2 focus:outline-none focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">
+            <label className="block text-xs font-medium text-foreground/80 mb-1">
               {t('businessEmail')}
             </label>
             <input
@@ -165,7 +165,7 @@ export default function ClaimButton({
               value={businessEmail}
               onChange={(e) => setBusinessEmail(e.target.value)}
               required
-              className="w-full text-sm rounded-lg border border-gray-200 bg-white px-3 py-2 focus:outline-none focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200"
+              className="w-full text-sm rounded-lg border border-border bg-card px-3 py-2 focus:outline-none focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200"
             />
           </div>
           <div className="flex gap-2 pt-1">
@@ -179,7 +179,7 @@ export default function ClaimButton({
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="text-sm text-gray-500 hover:text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="text-sm text-muted-foreground hover:text-foreground/80 px-3 py-2 rounded-lg hover:bg-muted transition-colors"
             >
               {tCommon('cancel')}
             </button>

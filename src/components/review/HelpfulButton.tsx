@@ -67,7 +67,7 @@ export default function HelpfulButton({
       className={`flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border transition-colors ${
         helpful
           ? 'bg-indigo-50 border-indigo-300 text-indigo-600'
-          : 'border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700'
+          : 'border-border text-muted-foreground hover:border-border hover:text-foreground/80'
       } disabled:opacity-50 disabled:cursor-not-allowed`}
       style={{
         transform: bouncing ? 'scale(1.3)' : 'scale(1)',

@@ -171,7 +171,7 @@ function ComparePageInner() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
-      <h1 className="text-xl font-bold text-gray-900 mb-5">{t('title')}</h1>
+      <h1 className="text-xl font-bold text-foreground mb-5">{t('title')}</h1>
 
       {loading && subjectsData.length === 0 ? (
         <div className="flex items-center justify-center py-16">
@@ -208,15 +208,15 @@ function ComparePageInner() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-          <p className="text-gray-500 mb-4">{t('noSubjects')}</p>
+        <div className="text-center py-16 bg-card rounded-xl border border-border">
+          <p className="text-muted-foreground mb-4">{t('noSubjects')}</p>
         </div>
       )}
 
       {subjectsData.length < 3 && (
         <button
           onClick={() => setPickerOpen(true)}
-          className="mt-4 w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-sm font-medium text-gray-500 hover:border-indigo-300 hover:text-indigo-500 transition-colors"
+          className="mt-4 w-full py-3 border-2 border-dashed border-border rounded-xl text-sm font-medium text-muted-foreground hover:border-indigo-300 hover:text-indigo-500 transition-colors"
         >
           + {t('addSubject')}
         </button>

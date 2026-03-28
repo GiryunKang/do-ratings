@@ -146,7 +146,7 @@ export default function ExplorePage() {
       {/* Page header */}
       <div className="mb-6 space-y-3">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-foreground">
             {t('explore') ?? 'Explore'}
           </h1>
           {isLoggedIn && (
@@ -194,7 +194,7 @@ export default function ExplorePage() {
         {/* Results */}
         <div className="flex-1">
           {initialQ && (
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-muted-foreground mb-4">
               {loading ? '' : `${subjects.length} ${t('results') ?? 'results'} for "${initialQ}"`}
             </p>
           )}
@@ -202,19 +202,19 @@ export default function ExplorePage() {
           {loading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="bg-card rounded-xl border border-gray-200 h-28 animate-pulse" />
+                <div key={i} className="bg-card rounded-xl border border-border h-28 animate-pulse" />
               ))}
             </div>
           ) : !initialQ && !filters.category && !filters.ratingMin ? (
             /* No search active — show popular subjects */
             <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
                 {currentLocale === 'ko' ? '인기 항목' : 'Popular'}
               </p>
               {popularSubjects.length === 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                   {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="bg-card rounded-xl border border-gray-200 h-28 animate-pulse" />
+                    <div key={i} className="bg-card rounded-xl border border-border h-28 animate-pulse" />
                   ))}
                 </div>
               ) : (
@@ -225,23 +225,23 @@ export default function ExplorePage() {
                       <Link
                         key={subject.id}
                         href={`/${currentLocale}/subject/${subject.id}`}
-                        className={`bg-card rounded-xl border-l-4 border border-gray-200 p-4 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ${accentClass}`}
+                        className={`bg-card rounded-xl border-l-4 border border-border p-4 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ${accentClass}`}
                       >
-                        <p className="font-semibold text-gray-900 text-sm line-clamp-2 mb-2">
+                        <p className="font-semibold text-foreground text-sm line-clamp-2 mb-2">
                           {getSubjectName(subject)}
                         </p>
                         {getCategoryName(subject) && (
-                          <p className="text-xs text-gray-400 mb-1">{getCategoryName(subject)}</p>
+                          <p className="text-xs text-muted-foreground mb-1">{getCategoryName(subject)}</p>
                         )}
                         <div className="flex items-center gap-1.5 mt-auto">
                           {subject.avg_rating != null ? (
                             <>
                               <span className="text-yellow-400 text-sm">★</span>
-                              <span className="text-sm font-bold text-gray-800">{subject.avg_rating.toFixed(1)}</span>
-                              <span className="text-xs text-gray-400">({subject.review_count})</span>
+                              <span className="text-sm font-bold text-foreground">{subject.avg_rating.toFixed(1)}</span>
+                              <span className="text-xs text-muted-foreground">({subject.review_count})</span>
                             </>
                           ) : (
-                            <span className="text-xs text-gray-400">{t('noReviews') ?? 'No reviews'}</span>
+                            <span className="text-xs text-muted-foreground">{t('noReviews') ?? 'No reviews'}</span>
                           )}
                         </div>
                       </Link>
@@ -251,15 +251,15 @@ export default function ExplorePage() {
               )}
             </div>
           ) : subjects.length === 0 ? (
-            <div className="bg-card rounded-xl border border-gray-200 p-12 text-center">
+            <div className="bg-card rounded-xl border border-border p-12 text-center">
               <svg className="w-16 h-16 mx-auto mb-4" viewBox="0 0 64 64" fill="none">
                 <circle cx="28" cy="28" r="18" stroke="#c7d2fe" strokeWidth="3" />
                 <circle cx="28" cy="28" r="10" fill="#e0e7ff" />
                 <path d="M41 41l10 10" stroke="#6366f1" strokeWidth="3" strokeLinecap="round" />
                 <path d="M24 24h8M24 30h5" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" />
               </svg>
-              <p className="text-sm font-medium text-gray-600 mb-1">{t('noResults') ?? 'No results found'}</p>
-              <p className="text-xs text-gray-400">{currentLocale === 'ko' ? '필터 또는 검색어를 조정해보세요' : 'Try adjusting your filters or search term'}</p>
+              <p className="text-sm font-medium text-muted-foreground mb-1">{t('noResults') ?? 'No results found'}</p>
+              <p className="text-xs text-muted-foreground">{currentLocale === 'ko' ? '필터 또는 검색어를 조정해보세요' : 'Try adjusting your filters or search term'}</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -269,23 +269,23 @@ export default function ExplorePage() {
                   <Link
                     key={subject.id}
                     href={`/${currentLocale}/subject/${subject.id}`}
-                    className={`bg-card rounded-xl border-l-4 border border-gray-200 p-4 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ${accentClass}`}
+                    className={`bg-card rounded-xl border-l-4 border border-border p-4 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ${accentClass}`}
                   >
-                    <p className="font-semibold text-gray-900 text-sm line-clamp-2 mb-2">
+                    <p className="font-semibold text-foreground text-sm line-clamp-2 mb-2">
                       {getSubjectName(subject)}
                     </p>
                     {getCategoryName(subject) && (
-                      <p className="text-xs text-gray-400 mb-1">{getCategoryName(subject)}</p>
+                      <p className="text-xs text-muted-foreground mb-1">{getCategoryName(subject)}</p>
                     )}
                     <div className="flex items-center gap-1.5 mt-auto">
                       {subject.avg_rating != null ? (
                         <>
                           <span className="text-yellow-400 text-sm">★</span>
-                          <span className="text-sm font-bold text-gray-800">{subject.avg_rating.toFixed(1)}</span>
-                          <span className="text-xs text-gray-400">({subject.review_count})</span>
+                          <span className="text-sm font-bold text-foreground">{subject.avg_rating.toFixed(1)}</span>
+                          <span className="text-xs text-muted-foreground">({subject.review_count})</span>
                         </>
                       ) : (
-                        <span className="text-xs text-gray-400">{t('noReviews') ?? 'No reviews'}</span>
+                        <span className="text-xs text-muted-foreground">{t('noReviews') ?? 'No reviews'}</span>
                       )}
                     </div>
                   </Link>

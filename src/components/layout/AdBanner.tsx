@@ -37,8 +37,8 @@ function AdSenseUnit({ slot }: { slot: string }) {
 
 function PlaceholderAd({ className }: { className?: string }) {
   return (
-    <div className={`flex items-center justify-center bg-gray-100 border border-dashed border-gray-300 ${className ?? ''}`}>
-      <span className="text-xs text-gray-400 font-medium tracking-widest uppercase">Ad</span>
+    <div className={`flex items-center justify-center bg-muted border border-dashed border-border ${className ?? ''}`}>
+      <span className="text-xs text-muted-foreground font-medium tracking-widest uppercase">Ad</span>
     </div>
   )
 }
@@ -54,7 +54,7 @@ export default function AdBanner() {
   return (
     <>
       {/* Mobile: fixed bottom bar above BottomNav */}
-      <div className="md:hidden fixed bottom-16 left-0 right-0 z-40 bg-gray-100 border-t border-gray-200 h-12 overflow-hidden">
+      <div className="md:hidden fixed bottom-16 left-0 right-0 z-40 bg-muted border-t border-border h-12 overflow-hidden">
         {adsenseClientId ? (
           <AdSenseUnit slot="mobile-bottom" />
         ) : (

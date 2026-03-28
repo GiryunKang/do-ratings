@@ -88,7 +88,7 @@ export default function OnboardingModal({ locale, onComplete }: OnboardingModalP
             <div
               key={i}
               className={`h-2 w-2 rounded-full transition-colors duration-300 ${
-                i === step ? 'bg-indigo-600' : 'bg-gray-200'
+                i === step ? 'bg-indigo-600' : 'bg-muted'
               }`}
             />
           ))}
@@ -97,7 +97,7 @@ export default function OnboardingModal({ locale, onComplete }: OnboardingModalP
         {/* Skip button */}
         <button
           onClick={handleSkip}
-          className="absolute top-6 right-6 text-sm text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute top-6 right-6 text-sm text-muted-foreground hover:text-muted-foreground transition-colors"
         >
           {t('skip')}
         </button>
@@ -111,8 +111,8 @@ export default function OnboardingModal({ locale, onComplete }: OnboardingModalP
           {/* Step 1: Choose Interests */}
           {step === 0 && (
             <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-2">{t('step1Title')}</h2>
-              <p className="text-sm text-gray-500 mb-6">{t('step1Desc')}</p>
+              <h2 className="text-xl font-bold text-foreground mb-2">{t('step1Title')}</h2>
+              <p className="text-sm text-muted-foreground mb-6">{t('step1Desc')}</p>
               <div className="grid grid-cols-3 gap-3">
                 {CATEGORIES.map(cat => {
                   const isSelected = selected.has(cat.id)
@@ -123,7 +123,7 @@ export default function OnboardingModal({ locale, onComplete }: OnboardingModalP
                       className={`relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 p-4 transition-all duration-150 ${
                         isSelected
                           ? 'border-indigo-500 bg-indigo-50'
-                          : 'border-gray-200 bg-white hover:border-gray-300'
+                          : 'border-border bg-card hover:border-border'
                       }`}
                     >
                       {isSelected && (
@@ -132,7 +132,7 @@ export default function OnboardingModal({ locale, onComplete }: OnboardingModalP
                         </span>
                       )}
                       <span className="text-2xl">{cat.icon}</span>
-                      <span className="text-xs font-medium text-gray-700">
+                      <span className="text-xs font-medium text-foreground/80">
                         {categoryLabels[cat.id]}
                       </span>
                     </button>
@@ -146,8 +146,8 @@ export default function OnboardingModal({ locale, onComplete }: OnboardingModalP
           {step === 1 && (
             <div className="text-center py-4">
               <div className="text-6xl mb-6">📝</div>
-              <h2 className="text-xl font-bold text-gray-900 mb-3">{t('step2Title')}</h2>
-              <p className="text-sm text-gray-500 leading-relaxed">{t('step2Desc')}</p>
+              <h2 className="text-xl font-bold text-foreground mb-3">{t('step2Title')}</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">{t('step2Desc')}</p>
             </div>
           )}
 
@@ -155,8 +155,8 @@ export default function OnboardingModal({ locale, onComplete }: OnboardingModalP
           {step === 2 && (
             <div className="text-center py-4">
               <div className="text-6xl mb-6">🤝</div>
-              <h2 className="text-xl font-bold text-gray-900 mb-3">{t('step3Title')}</h2>
-              <p className="text-sm text-gray-500 leading-relaxed">{t('step3Desc')}</p>
+              <h2 className="text-xl font-bold text-foreground mb-3">{t('step3Title')}</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">{t('step3Desc')}</p>
             </div>
           )}
         </div>

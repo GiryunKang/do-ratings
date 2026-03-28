@@ -6,7 +6,7 @@ interface UserBadgeProps {
 
 const levelConfig: Record<Level, { label: string; className: string; icon: string; shimmer?: boolean }> = {
   bronze: { label: 'Bronze', className: 'bg-amber-100 text-amber-700 border-amber-300', icon: '★' },
-  silver: { label: 'Silver', className: 'bg-gray-100 text-gray-600 border-gray-300', icon: '★' },
+  silver: { label: 'Silver', className: 'bg-muted text-muted-foreground border-border', icon: '★' },
   gold: { label: 'Gold', className: 'bg-yellow-100 text-yellow-700 border-yellow-300', icon: '★', shimmer: true },
   platinum: { label: 'Platinum', className: 'bg-blue-100 text-blue-700 border-blue-300', icon: '★', shimmer: true },
 }

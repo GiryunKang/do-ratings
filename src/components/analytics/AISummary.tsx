@@ -110,7 +110,7 @@ export default function AISummary({ subjectId, locale }: AISummaryProps) {
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
         <span className="text-base">✨</span>
-        <h3 className="text-sm font-semibold text-gray-700">{t('summary')}</h3>
+        <h3 className="text-sm font-semibold text-foreground/80">{t('summary')}</h3>
       </div>
 
       {/* Loading state */}
@@ -132,7 +132,7 @@ export default function AISummary({ subjectId, locale }: AISummaryProps) {
               />
             ))}
           </div>
-          <p className="text-xs text-gray-400">{t('generating')}</p>
+          <p className="text-xs text-muted-foreground">{t('generating')}</p>
         </div>
       )}
 
@@ -162,8 +162,8 @@ export default function AISummary({ subjectId, locale }: AISummaryProps) {
               </span>
             </div>
             <div className="text-right">
-              <div className="text-lg font-bold text-gray-800">{summary.avgRating} <span className="text-yellow-400">★</span></div>
-              <div className="text-xs text-gray-400">{summary.totalReviews} {t('basedOn')}</div>
+              <div className="text-lg font-bold text-foreground">{summary.avgRating} <span className="text-yellow-400">★</span></div>
+              <div className="text-xs text-muted-foreground">{summary.totalReviews} {t('basedOn')}</div>
             </div>
           </div>
 
@@ -174,14 +174,14 @@ export default function AISummary({ subjectId, locale }: AISummaryProps) {
               const pct = summary.totalReviews > 0 ? (item.count / summary.totalReviews) * 100 : 0
               return (
                 <div key={star} className="flex items-center gap-2">
-                  <span className="text-xs text-gray-500 w-5 text-right">{star}★</span>
-                  <div className="flex-1 bg-gray-100 rounded-full h-2 overflow-hidden">
+                  <span className="text-xs text-muted-foreground w-5 text-right">{star}★</span>
+                  <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden">
                     <div
                       className="h-2 rounded-full bg-indigo-400 transition-all duration-500"
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className="text-xs text-gray-400 w-5 text-right">{item.count}</span>
+                  <span className="text-xs text-muted-foreground w-5 text-right">{item.count}</span>
                 </div>
               )
             })}
@@ -196,7 +196,7 @@ export default function AISummary({ subjectId, locale }: AISummaryProps) {
               </div>
               <ul className="space-y-1 pl-3.5">
                 {summary.pros.map((word) => (
-                  <li key={word} className="text-xs text-gray-600 flex items-center gap-1">
+                  <li key={word} className="text-xs text-muted-foreground flex items-center gap-1">
                     <span className="text-green-400">•</span> {word}
                   </li>
                 ))}
@@ -213,7 +213,7 @@ export default function AISummary({ subjectId, locale }: AISummaryProps) {
               </div>
               <ul className="space-y-1 pl-3.5">
                 {summary.cons.map((word) => (
-                  <li key={word} className="text-xs text-gray-600 flex items-center gap-1">
+                  <li key={word} className="text-xs text-muted-foreground flex items-center gap-1">
                     <span className="text-red-400">•</span> {word}
                   </li>
                 ))}

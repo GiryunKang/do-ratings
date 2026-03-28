@@ -129,7 +129,7 @@ export default function TrendChart({ subjectId }: TrendChartProps) {
   return (
     <div className="bg-card rounded-xl p-5 shadow-sm">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-gray-700">{t('trendChart')}</h3>
+        <h3 className="text-sm font-semibold text-foreground/80">{t('trendChart')}</h3>
         <div className="flex gap-1">
           {periods.map((p) => (
             <button
@@ -138,7 +138,7 @@ export default function TrendChart({ subjectId }: TrendChartProps) {
               className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
                 period === p
                   ? 'bg-indigo-500 text-white'
-                  : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                  : 'bg-muted text-muted-foreground hover:bg-muted'
               }`}
             >
               {t(p)}
@@ -152,7 +152,7 @@ export default function TrendChart({ subjectId }: TrendChartProps) {
           <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : !hasEnoughData ? (
-        <div className="h-[200px] flex items-center justify-center text-sm text-gray-400">
+        <div className="h-[200px] flex items-center justify-center text-sm text-muted-foreground">
           {t('noData')}
         </div>
       ) : (

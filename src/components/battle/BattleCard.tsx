@@ -97,7 +97,7 @@ export default function BattleCard({
             ? 'border-indigo-400 bg-indigo-50'
             : isWinner && isEnded
             ? 'border-yellow-400 bg-yellow-50'
-            : 'border-gray-200 bg-card'
+            : 'border-border bg-card'
         }`}
       >
         {/* Winner / voted badge */}
@@ -113,16 +113,16 @@ export default function BattleCard({
         )}
 
         {/* Review info */}
-        <h3 className="font-semibold text-sm text-gray-900 line-clamp-1">{review.title}</h3>
-        <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">{review.content}</p>
+        <h3 className="font-semibold text-sm text-foreground line-clamp-1">{review.title}</h3>
+        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{review.content}</p>
         <div className="flex items-center gap-1.5">
           <StarRating value={review.overall_rating} readonly size="sm" />
-          <span className="text-xs text-gray-500 font-medium">{review.overall_rating.toFixed(1)}</span>
+          <span className="text-xs text-muted-foreground font-medium">{review.overall_rating.toFixed(1)}</span>
         </div>
-        <p className="text-xs text-gray-400">@{review.user_nickname}</p>
+        <p className="text-xs text-muted-foreground">@{review.user_nickname}</p>
 
         {/* Vote percentage */}
-        <p className="text-sm font-bold text-gray-700 mt-auto">{pct}%</p>
+        <p className="text-sm font-bold text-foreground/80 mt-auto">{pct}%</p>
 
         {/* Vote button */}
         <button
@@ -133,7 +133,7 @@ export default function BattleCard({
             isMyVote
               ? 'bg-indigo-500 text-white cursor-default'
               : isEnded || userVote
-              ? 'bg-gray-100 text-gray-400 cursor-default'
+              ? 'bg-muted text-muted-foreground cursor-default'
               : 'bg-indigo-600 hover:bg-indigo-700 text-white hover:shadow-md'
           }`}
         >
@@ -144,12 +144,12 @@ export default function BattleCard({
   }
 
   return (
-    <div className="bg-card rounded-2xl border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow animate-fadeIn">
+    <div className="bg-card rounded-2xl border border-border p-4 shadow-sm hover:shadow-md transition-shadow animate-fadeIn">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           {isEnded ? (
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-200 text-gray-600">
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
               {t.ended}
             </span>
           ) : (
@@ -159,12 +159,12 @@ export default function BattleCard({
             </span>
           )}
           {isEnded && winnerSide === 'tie' && (
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-300 text-gray-700">
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-muted-foreground/30 text-foreground/80">
               {t.tie}
             </span>
           )}
         </div>
-        <span className="text-xs text-gray-400">{totalVotes} votes</span>
+        <span className="text-xs text-muted-foreground">{totalVotes} votes</span>
       </div>
 
       {/* Two sides + VS */}
@@ -178,7 +178,7 @@ export default function BattleCard({
 
         {/* VS divider */}
         <div className="flex flex-col items-center justify-center shrink-0">
-          <span className="text-sm font-black text-gray-400 select-none">{t.vsLabel}</span>
+          <span className="text-sm font-black text-muted-foreground select-none">{t.vsLabel}</span>
         </div>
 
         <ReviewSide
@@ -190,7 +190,7 @@ export default function BattleCard({
       </div>
 
       {/* Progress bar */}
-      <div className="mt-4 flex rounded-full overflow-hidden h-2 bg-gray-100">
+      <div className="mt-4 flex rounded-full overflow-hidden h-2 bg-muted">
         <div
           className={`h-full transition-all duration-500 ${
             userVote === 'a' ? 'bg-indigo-500' : 'bg-gray-400'
@@ -199,7 +199,7 @@ export default function BattleCard({
         />
         <div
           className={`h-full transition-all duration-500 ${
-            userVote === 'b' ? 'bg-indigo-500' : 'bg-gray-300'
+            userVote === 'b' ? 'bg-indigo-500' : 'bg-muted-foreground/30'
           }`}
           style={{ width: `${pctB}%` }}
         />

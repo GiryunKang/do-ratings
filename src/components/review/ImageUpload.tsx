@@ -118,7 +118,7 @@ export default function ImageUpload({
           'relative border-2 border-dashed rounded-xl px-4 py-6 flex flex-col items-center justify-center gap-2 transition-colors',
           isDragOver && canAdd
             ? 'border-indigo-400 bg-indigo-50'
-            : 'border-gray-200 bg-gray-50',
+            : 'border-border bg-muted/50',
           !canAdd ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
         ].join(' ')}
       >
@@ -132,7 +132,7 @@ export default function ImageUpload({
         )}
 
         <svg
-          className="w-8 h-8 text-gray-400"
+          className="w-8 h-8 text-muted-foreground"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -145,7 +145,7 @@ export default function ImageUpload({
           />
         </svg>
 
-        <p className="text-sm text-gray-500 text-center">
+        <p className="text-sm text-muted-foreground text-center">
           Drag &amp; drop photos here, or{' '}
           <button
             type="button"
@@ -157,10 +157,10 @@ export default function ImageUpload({
           </button>
         </p>
 
-        <p className="text-xs text-gray-400">JPEG, PNG, WebP · max {maxImages} photos</p>
+        <p className="text-xs text-muted-foreground">JPEG, PNG, WebP · max {maxImages} photos</p>
 
         {/* Count indicator */}
-        <span className="text-xs text-gray-500 font-medium">
+        <span className="text-xs text-muted-foreground font-medium">
           {images.length}/{maxImages}
         </span>
 

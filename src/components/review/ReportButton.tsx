@@ -48,7 +48,7 @@ export default function ReportButton({ reviewId }: ReportButtonProps) {
     <div className="relative inline-block">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-1 text-xs text-gray-400 hover:text-red-500 transition-colors"
+        className="flex items-center gap-1 text-xs text-muted-foreground hover:text-red-500 transition-colors"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -76,14 +76,14 @@ export default function ReportButton({ reviewId }: ReportButtonProps) {
           />
 
           {/* Modal */}
-          <div className="absolute right-0 mt-2 w-72 bg-card border border-gray-200 rounded-xl shadow-lg z-50 p-4">
+          <div className="absolute right-0 mt-2 w-72 bg-card border border-border rounded-xl shadow-lg z-50 p-4">
             {submitted ? (
               <p className="text-sm text-green-600 text-center py-2">
                 Report submitted. Thank you.
               </p>
             ) : (
               <>
-                <h4 className="text-sm font-semibold text-gray-800 mb-3">
+                <h4 className="text-sm font-semibold text-foreground mb-3">
                   Report Review
                 </h4>
 
@@ -98,7 +98,7 @@ export default function ReportButton({ reviewId }: ReportButtonProps) {
                         onChange={() => setReason(r)}
                         className="accent-indigo-600"
                       />
-                      <span className="text-sm text-gray-700">
+                      <span className="text-sm text-foreground/80">
                         {t(r)}
                       </span>
                     </label>
@@ -110,13 +110,13 @@ export default function ReportButton({ reviewId }: ReportButtonProps) {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder={t('description')}
                   rows={3}
-                  className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 resize-none focus:outline-none focus:border-indigo-400 mb-3"
+                  className="w-full text-sm border border-border rounded-lg px-3 py-2 resize-none focus:outline-none focus:border-indigo-400 mb-3"
                 />
 
                 <div className="flex gap-2 justify-end">
                   <button
                     onClick={() => setOpen(false)}
-                    className="text-sm px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50"
+                    className="text-sm px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:bg-muted/50"
                   >
                     {tCommon('cancel')}
                   </button>

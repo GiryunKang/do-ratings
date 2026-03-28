@@ -69,8 +69,8 @@ function StatCard({
   color: string
 }) {
   return (
-    <div className={`bg-card rounded-2xl border border-gray-100 shadow-sm p-5`}>
-      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">{label}</p>
+    <div className={`bg-card rounded-2xl border border-border shadow-sm p-5`}>
+      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">{label}</p>
       <p className={`text-3xl font-bold ${color}`}>{value}</p>
     </div>
   )
@@ -175,7 +175,7 @@ export default function DashboardPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 space-y-8">
-      <h1 className="text-2xl font-bold text-gray-900">{t('myDashboard')}</h1>
+      <h1 className="text-2xl font-bold text-foreground">{t('myDashboard')}</h1>
 
       {/* Stats cards */}
       <div className="grid grid-cols-3 gap-4">
@@ -195,10 +195,10 @@ export default function DashboardPage() {
       {/* Charts row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Category breakdown */}
-        <div className="bg-card rounded-2xl border border-gray-100 shadow-sm p-5">
-          <h2 className="text-sm font-semibold text-gray-700 mb-4">{t('categoryBreakdown')}</h2>
+        <div className="bg-card rounded-2xl border border-border shadow-sm p-5">
+          <h2 className="text-sm font-semibold text-foreground/80 mb-4">{t('categoryBreakdown')}</h2>
           {categoryData.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-8">No data yet</p>
+            <p className="text-sm text-muted-foreground text-center py-8">No data yet</p>
           ) : (
             <>
               <ResponsiveContainer width="100%" height={200}>
@@ -225,13 +225,13 @@ export default function DashboardPage() {
               </ResponsiveContainer>
               <ul className="mt-3 space-y-1">
                 {categoryData.map((cat, index) => (
-                  <li key={cat.name} className="flex items-center gap-2 text-xs text-gray-600">
+                  <li key={cat.name} className="flex items-center gap-2 text-xs text-muted-foreground">
                     <span
                       className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
                       style={{ backgroundColor: COLORS[index % COLORS.length] }}
                     />
                     <span className="truncate flex-1">{cat.name}</span>
-                    <span className="font-semibold text-gray-800">{cat.count}</span>
+                    <span className="font-semibold text-foreground">{cat.count}</span>
                   </li>
                 ))}
               </ul>
@@ -240,10 +240,10 @@ export default function DashboardPage() {
         </div>
 
         {/* Monthly activity */}
-        <div className="bg-card rounded-2xl border border-gray-100 shadow-sm p-5">
-          <h2 className="text-sm font-semibold text-gray-700 mb-4">{t('monthlyActivity')}</h2>
+        <div className="bg-card rounded-2xl border border-border shadow-sm p-5">
+          <h2 className="text-sm font-semibold text-foreground/80 mb-4">{t('monthlyActivity')}</h2>
           {reviews.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-8">No data yet</p>
+            <p className="text-sm text-muted-foreground text-center py-8">No data yet</p>
           ) : (
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={months} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
@@ -272,12 +272,12 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent activity */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-        <h2 className="text-sm font-semibold text-gray-700 mb-4">{t('recentActivity')}</h2>
+      <div className="bg-card rounded-2xl border border-border shadow-sm p-5">
+        <h2 className="text-sm font-semibold text-foreground/80 mb-4">{t('recentActivity')}</h2>
         {recentReviews.length === 0 ? (
-          <p className="text-sm text-gray-400 text-center py-6">{currentLocale === 'ko' ? '아직 리뷰가 없습니다' : 'No reviews yet'}</p>
+          <p className="text-sm text-muted-foreground text-center py-6">{currentLocale === 'ko' ? '아직 리뷰가 없습니다' : 'No reviews yet'}</p>
         ) : (
-          <ul className="divide-y divide-gray-50">
+          <ul className="divide-y divide-border">
             {recentReviews.map((review) => (
               <li key={review.id} className="py-3 flex items-start gap-3">
                 {/* Rating badge */}
@@ -287,13 +287,13 @@ export default function DashboardPage() {
                 <div className="flex-1 min-w-0">
                   <Link
                     href={`/${currentLocale}/subject/${review.subject_id}`}
-                    className="block text-sm font-medium text-gray-800 hover:text-indigo-600 truncate transition-colors"
+                    className="block text-sm font-medium text-foreground hover:text-indigo-600 truncate transition-colors"
                   >
                     {review.title || review.subjects?.name || 'Review'}
                   </Link>
-                  <p className="text-xs text-gray-400 mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     {review.subjects?.name && (
-                      <span className="text-gray-500">{review.subjects.name} · </span>
+                      <span className="text-muted-foreground">{review.subjects.name} · </span>
                     )}
                     {new Date(review.created_at).toLocaleDateString(
                       currentLocale === 'ko' ? 'ko-KR' : 'en-US',

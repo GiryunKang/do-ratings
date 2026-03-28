@@ -90,8 +90,8 @@ export default function PlaceSearch({ categorySlug, locale }: PlaceSearchProps) 
   }, [])
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
-      <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+    <div className="bg-card rounded-xl border border-border p-4 mb-6">
+      <h3 className="text-sm font-semibold text-foreground/80 mb-3 flex items-center gap-2">
         <MapPinIcon className="w-4 h-4 text-indigo-500" />
         {locale === 'ko'
           ? (categorySlug === 'restaurants' ? 'Google에서 레스토랑 검색' : 'Google에서 장소 검색')
@@ -105,7 +105,7 @@ export default function PlaceSearch({ categorySlug, locale }: PlaceSearchProps) 
           value={query}
           onChange={(e) => handleInputChange(e.target.value)}
           placeholder={locale === 'ko' ? '장소명을 입력하세요...' : 'Enter a place name...'}
-          className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+          className="w-full rounded-lg border border-border px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400"
         />
         {loading && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
@@ -113,15 +113,15 @@ export default function PlaceSearch({ categorySlug, locale }: PlaceSearchProps) 
       </div>
 
       {results.length > 0 && (
-        <ul className="mt-3 divide-y divide-gray-100 max-h-80 overflow-y-auto">
+        <ul className="mt-3 divide-y divide-border max-h-80 overflow-y-auto">
           {results.map((place) => (
             <li key={place.google_place_id} className="py-3 flex items-start gap-3">
               <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center shrink-0 mt-0.5">
                 <MapPinIcon className="w-4 h-4 text-indigo-500" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900">{place.name}</p>
-                <p className="text-xs text-gray-500 mt-0.5 truncate">{place.address}</p>
+                <p className="text-sm font-medium text-foreground">{place.name}</p>
+                <p className="text-xs text-muted-foreground mt-0.5 truncate">{place.address}</p>
                 {place.rating && (
                   <p className="text-xs text-yellow-600 mt-0.5">
                     ★ {place.rating} ({place.user_ratings_total.toLocaleString()})
@@ -150,7 +150,7 @@ export default function PlaceSearch({ categorySlug, locale }: PlaceSearchProps) 
       )}
 
       {query.length >= 2 && !loading && results.length === 0 && (
-        <p className="text-sm text-gray-400 text-center py-4">
+        <p className="text-sm text-muted-foreground text-center py-4">
           {locale === 'ko' ? '검색 결과가 없습니다' : 'No results found'}
         </p>
       )}

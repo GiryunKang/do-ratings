@@ -58,9 +58,9 @@ export default function FilterPanel({
 
   return (
     <aside className="w-full md:w-56 shrink-0">
-      <div className="bg-card rounded-xl border border-gray-200 p-4 space-y-5">
+      <div className="bg-card rounded-xl border border-border p-4 space-y-5">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-gray-800 text-sm">
+          <h3 className="font-semibold text-foreground text-sm">
             {t('filter') ?? 'Filters'}
           </h3>
           {hasFilters && (
@@ -75,7 +75,7 @@ export default function FilterPanel({
 
         {/* Category filter */}
         <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
             {t('category') ?? 'Category'}
           </p>
           <ul className="space-y-1">
@@ -86,7 +86,7 @@ export default function FilterPanel({
                   className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors ${
                     selectedCategory === cat.id
                       ? 'bg-indigo-600 text-white font-medium'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      : 'text-foreground/80 hover:bg-muted'
                   }`}
                 >
                   {getCategoryName(cat)}
@@ -98,13 +98,13 @@ export default function FilterPanel({
 
         {/* Rating filter */}
         <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
             {t('minRating') ?? 'Min Rating'}
           </p>
           <select
             value={ratingMin ?? ''}
             onChange={handleRatingChange}
-            className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-indigo-400 bg-white"
+            className="w-full border border-border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-indigo-400 bg-white"
           >
             <option value="">{t('any') ?? 'Any'}</option>
             {[1, 2, 3, 4, 5].map((r) => (

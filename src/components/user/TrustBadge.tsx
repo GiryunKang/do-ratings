@@ -9,7 +9,7 @@ interface TrustBadgeProps {
 
 function getColorClasses(score: number) {
   if (score <= 30) {
-    return { text: 'text-gray-400', dot: 'bg-gray-400', bar: 'bg-gray-400' }
+    return { text: 'text-muted-foreground', dot: 'bg-gray-400', bar: 'bg-gray-400' }
   } else if (score <= 60) {
     return { text: 'text-primary', dot: 'bg-primary', bar: 'bg-primary' }
   } else if (score <= 80) {
@@ -27,7 +27,7 @@ export default function TrustBadge({ score, size = 'sm' }: TrustBadgeProps) {
 
   if (size === 'sm') {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 text-xs font-medium text-gray-600">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-muted text-xs font-medium text-muted-foreground">
         <span className={`w-1.5 h-1.5 rounded-full ${colors.dot}`} />
         {clampedScore}
       </span>
@@ -37,10 +37,10 @@ export default function TrustBadge({ score, size = 'sm' }: TrustBadgeProps) {
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-gray-600">{locale === 'ko' ? '신뢰 점수:' : 'Trust Score:'}</span>
+        <span className="text-sm font-medium text-muted-foreground">{locale === 'ko' ? '신뢰 점수:' : 'Trust Score:'}</span>
         <span className={`text-sm font-semibold ${colors.text}`}>{clampedScore}</span>
       </div>
-      <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+      <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-300 ${colors.bar}`}
           style={{ width: `${clampedScore}%` }}

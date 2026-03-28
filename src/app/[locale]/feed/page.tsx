@@ -200,22 +200,22 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
           </svg>
         </div>
         <div>
-          <p className="text-gray-600 font-medium text-sm mb-1">
+          <p className="text-muted-foreground font-medium text-sm mb-1">
             {locale === 'ko' ? '피드가 비어 있습니다' : 'Your feed is empty'}
           </p>
-          <p className="text-gray-400 text-sm max-w-xs">
+          <p className="text-muted-foreground text-sm max-w-xs">
             {locale === 'ko' ? '리뷰어를 팔로우하면 여기에 리뷰가 표시됩니다' : 'Follow reviewers to see their reviews here'}
           </p>
         </div>
 
         {topReviewers.length > 0 && (
           <div className="w-full max-w-sm">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
               {locale === 'ko' ? '추천 리뷰어' : 'Recommended Reviewers'}
             </p>
             <div className="space-y-3">
               {topReviewers.map((reviewer) => (
-                <div key={reviewer.id} className="flex items-center gap-3 bg-card rounded-xl border border-gray-100 px-4 py-3">
+                <div key={reviewer.id} className="flex items-center gap-3 bg-card rounded-xl border border-border px-4 py-3">
                   <Link href={`/${locale}/user/${reviewer.id}`} className="shrink-0">
                     {reviewer.avatar_url ? (
                       <img src={reviewer.avatar_url} alt={reviewer.nickname} className="w-10 h-10 rounded-full object-cover" />
@@ -227,9 +227,9 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
                   </Link>
                   <div className="flex-1 min-w-0 text-left">
                     <Link href={`/${locale}/user/${reviewer.id}`}>
-                      <p className="text-sm font-semibold text-gray-800 truncate">{reviewer.nickname}</p>
+                      <p className="text-sm font-semibold text-foreground truncate">{reviewer.nickname}</p>
                     </Link>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-muted-foreground">
                       {locale === 'ko' ? `리뷰 ${reviewer.review_count}개` : `${reviewer.review_count} reviews`}
                     </p>
                   </div>
@@ -238,7 +238,7 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
                     disabled={followLoading.has(reviewer.id)}
                     className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
                       followingIds.has(reviewer.id)
-                        ? 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                        ? 'bg-muted text-muted-foreground hover:bg-muted'
                         : 'bg-indigo-600 text-white hover:bg-indigo-700'
                     }`}
                   >
@@ -300,7 +300,7 @@ export default function FeedPage() {
   if (loading) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-6">
-        <h1 className="text-xl font-bold text-gray-900 mb-5">{tNav('feed')}</h1>
+        <h1 className="text-xl font-bold text-foreground mb-5">{tNav('feed')}</h1>
         <FeedSkeletonCards />
       </div>
     )
@@ -310,7 +310,7 @@ export default function FeedPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
-      <h1 className="text-xl font-bold text-gray-900 mb-5">{tNav('feed')}</h1>
+      <h1 className="text-xl font-bold text-foreground mb-5">{tNav('feed')}</h1>
       <FeedContent userId={user.id} locale={locale} />
     </div>
   )

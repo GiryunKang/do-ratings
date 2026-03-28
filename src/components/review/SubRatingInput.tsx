@@ -75,12 +75,12 @@ export default function SubRatingInput({
 
         return (
           <div key={criterion.key} className="flex items-center justify-between gap-4">
-            <span className="text-sm text-gray-700 w-24 shrink-0">
+            <span className="text-sm text-foreground/80 w-24 shrink-0">
               {label}
               {tooltip && (
                 <button
                   type="button"
-                  className="ml-0.5 text-gray-400 text-xs hover:text-primary inline-flex"
+                  className="ml-0.5 text-muted-foreground text-xs hover:text-primary inline-flex"
                   onClick={(e) => {
                     e.preventDefault()
                     const el = e.currentTarget.nextElementSibling
@@ -100,7 +100,7 @@ export default function SubRatingInput({
               onChange={(rating) => handleChange(criterion.key, rating)}
               size="md"
             />
-            <span className="text-sm text-gray-500 w-6 text-right">
+            <span className="text-sm text-muted-foreground w-6 text-right">
               {val > 0 ? val.toFixed(1) : '-'}
             </span>
           </div>

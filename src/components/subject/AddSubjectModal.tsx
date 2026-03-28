@@ -111,13 +111,13 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
     >
       <div className="relative w-full max-w-lg rounded-2xl bg-card shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100">
-          <h2 className="text-lg font-bold text-gray-900">
+        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-border">
+          <h2 className="text-lg font-bold text-foreground">
             {isKo ? '새 항목 추가' : 'Add New Subject'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100"
+            className="text-muted-foreground hover:text-muted-foreground transition-colors p-1 rounded-lg hover:bg-muted"
             aria-label="Close"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,14 +130,14 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
           {/* Category */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium text-foreground/80 mb-1.5">
               {isKo ? '카테고리' : 'Category'} <span className="text-red-500">*</span>
             </label>
             <select
               value={categorySlug}
               onChange={e => setCategorySlug(e.target.value)}
               required
-              className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-background"
+              className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-background"
             >
               {categories.length === 0 && (
                 <option value="">{isKo ? '로딩 중...' : 'Loading...'}</option>
@@ -159,7 +159,7 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
 
           {/* Name Ko */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium text-foreground/80 mb-1.5">
               {isKo ? '이름 (한국어)' : 'Name (Korean)'}
               {isKo && <span className="text-red-500 ml-0.5">*</span>}
             </label>
@@ -168,13 +168,13 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
               value={nameKo}
               onChange={e => setNameKo(e.target.value)}
               placeholder={isKo ? '한국어 이름을 입력하세요' : 'Enter Korean name'}
-              className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
           </div>
 
           {/* Name En */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium text-foreground/80 mb-1.5">
               {isKo ? '이름 (영어)' : 'Name (English)'}
               {!isKo && <span className="text-red-500 ml-0.5">*</span>}
             </label>
@@ -183,13 +183,13 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
               value={nameEn}
               onChange={e => setNameEn(e.target.value)}
               placeholder={isKo ? '영어 이름을 입력하세요 (선택)' : 'Enter English name'}
-              className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium text-foreground/80 mb-1.5">
               {isKo ? '설명 (선택)' : 'Description (optional)'}
             </label>
             <textarea
@@ -197,13 +197,13 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
               onChange={e => isKo ? setDescKo(e.target.value) : setDescEn(e.target.value)}
               placeholder={isKo ? '간단한 설명을 입력하세요' : 'Enter a brief description'}
               rows={3}
-              className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+              className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
             />
           </div>
 
           {/* Image URL */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium text-foreground/80 mb-1.5">
               {isKo ? '이미지 URL (선택)' : 'Image URL (optional)'}
             </label>
             <input
@@ -211,9 +211,9 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
               value={imageUrl}
               onChange={e => setImageUrl(e.target.value)}
               placeholder={isKo ? 'https://... 이미지 주소를 입력하세요' : 'https://... Enter image URL'}
-              className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
-            <p className="mt-1 text-[11px] text-gray-400">
+            <p className="mt-1 text-[11px] text-muted-foreground">
               {isKo
                 ? '💡 입력하지 않으면 Wikipedia에서 자동으로 이미지를 가져옵니다. 저작권에 문제없는 이미지만 사용해주세요.'
                 : '💡 If left empty, an image will be auto-fetched from Wikipedia. Only use copyright-free images.'}
@@ -230,7 +230,7 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              className="flex-1 rounded-xl border border-border py-2.5 text-sm font-medium text-foreground/80 hover:bg-muted/50 transition-colors"
             >
               {isKo ? '취소' : 'Cancel'}
             </button>

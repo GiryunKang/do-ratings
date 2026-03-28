@@ -105,14 +105,14 @@ export default function SettingsPage() {
         </div>
       )}
 
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">
+      <h1 className="text-2xl font-bold text-foreground mb-8">
         {t('settings') ?? 'Settings'}
       </h1>
 
-      <form onSubmit={handleSave} className="space-y-6 bg-card rounded-2xl border border-gray-200 p-6">
+      <form onSubmit={handleSave} className="space-y-6 bg-card rounded-2xl border border-border p-6">
         {/* Nickname */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          <label className="block text-sm font-medium text-foreground/80 mb-1.5">
             {t('nickname') ?? 'Nickname'}
           </label>
           <input
@@ -120,21 +120,21 @@ export default function SettingsPage() {
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
             maxLength={30}
-            className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400"
+            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400"
             placeholder={t('nicknamePlaceholder') ?? 'Enter nickname'}
           />
         </div>
 
         {/* Avatar URL */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          <label className="block text-sm font-medium text-foreground/80 mb-1.5">
             {t('avatarUrl') ?? 'Avatar URL'}
           </label>
           <input
             type="url"
             value={avatarUrl}
             onChange={(e) => setAvatarUrl(e.target.value)}
-            className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400"
+            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400"
             placeholder="https://example.com/avatar.png"
           />
           <p className="mt-1.5 text-xs text-muted-foreground">
@@ -147,7 +147,7 @@ export default function SettingsPage() {
             <img
               src={avatarUrl}
               alt="Avatar preview"
-              className="mt-3 w-16 h-16 rounded-full object-cover border border-gray-200"
+              className="mt-3 w-16 h-16 rounded-full object-cover border border-border"
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
             />
           )}
@@ -155,7 +155,7 @@ export default function SettingsPage() {
 
         {/* Language */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          <label className="block text-sm font-medium text-foreground/80 mb-1.5">
             {t('language') ?? 'Language'}
           </label>
           <div className="flex gap-3">
@@ -167,7 +167,7 @@ export default function SettingsPage() {
                 className={`flex-1 py-2.5 rounded-xl border text-sm font-medium transition-colors ${
                   language === lang
                     ? 'bg-indigo-600 text-white border-indigo-600'
-                    : 'bg-card text-gray-700 border-gray-300 hover:border-indigo-400'
+                    : 'bg-card text-foreground/80 border-border hover:border-indigo-400'
                 }`}
               >
                 {lang === 'ko' ? '한국어' : 'English'}
@@ -178,14 +178,14 @@ export default function SettingsPage() {
 
         {/* Email (read-only) */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          <label className="block text-sm font-medium text-foreground/80 mb-1.5">
             {t('email') ?? 'Email'}
           </label>
           <input
             type="email"
             value={user.email ?? ''}
             readOnly
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 text-gray-500 cursor-not-allowed"
+            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-muted/50 text-muted-foreground cursor-not-allowed"
           />
         </div>
 

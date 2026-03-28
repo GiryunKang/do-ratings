@@ -145,7 +145,7 @@ export default function CollectionsPage() {
     <div className="max-w-5xl mx-auto px-4 py-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">{t('collections')}</h1>
+        <h1 className="text-2xl font-bold text-foreground">{t('collections')}</h1>
         {user && (
           <button
             onClick={() => setShowModal(true)}
@@ -170,13 +170,13 @@ export default function CollectionsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-gray-200">
+      <div className="flex gap-1 mb-6 border-b border-border">
         <button
           onClick={() => setTab('mine')}
           className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
             tab === 'mine'
               ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
+              : 'border-transparent text-muted-foreground hover:text-foreground/80'
           }`}
         >
           {t('myCollections')}
@@ -191,12 +191,12 @@ export default function CollectionsPage() {
           className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
             tab === 'public'
               ? 'border-indigo-600 text-indigo-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
+              : 'border-transparent text-muted-foreground hover:text-foreground/80'
           }`}
         >
           {t('public')}
           {publicCollections.length > 0 && (
-            <span className="ml-1.5 bg-gray-100 text-gray-600 text-xs rounded-full px-1.5 py-0.5">
+            <span className="ml-1.5 bg-muted text-muted-foreground text-xs rounded-full px-1.5 py-0.5">
               {publicCollections.length}
             </span>
           )}
@@ -209,7 +209,7 @@ export default function CollectionsPage() {
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="bg-white rounded-xl border border-gray-200 h-32 animate-pulse"
+              className="bg-card rounded-xl border border-border h-32 animate-pulse"
             />
           ))}
         </div>
@@ -230,7 +230,7 @@ export default function CollectionsPage() {
               />
             </svg>
           </div>
-          <p className="text-gray-500 text-sm">{t('noCollections')}</p>
+          <p className="text-muted-foreground text-sm">{t('noCollections')}</p>
           {tab === 'mine' && user && (
             <button
               onClick={() => setShowModal(true)}
@@ -274,7 +274,7 @@ export default function CollectionsPage() {
           {/* Modal */}
           <div className="relative bg-card rounded-2xl shadow-xl w-full max-w-md p-6 z-10">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-bold text-gray-900">
+              <h2 className="text-lg font-bold text-foreground">
                 {t('createCollection')}
               </h2>
               <button
@@ -283,7 +283,7 @@ export default function CollectionsPage() {
                   setForm(EMPTY_FORM)
                   setFormError(null)
                 }}
-                className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+                className="p-1 rounded-md text-muted-foreground hover:text-muted-foreground hover:bg-muted transition-colors"
               >
                 <svg
                   className="w-5 h-5"
@@ -304,7 +304,7 @@ export default function CollectionsPage() {
             <form onSubmit={(e) => void handleCreate(e)} className="space-y-4">
               {/* Title */}
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
+                <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wide">
                   {t('title')}
                 </label>
                 <input
@@ -314,7 +314,7 @@ export default function CollectionsPage() {
                   onChange={(e) =>
                     setForm((f) => ({ ...f, titleKo: e.target.value }))
                   }
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 mb-2"
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 mb-2"
                 />
                 <input
                   type="text"
@@ -323,13 +323,13 @@ export default function CollectionsPage() {
                   onChange={(e) =>
                     setForm((f) => ({ ...f, titleEn: e.target.value }))
                   }
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
+                <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wide">
                   {t('description')}
                 </label>
                 <textarea
@@ -339,7 +339,7 @@ export default function CollectionsPage() {
                   onChange={(e) =>
                     setForm((f) => ({ ...f, descKo: e.target.value }))
                   }
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none mb-2"
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none mb-2"
                 />
                 <textarea
                   placeholder="Description (optional)"
@@ -348,17 +348,17 @@ export default function CollectionsPage() {
                   onChange={(e) =>
                     setForm((f) => ({ ...f, descEn: e.target.value }))
                   }
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
                 />
               </div>
 
               {/* Public/Private toggle */}
-              <div className="flex items-center justify-between py-2 border-t border-gray-100">
+              <div className="flex items-center justify-between py-2 border-t border-border">
                 <div>
-                  <p className="text-sm font-medium text-gray-800">
+                  <p className="text-sm font-medium text-foreground">
                     {form.isPublic ? t('public') : t('private')}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-muted-foreground">
                     {form.isPublic
                       ? locale === 'ko'
                         ? '모든 사용자에게 공개됩니다'
@@ -374,11 +374,11 @@ export default function CollectionsPage() {
                     setForm((f) => ({ ...f, isPublic: !f.isPublic }))
                   }
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    form.isPublic ? 'bg-indigo-600' : 'bg-gray-300'
+                    form.isPublic ? 'bg-indigo-600' : 'bg-muted-foreground/30'
                   }`}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+                    className={`inline-block h-4 w-4 transform rounded-full bg-card shadow transition-transform ${
                       form.isPublic ? 'translate-x-6' : 'translate-x-1'
                     }`}
                   />
@@ -399,7 +399,7 @@ export default function CollectionsPage() {
                     setForm(EMPTY_FORM)
                     setFormError(null)
                   }}
-                  className="flex-1 py-2 rounded-lg text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+                  className="flex-1 py-2 rounded-lg text-sm font-medium text-foreground/80 bg-muted hover:bg-muted transition-colors"
                 >
                   {tCommon('cancel')}
                 </button>

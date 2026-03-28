@@ -163,11 +163,11 @@ export default function BusinessResponse({
                 onChange={(e) => setContent(e.target.value.slice(0, 1000))}
                 rows={3}
                 maxLength={1000}
-                className="w-full text-sm resize-none rounded-lg border border-teal-200 bg-white px-3 py-2 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-200 placeholder-gray-400"
+                className="w-full text-sm resize-none rounded-lg border border-teal-200 bg-card px-3 py-2 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-200 placeholder-gray-400"
                 placeholder=""
               />
               <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-400">{content.length}/1000</span>
+                <span className="text-xs text-muted-foreground">{content.length}/1000</span>
                 <div className="flex gap-2">
                   <button
                     type="button"
@@ -175,7 +175,7 @@ export default function BusinessResponse({
                       setShowForm(false)
                       setContent('')
                     }}
-                    className="text-sm text-gray-500 hover:text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="text-sm text-muted-foreground hover:text-foreground/80 px-3 py-1.5 rounded-lg hover:bg-muted transition-colors"
                   >
                     {tCommon('cancel')}
                   </button>

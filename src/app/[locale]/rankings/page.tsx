@@ -52,7 +52,7 @@ interface ReviewProfile {
 
 const podiumStyles = [
   'bg-gradient-to-r from-yellow-50 to-amber-50 border border-yellow-200',
-  'bg-gradient-to-r from-gray-50 to-slate-100 border border-gray-200',
+  'bg-gradient-to-r from-gray-50 to-slate-100 border border-border',
   'bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200',
 ]
 
@@ -74,11 +74,11 @@ function SkeletonCards() {
 
 function EmptyState({ message }: { message: string }) {
   return (
-    <div className="bg-card rounded-xl border border-gray-200 p-12 text-center">
+    <div className="bg-card rounded-xl border border-border p-12 text-center">
       <svg className="w-12 h-12 mx-auto mb-3 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
       </svg>
-      <p className="text-sm text-gray-400">{message}</p>
+      <p className="text-sm text-muted-foreground">{message}</p>
     </div>
   )
 }
@@ -271,10 +271,10 @@ export default function RankingsPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
-      <h1 className="text-xl font-bold text-gray-900 mb-5">{t('rankings')}</h1>
+      <h1 className="text-xl font-bold text-foreground mb-5">{t('rankings')}</h1>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 mb-6">
+      <div className="flex border-b border-border mb-6">
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -282,7 +282,7 @@ export default function RankingsPage() {
             className={`flex-1 py-2.5 text-sm font-medium transition-colors relative ${
               activeTab === tab.key
                 ? 'text-indigo-600'
-                : 'text-gray-500 hover:text-gray-700'
+                : 'text-muted-foreground hover:text-foreground/80'
             }`}
           >
             {tab.label}
@@ -301,7 +301,7 @@ export default function RankingsPage() {
             <select
               value={selectedCategoryId}
               onChange={(e) => handleCategoryChange(e.target.value)}
-              className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-background text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="text-sm border border-border rounded-lg px-3 py-2 bg-background text-foreground/80 focus:outline-none focus:ring-2 focus:ring-indigo-300"
             >
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
@@ -316,7 +316,7 @@ export default function RankingsPage() {
           ) : topSubjects.length === 0 ? (
             <EmptyState message={tCommon('noResults')} />
           ) : (
-            <ol className="space-y-2 bg-card rounded-xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+            <ol className="space-y-2 bg-card rounded-xl border border-border divide-y divide-border overflow-hidden">
               {topSubjects.map((subject, index) => {
                 const name = subject.name[locale as 'ko' | 'en'] ?? subject.name.en
                 const podiumStyle = index < 3 ? podiumStyles[index] : ''
@@ -330,7 +330,7 @@ export default function RankingsPage() {
                       <span className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${badgeStyle}`}>
                         {index + 1}
                       </span>
-                      <span className="flex-1 text-sm font-medium text-gray-800 truncate">{name}</span>
+                      <span className="flex-1 text-sm font-medium text-foreground truncate">{name}</span>
                       <div className="flex items-center gap-2 shrink-0">
                         <StarRating value={subject.avg_rating ?? 0} readonly size="sm" />
                         <span className="text-sm font-semibold text-yellow-500">
@@ -349,7 +349,7 @@ export default function RankingsPage() {
       {/* Reviews Tab */}
       {activeTab === 'reviews' && (
         <div>
-          <p className="text-xs text-gray-400 mb-3">Most helpful reviews this week</p>
+          <p className="text-xs text-muted-foreground mb-3">Most helpful reviews this week</p>
           {reviewsLoading ? (
             <SkeletonCards />
           ) : topReviews.length === 0 ? (
@@ -358,7 +358,7 @@ export default function RankingsPage() {
             <ol className="space-y-2">
               {topReviews.map((review, index) => {
                 const profile = pickRelation(review.public_profiles)
-                const podiumStyle = index < 3 ? podiumStyles[index] : 'bg-white border border-gray-200'
+                const podiumStyle = index < 3 ? podiumStyles[index] : 'bg-card border border-border'
                 const badgeStyle = index < 3 ? badgeStyles[index] : 'bg-yellow-100 text-yellow-700'
                 return (
                   <li
@@ -372,11 +372,11 @@ export default function RankingsPage() {
                       <div className="flex-1 min-w-0">
                         <Link
                           href={`/${locale}/subject/${review.subject_id}`}
-                          className="block font-semibold text-sm text-gray-900 hover:text-indigo-600 transition-colors mb-1 truncate"
+                          className="block font-semibold text-sm text-foreground hover:text-indigo-600 transition-colors mb-1 truncate"
                         >
                           {review.title}
                         </Link>
-                        <div className="flex items-center gap-2 text-xs text-gray-400">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
                           {profile && (
                             <Link
                               href={`/${locale}/profile/${profile.id}`}
@@ -403,13 +403,13 @@ export default function RankingsPage() {
       {/* Reviewers Tab */}
       {activeTab === 'reviewers' && (
         <div>
-          <p className="text-xs text-gray-400 mb-3">Top reviewers by review count</p>
+          <p className="text-xs text-muted-foreground mb-3">Top reviewers by review count</p>
           {reviewersLoading ? (
             <SkeletonCards />
           ) : topReviewers.length === 0 ? (
             <EmptyState message={tCommon('noResults')} />
           ) : (
-            <ol className="space-y-2 bg-card rounded-xl border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+            <ol className="space-y-2 bg-card rounded-xl border border-border divide-y divide-border overflow-hidden">
               {topReviewers.map((reviewer, index) => {
                 const podiumStyle = index < 3 ? podiumStyles[index] : ''
                 const badgeStyle = index < 3 ? badgeStyles[index] : 'bg-indigo-100 text-indigo-700'
@@ -427,19 +427,19 @@ export default function RankingsPage() {
                         <img
                           src={reviewer.avatar_url}
                           alt={reviewer.nickname}
-                          className="w-8 h-8 rounded-full object-cover border border-gray-200 shrink-0"
+                          className="w-8 h-8 rounded-full object-cover border border-border shrink-0"
                         />
                       ) : (
-                        <span className="w-8 h-8 rounded-full bg-gray-100 text-gray-600 text-sm font-semibold flex items-center justify-center shrink-0">
+                        <span className="w-8 h-8 rounded-full bg-muted text-muted-foreground text-sm font-semibold flex items-center justify-center shrink-0">
                           {reviewer.nickname.charAt(0).toUpperCase()}
                         </span>
                       )}
-                      <span className="flex-1 text-sm font-medium text-gray-800 truncate">
+                      <span className="flex-1 text-sm font-medium text-foreground truncate">
                         {reviewer.nickname}
                       </span>
                       <div className="flex items-center gap-2 shrink-0">
                         <UserBadge level={(reviewer.level ?? 'bronze') as 'bronze' | 'silver' | 'gold' | 'platinum'} />
-                        <span className="text-xs text-gray-500">{reviewer.review_count} reviews</span>
+                        <span className="text-xs text-muted-foreground">{reviewer.review_count} reviews</span>
                       </div>
                     </Link>
                   </li>

@@ -34,11 +34,11 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
   const reviewers = reviewersRaw ?? []
 
   return (
-    <aside className="hidden lg:block fixed right-0 top-16 w-72 h-[calc(100vh-64px)] overflow-y-auto border-l border-gray-200 bg-background z-40">
+    <aside className="hidden lg:block fixed right-0 top-16 w-72 h-[calc(100vh-64px)] overflow-y-auto border-l border-border bg-background z-40">
       <div className="p-4 space-y-6">
         {/* 인기 카테고리 */}
         <div>
-          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
             {t('popularCategories')}
           </h3>
           <ul className="space-y-2">
@@ -53,7 +53,7 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
                     <CategoryIcon name={cat.icon ?? 'folder'} className="w-4 h-4 text-white" />
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{displayName}</p>
+                    <p className="text-sm font-medium text-foreground truncate">{displayName}</p>
                   </div>
                   <Link
                     href={`/${locale}/category/${cat.slug}`}
@@ -69,7 +69,7 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
 
         {/* 인기 리뷰어 */}
         <div>
-          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
             {t('popularReviewers')}
           </h3>
           <ul className="space-y-2">
@@ -86,7 +86,7 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
                     <img
                       src={avatarUrl}
                       alt={nickname}
-                      className="w-8 h-8 rounded-full object-cover border border-gray-200 shrink-0"
+                      className="w-8 h-8 rounded-full object-cover border border-border shrink-0"
                     />
                   ) : (
                     <span className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold flex items-center justify-center shrink-0">
@@ -95,10 +95,10 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
                   )}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1 flex-wrap">
-                      <span className="text-sm font-medium text-gray-900 truncate">{nickname}</span>
+                      <span className="text-sm font-medium text-foreground truncate">{nickname}</span>
                       <UserBadge level={level} />
                     </div>
-                    <p className="text-xs text-gray-400">{reviewCount} {tUser('reviews')}</p>
+                    <p className="text-xs text-muted-foreground">{reviewCount} {tUser('reviews')}</p>
                   </div>
                 </li>
               )

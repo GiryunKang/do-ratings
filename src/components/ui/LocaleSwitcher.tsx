@@ -24,12 +24,12 @@ export default function LocaleSwitcher() {
   return (
     <button
       onClick={switchLocale}
-      className="flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-full border border-gray-300 hover:bg-gray-100 transition-colors"
+      className="flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-full border border-border hover:bg-muted transition-colors"
       aria-label={`Switch to ${otherLocale.toUpperCase()}`}
     >
-      <span className="text-gray-500">{currentLocale.toUpperCase()}</span>
-      <span className="text-gray-300">|</span>
-      <span className="text-gray-400 hover:text-gray-600">{otherLocale.toUpperCase()}</span>
+      <span className="text-muted-foreground">{currentLocale.toUpperCase()}</span>
+      <span className="text-muted-foreground/60">|</span>
+      <span className="text-muted-foreground hover:text-muted-foreground">{otherLocale.toUpperCase()}</span>
     </button>
   )
 }

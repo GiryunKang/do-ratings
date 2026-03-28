@@ -45,12 +45,12 @@ export default function AchievementList({ userId, locale }: AchievementListProps
 
   if (loading) {
     return (
-      <div className="bg-card rounded-xl border border-gray-200 p-5">
-        <h2 className="text-base font-semibold text-gray-900 mb-4">{t('achievements')}</h2>
+      <div className="bg-card rounded-xl border border-border p-5">
+        <h2 className="text-base font-semibold text-foreground mb-4">{t('achievements')}</h2>
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 animate-pulse">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="flex flex-col items-center gap-1">
-              <div className="w-10 h-10 rounded-full bg-gray-200" />
+              <div className="w-10 h-10 rounded-full bg-muted" />
             </div>
           ))}
         </div>
@@ -60,9 +60,9 @@ export default function AchievementList({ userId, locale }: AchievementListProps
 
   if (allAchievements.length === 0) {
     return (
-      <div className="bg-card rounded-xl border border-gray-200 p-5">
-        <h2 className="text-base font-semibold text-gray-900 mb-2">{t('achievements')}</h2>
-        <p className="text-sm text-gray-500">{t('noAchievements')}</p>
+      <div className="bg-card rounded-xl border border-border p-5">
+        <h2 className="text-base font-semibold text-foreground mb-2">{t('achievements')}</h2>
+        <p className="text-sm text-muted-foreground">{t('noAchievements')}</p>
       </div>
     )
   }
@@ -71,10 +71,10 @@ export default function AchievementList({ userId, locale }: AchievementListProps
   const lang = locale === 'ko' ? 'ko' : 'en'
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5">
+    <div className="bg-card rounded-xl border border-border p-5">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-base font-semibold text-gray-900">{t('achievements')}</h2>
-        <span className="text-sm text-gray-500">
+        <h2 className="text-base font-semibold text-foreground">{t('achievements')}</h2>
+        <span className="text-sm text-muted-foreground">
           {earnedCount}/{allAchievements.length} {t('earned')}
         </span>
       </div>

@@ -40,10 +40,10 @@ export default function SpotlightCard({
           <span className={`w-5 h-5 rounded-full ${getCategoryColor(categorySlug)} flex items-center justify-center`}>
             <CategoryIcon name={categoryIcon} className="w-3 h-3 text-white" />
           </span>
-          <span className="text-xs text-gray-400">{catName}</span>
+          <span className="text-xs text-muted-foreground">{catName}</span>
         </div>
-        <h3 className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors text-lg mb-1">{name}</h3>
-        {desc && <p className="text-xs text-gray-500 line-clamp-1 mb-3">{desc}</p>}
+        <h3 className="font-bold text-foreground group-hover:text-indigo-600 transition-colors text-lg mb-1">{name}</h3>
+        {desc && <p className="text-xs text-muted-foreground line-clamp-1 mb-3">{desc}</p>}
         <span className="inline-flex items-center gap-1 text-xs font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full px-4 py-1.5 shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all">
           {rateLabel}
         </span>

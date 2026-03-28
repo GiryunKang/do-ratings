@@ -174,28 +174,28 @@ export default function CommentSection({
 
       {/* Expanded panel */}
       {expanded && (
-        <div className="bg-gray-50 rounded-b-xl -mx-4 -mb-4 px-4 py-3 mt-3 border-t border-gray-100">
+        <div className="bg-muted/50 rounded-b-xl -mx-4 -mb-4 px-4 py-3 mt-3 border-t border-border">
           {/* Loading state */}
           {loading && (
-            <p className="text-xs text-gray-400 py-2 text-center">Loading...</p>
+            <p className="text-xs text-muted-foreground py-2 text-center">Loading...</p>
           )}
 
           {/* Comments list */}
           {!loading && (
             <div className="space-y-2 mb-3">
               {comments.length === 0 ? (
-                <p className="text-xs text-gray-400 py-1">{t('noComments')}</p>
+                <p className="text-xs text-muted-foreground py-1">{t('noComments')}</p>
               ) : (
                 comments.map((comment) => (
                   <div key={comment.id} className="flex items-start gap-2 group">
                     <div className="flex-1 min-w-0">
-                      <span className="text-xs font-medium text-gray-700 mr-1.5">
+                      <span className="text-xs font-medium text-foreground/80 mr-1.5">
                         {comment.nickname}
                       </span>
-                      <span className="text-xs text-gray-600 break-words">
+                      <span className="text-xs text-muted-foreground break-words">
                         {comment.content}
                       </span>
-                      <span className="text-xs text-gray-400 ml-1.5">
+                      <span className="text-xs text-muted-foreground ml-1.5">
                         {timeAgo(comment.created_at)}
                       </span>
                     </div>
@@ -203,7 +203,7 @@ export default function CommentSection({
                       <button
                         type="button"
                         onClick={() => handleDelete(comment.id)}
-                        className="opacity-60 sm:opacity-0 sm:group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all p-0.5 rounded shrink-0"
+                        className="opacity-60 sm:opacity-0 sm:group-hover:opacity-100 text-muted-foreground hover:text-red-500 transition-all p-0.5 rounded shrink-0"
                         aria-label="Delete comment"
                       >
                         <svg
@@ -236,7 +236,7 @@ export default function CommentSection({
                 onChange={(e) => setInputValue(e.target.value.slice(0, 500))}
                 placeholder={t('writeComment')}
                 rows={1}
-                className="flex-1 text-xs resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 focus:outline-none focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200 placeholder-gray-400 min-h-[34px]"
+                className="flex-1 text-xs resize-none rounded-lg border border-border bg-card px-3 py-2 focus:outline-none focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200 placeholder-gray-400 min-h-[34px]"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault()
@@ -254,7 +254,7 @@ export default function CommentSection({
               </button>
             </div>
           ) : (
-            <p className="text-xs text-gray-400">{t('loginToComment')}</p>
+            <p className="text-xs text-muted-foreground">{t('loginToComment')}</p>
           )}
         </div>
       )}

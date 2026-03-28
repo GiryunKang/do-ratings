@@ -73,13 +73,13 @@ export default function CategoryRequestModal({ locale, onClose }: CategoryReques
     >
       <div className="relative w-full max-w-lg rounded-2xl bg-card shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100">
-          <h2 className="text-lg font-bold text-gray-900">
+        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-border">
+          <h2 className="text-lg font-bold text-foreground">
             {isKo ? '카테고리 추가 요청' : 'Request New Category'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100"
+            className="text-muted-foreground hover:text-muted-foreground transition-colors p-1 rounded-lg hover:bg-muted"
             aria-label="Close"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -91,7 +91,7 @@ export default function CategoryRequestModal({ locale, onClose }: CategoryReques
         {success ? (
           <div className="px-6 py-10 text-center">
             <div className="text-4xl mb-3">✅</div>
-            <p className="text-sm font-medium text-gray-700">
+            <p className="text-sm font-medium text-foreground/80">
               {isKo ? '요청이 접수되었습니다. 감사합니다!' : 'Your request has been submitted. Thank you!'}
             </p>
           </div>
@@ -99,7 +99,7 @@ export default function CategoryRequestModal({ locale, onClose }: CategoryReques
           <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
             {/* Korean name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">
                 {isKo ? '카테고리 이름 (한국어)' : 'Category Name (Korean)'} <span className="text-red-500">*</span>
               </label>
               <input
@@ -108,13 +108,13 @@ export default function CategoryRequestModal({ locale, onClose }: CategoryReques
                 onChange={e => setNameKo(e.target.value)}
                 placeholder={isKo ? '예: 영화' : 'e.g. 영화'}
                 required
-                className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
             </div>
 
             {/* English name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">
                 {isKo ? '카테고리 이름 (영어, 선택)' : 'Category Name (English, optional)'}
               </label>
               <input
@@ -122,13 +122,13 @@ export default function CategoryRequestModal({ locale, onClose }: CategoryReques
                 value={nameEn}
                 onChange={e => setNameEn(e.target.value)}
                 placeholder={isKo ? '예: Movies (선택)' : 'e.g. Movies (optional)'}
-                className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
             </div>
 
             {/* Icon suggestion */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">
                 {isKo ? '아이콘 제안 (선택)' : 'Icon Suggestion (optional)'}
               </label>
               <input
@@ -136,13 +136,13 @@ export default function CategoryRequestModal({ locale, onClose }: CategoryReques
                 value={iconSuggestion}
                 onChange={e => setIconSuggestion(e.target.value)}
                 placeholder={isKo ? '예: 🎬 또는 film' : 'e.g. 🎬 or film'}
-                className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
             </div>
 
             {/* Reason */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 mb-1.5">
                 {isKo ? '요청 사유 (선택)' : 'Reason (optional)'}
               </label>
               <textarea
@@ -150,7 +150,7 @@ export default function CategoryRequestModal({ locale, onClose }: CategoryReques
                 onChange={e => setReason(e.target.value)}
                 placeholder={isKo ? '이 카테고리가 필요한 이유를 적어주세요.' : 'Why do you think this category should be added?'}
                 rows={3}
-                className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
               />
             </div>
 
@@ -164,7 +164,7 @@ export default function CategoryRequestModal({ locale, onClose }: CategoryReques
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                className="flex-1 rounded-xl border border-border py-2.5 text-sm font-medium text-foreground/80 hover:bg-muted/50 transition-colors"
               >
                 {isKo ? '취소' : 'Cancel'}
               </button>

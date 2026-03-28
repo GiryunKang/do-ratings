@@ -21,7 +21,7 @@ function InlineStars({ rating }: { rating: number }) {
   const stars = []
   for (let i = 1; i <= 5; i++) {
     stars.push(
-      <span key={i} className={i <= Math.round(rating) ? 'text-yellow-400' : 'text-gray-300'}>
+      <span key={i} className={i <= Math.round(rating) ? 'text-yellow-400' : 'text-muted-foreground/60'}>
         ★
       </span>
     )
@@ -41,12 +41,12 @@ export default function CompareCard({
   const firstLetter = displayName.charAt(0).toUpperCase()
 
   return (
-    <div className="bg-card rounded-xl border border-gray-200 p-4 relative flex flex-col gap-3 min-w-0">
+    <div className="bg-card rounded-xl border border-border p-4 relative flex flex-col gap-3 min-w-0">
       {/* Remove button */}
       <button
         onClick={onRemove}
         aria-label="Remove"
-        className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 text-xs font-bold transition-colors"
+        className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full bg-muted hover:bg-muted text-muted-foreground hover:text-foreground/80 text-xs font-bold transition-colors"
       >
         ✕
       </button>
@@ -69,7 +69,7 @@ export default function CompareCard({
       {/* Subject name */}
       <a
         href={`/${locale}/subject/${subject.id}`}
-        className="text-sm font-semibold text-gray-800 hover:text-indigo-600 text-center leading-tight transition-colors"
+        className="text-sm font-semibold text-foreground hover:text-indigo-600 text-center leading-tight transition-colors"
       >
         {displayName}
       </a>
@@ -78,12 +78,12 @@ export default function CompareCard({
       <div className="flex flex-col items-center gap-0.5">
         <div className="flex items-center gap-1">
           <InlineStars rating={subject.avg_rating ?? 0} />
-          <span className="text-sm font-semibold text-gray-700 ml-1">
+          <span className="text-sm font-semibold text-foreground/80 ml-1">
             {subject.avg_rating !== null ? subject.avg_rating.toFixed(1) : '—'}
           </span>
         </div>
         {/* Review count */}
-        <span className="text-xs text-gray-400">
+        <span className="text-xs text-muted-foreground">
           {subject.review_count.toLocaleString()} reviews
         </span>
       </div>
@@ -99,13 +99,13 @@ export default function CompareCard({
 
             return (
               <div key={criterion.key} className="flex flex-col gap-0.5">
-                <div className="flex justify-between items-center text-xs text-gray-500">
+                <div className="flex justify-between items-center text-xs text-muted-foreground">
                   <span className="truncate pr-1">{label}</span>
-                  <span className="font-medium text-gray-700 shrink-0">
+                  <span className="font-medium text-foreground/80 shrink-0">
                     {value > 0 ? value.toFixed(1) : '—'}
                   </span>
                 </div>
-                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all duration-300 ${isHighlight ? 'bg-green-500' : 'bg-indigo-400'}`}
                     style={{ width: `${widthPercent}%` }}

@@ -91,7 +91,7 @@ export default function AutoScrollRow({
           >
           <Link
             href={`/${locale}/subject/${subject.id}`}
-            className="block w-44 bg-card rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-all group"
+            className="block w-44 bg-card rounded-xl border border-border overflow-hidden hover:shadow-md transition-all group"
           >
             {/* Image or category color header */}
             {subject.image_url ? (
@@ -104,7 +104,7 @@ export default function AutoScrollRow({
                 />
                 {originalIndex < 3 && (
                   <span className={`absolute top-2 right-2 w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center ${
-                    originalIndex === 0 ? 'bg-yellow-400 text-white' : originalIndex === 1 ? 'bg-gray-300 text-white' : 'bg-amber-600 text-white'
+                    originalIndex === 0 ? 'bg-yellow-400 text-white' : originalIndex === 1 ? 'bg-muted-foreground/30 text-white' : 'bg-amber-600 text-white'
                   }`}>{originalIndex + 1}</span>
                 )}
               </div>
@@ -113,14 +113,14 @@ export default function AutoScrollRow({
                 <CategoryIcon name={categoryIcon} className="w-8 h-8 text-white/40" />
                 {originalIndex < 3 && (
                   <span className={`absolute top-2 right-2 w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center ${
-                    originalIndex === 0 ? 'bg-yellow-400 text-white' : originalIndex === 1 ? 'bg-gray-300 text-white' : 'bg-amber-600 text-white'
+                    originalIndex === 0 ? 'bg-yellow-400 text-white' : originalIndex === 1 ? 'bg-muted-foreground/30 text-white' : 'bg-amber-600 text-white'
                   }`}>{originalIndex + 1}</span>
                 )}
               </div>
             )}
             <div className="p-3">
-              <h4 className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors truncate">{name}</h4>
-              {desc && <p className="text-xs text-gray-400 truncate mt-0.5">{desc}</p>}
+              <h4 className="text-sm font-semibold text-foreground group-hover:text-indigo-600 transition-colors truncate">{name}</h4>
+              {desc && <p className="text-xs text-muted-foreground truncate mt-0.5">{desc}</p>}
               <div className="flex items-center gap-1 mt-2 text-xs">
                 {subject.avg_rating ? (
                   <span className="text-yellow-500 font-medium">★ {subject.avg_rating.toFixed(1)}</span>

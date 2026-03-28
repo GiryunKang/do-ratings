@@ -136,7 +136,7 @@ export default async function ProfilePage({ params }: PageProps) {
 
       {/* User's reviews */}
       <section>
-        <h2 className="text-base font-semibold text-gray-700 mb-3">{locale === 'ko' ? '리뷰' : 'Reviews'}</h2>
+        <h2 className="text-base font-semibold text-foreground/80 mb-3">{locale === 'ko' ? '리뷰' : 'Reviews'}</h2>
         <ReviewList userId={userId} />
       </section>
     </div>

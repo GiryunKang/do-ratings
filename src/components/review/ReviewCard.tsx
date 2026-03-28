@@ -102,13 +102,13 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
               >
                 {categoryLabel}
               </Badge>
-              <span className="text-gray-300">•</span>
+              <span className="text-muted-foreground/60">•</span>
             </>
           )}
 
           <Link
             href={`/profile/${user.id}`}
-            className="text-sm font-medium text-gray-800 hover:underline"
+            className="text-sm font-medium text-foreground hover:underline"
           >
             {user.nickname}
           </Link>
@@ -128,13 +128,13 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
             <TrustBadge score={review.trust_score} size="sm" />
           )}
 
-          <span className="text-gray-300">•</span>
+          <span className="text-muted-foreground/60">•</span>
           <span className="text-xs text-muted-foreground">{timeAgo(review.created_at)}</span>
         </div>
 
         {/* Title */}
         <Link href={subjectHref} className="block group mt-2">
-          <h3 className="text-base font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
+          <h3 className="text-base font-semibold text-foreground group-hover:text-indigo-600 transition-colors">
             {review.title}
           </h3>
         </Link>
@@ -152,7 +152,7 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
         {/* Rating */}
         <div className="flex items-center gap-2 mt-3">
           <StarRating value={review.overall_rating} readonly size="sm" />
-          <span className="text-sm text-gray-600 font-medium tabular-nums">
+          <span className="text-sm text-muted-foreground font-medium tabular-nums">
             {review.overall_rating.toFixed(1)}
           </span>
         </div>

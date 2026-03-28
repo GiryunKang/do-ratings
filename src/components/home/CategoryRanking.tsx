@@ -9,7 +9,7 @@ interface CategoryRankingProps {
 
 const medalRowConfig = [
   { className: 'bg-gradient-to-r from-yellow-50 to-amber-50 border border-yellow-200' },
-  { className: 'bg-gradient-to-r from-gray-50 to-slate-50 border border-gray-200' },
+  { className: 'bg-gradient-to-r from-gray-50 to-slate-50 border border-border' },
   { className: 'bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200' },
 ]
 
@@ -55,7 +55,7 @@ export default async function CategoryRanking({ locale }: CategoryRankingProps) 
       {categoryData.map((category) => (
         <div key={category.id}>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
+            <h2 className="text-base font-bold text-foreground flex items-center gap-2">
               <CategoryIcon name={category.slug} className="w-5 h-5 text-indigo-500" />
               {category.name}
             </h2>
@@ -76,8 +76,8 @@ export default async function CategoryRanking({ locale }: CategoryRankingProps) 
                 <path d="M12 20h9" />
                 <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
               </svg>
-              <p className="text-sm font-medium text-gray-400 mb-1">{noSubjectsLabel}</p>
-              <p className="text-xs text-gray-300">{noSubjectsCta}</p>
+              <p className="text-sm font-medium text-muted-foreground mb-1">{noSubjectsLabel}</p>
+              <p className="text-xs text-muted-foreground/60">{noSubjectsCta}</p>
             </div>
           ) : (
             <ol className="space-y-2">
@@ -93,12 +93,12 @@ export default async function CategoryRanking({ locale }: CategoryRankingProps) 
                   <li key={subject.id}>
                     <Link
                       href={`/${locale}/subject/${subject.id}`}
-                      className={`flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition-colors ${rowStyle}`}
+                      className={`flex items-center gap-3 p-2 rounded-lg hover:bg-muted transition-colors ${rowStyle}`}
                     >
                       <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold flex items-center justify-center shrink-0">
                         {index + 1}
                       </span>
-                      <span className="flex-1 text-sm font-medium text-gray-800 truncate">
+                      <span className="flex-1 text-sm font-medium text-foreground truncate">
                         {subjectName}
                       </span>
                       <span className="flex items-center gap-0.5 text-sm font-semibold text-yellow-500 shrink-0">

@@ -63,7 +63,7 @@ export default function NotHelpfulButton({
       className={`flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border transition-colors ${
         isNotHelpful
           ? 'bg-red-50 border-red-300 text-red-600'
-          : 'border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700'
+          : 'border-border text-muted-foreground hover:border-border hover:text-foreground/80'
       } disabled:opacity-50 disabled:cursor-not-allowed`}
       style={{ transform: bouncing ? 'scale(1.3)' : 'scale(1)', transition: 'transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)' }}
       title={!currentUserId ? 'Login to mark not helpful' : undefined}

@@ -286,7 +286,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {/* 5. Spotlight: "어떻게 생각하세요?" */}
       <AnimatedSection delay={0.1}>
         <section>
-          <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+          <h2 className="text-base font-bold text-foreground mb-3 flex items-center gap-2">
             <span className="text-lg">💬</span>
             {locale === 'ko' ? '이 대상에 대해 어떻게 생각하세요?' : 'What do you think about...?'}
           </h2>
@@ -324,12 +324,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <AnimatedSection key={cat.id} delay={0.05 * index}>
             <section>
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
+                <h2 className="text-base font-bold text-foreground flex items-center gap-2">
                   <span className={`w-7 h-7 rounded-full ${getCategoryColor(slug)} flex items-center justify-center`}>
                     <CategoryIcon name={icon} className="w-4 h-4 text-white" />
                   </span>
                   {catName}
-                  <span className="text-xs font-normal text-gray-400 ml-1">({catSubjects.length})</span>
+                  <span className="text-xs font-normal text-muted-foreground ml-1">({catSubjects.length})</span>
                 </h2>
                 <Link href={`/${locale}/category/${slug}`} className="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1">
                   {locale === 'ko' ? '모두 보기' : 'See all'}
@@ -377,7 +377,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               {locale === 'ko' ? '첫 번째 리뷰어가 되어 다른 사람들에게 도움을 주세요!' : 'Be the first reviewer and help others!'}
             </p>
             <Link href={`/${locale}/explore`}
-              className="inline-flex items-center gap-2 bg-white text-gray-900 font-bold px-6 py-2.5 rounded-full hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all hover:scale-105 text-sm">
+              className="inline-flex items-center gap-2 bg-card text-foreground font-bold px-6 py-2.5 rounded-full hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all hover:scale-105 text-sm">
               {locale === 'ko' ? '탐색하기' : 'Explore Now'}
             </Link>
           </div>

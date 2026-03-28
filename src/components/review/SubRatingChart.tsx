@@ -24,16 +24,16 @@ export default function SubRatingChart({
 
         return (
           <div key={criterion.key} className="flex items-center gap-3">
-            <span className="text-sm text-gray-600 w-24 shrink-0 text-right truncate">
+            <span className="text-sm text-muted-foreground w-24 shrink-0 text-right truncate">
               {label}
             </span>
-            <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+            <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden">
               <div
                 className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${pct}%` }}
               />
             </div>
-            <span className="text-sm font-medium text-gray-700 w-8 text-right">
+            <span className="text-sm font-medium text-foreground/80 w-8 text-right">
               {val > 0 ? val.toFixed(1) : '-'}
             </span>
           </div>

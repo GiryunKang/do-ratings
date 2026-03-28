@@ -163,7 +163,7 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
       {/* Bell button */}
       <button
         onClick={toggleDropdown}
-        className="relative p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-900"
+        className="relative p-2 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
         aria-label={t('notifications')}
       >
         <svg
@@ -190,10 +190,10 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
 
       {/* Dropdown panel */}
       {open && (
-        <div className="absolute right-0 mt-2 w-80 bg-card rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden">
+        <div className="absolute right-0 mt-2 w-80 bg-card rounded-2xl shadow-xl border border-border z-50 overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-            <span className="font-semibold text-gray-900 text-sm">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+            <span className="font-semibold text-foreground text-sm">
               {t('notifications')}
             </span>
             {unreadCount > 0 && (
@@ -211,11 +211,11 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
             {loadingList ? (
               <div className="space-y-2 p-3">
                 {Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="h-14 rounded-xl bg-gray-100 animate-pulse" />
+                  <div key={i} className="h-14 rounded-xl bg-muted animate-pulse" />
                 ))}
               </div>
             ) : notifications.length === 0 ? (
-              <div className="py-10 text-center text-gray-400 text-sm">
+              <div className="py-10 text-center text-muted-foreground text-sm">
                 {t('noNotifications')}
               </div>
             ) : (
@@ -224,7 +224,7 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
                   <li key={notif.id}>
                     <button
                       onClick={() => handleNotificationClick(notif)}
-                      className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0 ${
+                      className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-muted/50 transition-colors border-b border-gray-50 last:border-0 ${
                         !notif.is_read ? 'bg-indigo-50/40' : ''
                       }`}
                     >
@@ -237,13 +237,13 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
                         <p
                           className={`text-sm leading-snug truncate ${
                             !notif.is_read
-                              ? 'font-semibold text-gray-900'
-                              : 'font-normal text-gray-600'
+                              ? 'font-semibold text-foreground'
+                              : 'font-normal text-muted-foreground'
                           }`}
                         >
                           {notif.title}
                         </p>
-                        <p className="text-xs text-gray-400 mt-0.5">
+                        <p className="text-xs text-muted-foreground mt-0.5">
                           {timeAgo(notif.created_at)}
                         </p>
                       </div>
@@ -260,7 +260,7 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
           </div>
 
           {/* Footer — link to full page */}
-          <div className="border-t border-gray-100 px-4 py-2.5">
+          <div className="border-t border-border px-4 py-2.5">
             <button
               onClick={() => {
                 setOpen(false)

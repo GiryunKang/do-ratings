@@ -49,8 +49,8 @@ type Tab = 'stats' | 'reports' | 'claims'
 
 function StatCard({ label, value, color }: { label: string; value: number; color: string }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">{label}</p>
+    <div className="bg-card rounded-2xl border border-border shadow-sm p-5">
+      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">{label}</p>
       <p className={`text-3xl font-bold ${color}`}>{value}</p>
     </div>
   )
@@ -176,8 +176,8 @@ export default function AdminPage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <p className="text-2xl font-bold text-gray-800 mb-2">Access Denied</p>
-          <p className="text-sm text-gray-500">You do not have permission to view this page.</p>
+          <p className="text-2xl font-bold text-foreground mb-2">Access Denied</p>
+          <p className="text-sm text-muted-foreground">You do not have permission to view this page.</p>
         </div>
       </div>
     )
@@ -199,18 +199,18 @@ export default function AdminPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">{t('dashboard')}</h1>
+      <h1 className="text-2xl font-bold text-foreground">{t('dashboard')}</h1>
 
       {/* Tab switcher */}
-      <div className="flex gap-1 bg-gray-100 rounded-xl p-1 w-fit">
+      <div className="flex gap-1 bg-muted rounded-xl p-1 w-fit">
         {tabs.map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setTab(key)}
             className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               tab === key
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-card text-indigo-600 shadow-sm'
+                : 'text-muted-foreground hover:text-foreground/80'
             }`}
           >
             {label}
@@ -240,21 +240,21 @@ export default function AdminPage() {
       {tab === 'reports' && (
         <div className="space-y-3">
           {reports.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center">
-              <p className="text-sm text-gray-400">No pending reports</p>
+            <div className="bg-card rounded-2xl border border-border shadow-sm p-8 text-center">
+              <p className="text-sm text-muted-foreground">No pending reports</p>
             </div>
           ) : (
             reports.map((report) => (
               <div
                 key={report.id}
-                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col sm:flex-row sm:items-start gap-3"
+                className="bg-card rounded-2xl border border-border shadow-sm p-4 flex flex-col sm:flex-row sm:items-start gap-3"
               >
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700 capitalize">
                       {report.reason}
                     </span>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-muted-foreground">
                       {new Date(report.created_at).toLocaleDateString(
                         currentLocale === 'ko' ? 'ko-KR' : 'en-US',
                         { year: 'numeric', month: 'short', day: 'numeric' }
@@ -262,14 +262,14 @@ export default function AdminPage() {
                     </span>
                   </div>
                   {report.reviews?.title && (
-                    <p className="text-sm font-medium text-gray-800 truncate">
+                    <p className="text-sm font-medium text-foreground truncate">
                       {report.reviews.title}
                     </p>
                   )}
                   {report.description && (
-                    <p className="text-xs text-gray-500 line-clamp-2">{report.description}</p>
+                    <p className="text-xs text-muted-foreground line-clamp-2">{report.description}</p>
                   )}
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-muted-foreground">
                     Reporter: {report.reporter?.nickname ?? report.reporter_id}
                   </p>
                 </div>
@@ -284,7 +284,7 @@ export default function AdminPage() {
                   <button
                     onClick={() => handleReportAction(report.id, 'dismissed')}
                     disabled={actionLoading === report.id}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50 transition-colors"
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-muted text-muted-foreground hover:bg-muted disabled:opacity-50 transition-colors"
                   >
                     {t('dismiss')}
                   </button>
@@ -299,24 +299,24 @@ export default function AdminPage() {
       {tab === 'claims' && (
         <div className="space-y-3">
           {claims.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center">
-              <p className="text-sm text-gray-400">No pending claims</p>
+            <div className="bg-card rounded-2xl border border-border shadow-sm p-8 text-center">
+              <p className="text-sm text-muted-foreground">No pending claims</p>
             </div>
           ) : (
             claims.map((claim) => (
               <div
                 key={claim.id}
-                className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col sm:flex-row sm:items-start gap-3"
+                className="bg-card rounded-2xl border border-border shadow-sm p-4 flex flex-col sm:flex-row sm:items-start gap-3"
               >
                 <div className="flex-1 min-w-0 space-y-1">
-                  <p className="text-sm font-semibold text-gray-800 truncate">
+                  <p className="text-sm font-semibold text-foreground truncate">
                     {claim.business_name}
                   </p>
-                  <p className="text-xs text-gray-500">{claim.business_email}</p>
+                  <p className="text-xs text-muted-foreground">{claim.business_email}</p>
                   {claim.subjects?.name && (
-                    <p className="text-xs text-gray-500">Subject: {claim.subjects.name}</p>
+                    <p className="text-xs text-muted-foreground">Subject: {claim.subjects.name}</p>
                   )}
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-muted-foreground">
                     {new Date(claim.created_at).toLocaleDateString(
                       currentLocale === 'ko' ? 'ko-KR' : 'en-US',
                       { year: 'numeric', month: 'short', day: 'numeric' }

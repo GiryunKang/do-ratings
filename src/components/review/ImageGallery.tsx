@@ -144,7 +144,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
         >
           {/* Close button */}
           <button
-            className="absolute top-4 right-4 text-white text-3xl font-light leading-none z-10 hover:text-gray-300 transition-colors"
+            className="absolute top-4 right-4 text-white text-3xl font-light leading-none z-10 hover:text-muted-foreground/60 transition-colors"
             onClick={(e) => { e.stopPropagation(); closeLightbox() }}
             aria-label="Close"
           >
@@ -154,7 +154,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
           {/* Left arrow */}
           {images.length > 1 && (
             <button
-              className="absolute left-4 text-white text-4xl font-light z-10 hover:text-gray-300 transition-colors select-none px-2"
+              className="absolute left-4 text-white text-4xl font-light z-10 hover:text-muted-foreground/60 transition-colors select-none px-2"
               onClick={(e) => { e.stopPropagation(); goPrev() }}
               aria-label="Previous"
             >
@@ -175,7 +175,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
           {/* Right arrow */}
           {images.length > 1 && (
             <button
-              className="absolute right-4 text-white text-4xl font-light z-10 hover:text-gray-300 transition-colors select-none px-2"
+              className="absolute right-4 text-white text-4xl font-light z-10 hover:text-muted-foreground/60 transition-colors select-none px-2"
               onClick={(e) => { e.stopPropagation(); goNext() }}
               aria-label="Next"
             >

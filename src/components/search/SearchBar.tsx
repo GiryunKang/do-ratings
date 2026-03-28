@@ -124,11 +124,11 @@ export default function SearchBar({ className }: SearchBarProps) {
           onKeyDown={handleKeyDown}
           onFocus={() => { if (results.length > 0) setOpen(true) }}
           placeholder={t('search')}
-          className="w-full pl-9 pr-4 py-1.5 rounded-full border border-gray-300 text-sm focus:outline-none focus:border-indigo-400 bg-gray-50"
+          className="w-full pl-9 pr-4 py-1.5 rounded-full border border-border text-sm focus:outline-none focus:border-indigo-400 bg-muted/50"
           autoComplete="off"
         />
         <svg
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -141,7 +141,7 @@ export default function SearchBar({ className }: SearchBarProps) {
       </div>
 
       {open && results.length > 0 && (
-        <ul className="absolute top-full mt-1 left-0 right-0 bg-card border border-gray-200 rounded-xl shadow-lg z-50 max-h-72 overflow-y-auto animate-slideDown">
+        <ul className="absolute top-full mt-1 left-0 right-0 bg-card border border-border rounded-xl shadow-lg z-50 max-h-72 overflow-y-auto animate-slideDown">
           {results.map((subject, index) => (
             <li key={subject.id}>
               <button
@@ -156,9 +156,9 @@ export default function SearchBar({ className }: SearchBarProps) {
                 onMouseEnter={() => setActiveIndex(index)}
               >
                 <div>
-                  <span className="text-sm font-medium text-gray-900">{getSubjectName(subject)}</span>
+                  <span className="text-sm font-medium text-foreground">{getSubjectName(subject)}</span>
                   {getCategoryName(subject) && (
-                    <span className="ml-2 text-xs text-gray-400">{getCategoryName(subject)}</span>
+                    <span className="ml-2 text-xs text-muted-foreground">{getCategoryName(subject)}</span>
                   )}
                 </div>
                 {subject.avg_rating != null && (
@@ -170,14 +170,14 @@ export default function SearchBar({ className }: SearchBarProps) {
             </li>
           ))}
           {/* Hint at bottom */}
-          <li className="px-4 py-2 border-t border-gray-100">
-            <p className="text-xs text-gray-400">Press Enter to search all</p>
+          <li className="px-4 py-2 border-t border-border">
+            <p className="text-xs text-muted-foreground">Press Enter to search all</p>
           </li>
         </ul>
       )}
 
       {open && results.length === 0 && query.trim() && !loading && (
-        <div className="absolute top-full mt-1 left-0 right-0 bg-card border border-gray-200 rounded-xl shadow-lg z-50 px-4 py-3 text-sm animate-slideDown">
+        <div className="absolute top-full mt-1 left-0 right-0 bg-card border border-border rounded-xl shadow-lg z-50 px-4 py-3 text-sm animate-slideDown">
           <p className="text-muted-foreground">{t('noResults') ?? 'No results found'}</p>
           <button
             onMouseDown={() => {
