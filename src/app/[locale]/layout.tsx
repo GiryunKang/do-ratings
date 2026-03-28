@@ -11,6 +11,7 @@ import RightSidebar from '@/components/layout/RightSidebar'
 import AdBanner from '@/components/layout/AdBanner'
 import { ThemeProvider } from '@/components/ui/ThemeProvider'
 import OnboardingTrigger from '@/components/onboarding/OnboardingTrigger'
+import SignupFloatingBar from '@/components/layout/SignupFloatingBar'
 import SplashScreen from '@/components/ui/SplashScreen'
 import ActivitySummary from '@/components/ui/ActivitySummary'
 
@@ -54,13 +55,14 @@ export default async function LocaleLayout({
           <div className="hidden md:block w-64 shrink-0">
             <Sidebar locale={locale} />
           </div>
-          <main className="flex-1 min-w-0 min-h-screen pb-20 md:pb-0 lg:mr-72 bg-gradient-to-b from-gray-50/80 to-white">
+          <main className="flex-1 min-w-0 min-h-screen pb-20 md:pb-0 lg:mr-72 bg-gradient-to-b from-muted/50 to-background">
             {children}
           </main>
           <RightSidebar locale={locale} />
         </div>
         <AdBanner />
         <BottomNav />
+        <SignupFloatingBar />
         <OnboardingTrigger />
       </ThemeProvider>
     </NextIntlClientProvider>

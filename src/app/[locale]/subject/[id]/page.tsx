@@ -234,7 +234,11 @@ export default async function SubjectPage({ params }: PageProps) {
 
           {/* Action Buttons */}
           <div className="flex gap-2 flex-wrap">
-            <Link href={writeHref} className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary/80 transition-colors">
+            <Link href={writeHref} className={`inline-flex items-center gap-1.5 h-9 px-5 text-sm font-semibold rounded-lg transition-all ${
+              existingReviewId
+                ? 'bg-primary text-primary-foreground hover:bg-primary/80'
+                : 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-md hover:shadow-lg hover:scale-105'
+            }`}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
               </svg>

@@ -202,11 +202,12 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
               : 'Rate everything. Your voice shapes the world.'}
           </motion.p>
 
-          {/* CTA */}
+          {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={mounted ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.7 }}
+            className="flex flex-wrap items-center gap-3"
           >
             <Link
               href={`/${locale}/explore`}
@@ -217,6 +218,12 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
+            </Link>
+            <Link
+              href={`/${locale}/auth/signup`}
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-semibold text-white/90 border border-white/20 hover:bg-white/10 hover:border-white/40 transition-all duration-300 backdrop-blur-sm"
+            >
+              {locale === 'ko' ? '무료 가입' : 'Sign up free'}
             </Link>
           </motion.div>
         </div>
