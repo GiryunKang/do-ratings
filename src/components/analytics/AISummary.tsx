@@ -67,9 +67,9 @@ function generateSummary(reviews: Review[]): Summary {
 }
 
 const sentimentConfig = {
-  positive: { label: '😊', color: 'text-green-600', bg: 'bg-green-50', border: 'border-green-200' },
-  mixed: { label: '😐', color: 'text-yellow-600', bg: 'bg-yellow-50', border: 'border-yellow-200' },
-  negative: { label: '😞', color: 'text-red-600', bg: 'bg-red-50', border: 'border-red-200' },
+  positive: { label: '😊', color: 'text-green-600', bg: 'bg-green-50 dark:bg-green-950/30', border: 'border-green-200 dark:border-green-800' },
+  mixed: { label: '😐', color: 'text-yellow-600', bg: 'bg-yellow-50 dark:bg-yellow-950/30', border: 'border-yellow-200 dark:border-yellow-800' },
+  negative: { label: '😞', color: 'text-red-600', bg: 'bg-red-50 dark:bg-red-950/30', border: 'border-red-200 dark:border-red-800' },
 }
 
 export default function AISummary({ subjectId, locale }: AISummaryProps) {
