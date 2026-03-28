@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from 'react'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { useInfiniteScroll } from '@/lib/hooks/useInfiniteScroll'
@@ -181,11 +182,20 @@ export default function ReviewList({ subjectId, userId }: ReviewListProps) {
         <div className="text-center py-10">
           <div className="text-4xl mb-3">⭐</div>
           <p className="text-foreground font-bold text-base mb-1">
-            {locale === 'ko' ? '첫 평가의 주인공이 되세요!' : 'Be the first to rate!'}
+            {locale === 'ko' ? '아직 아무도 평가하지 않았습니다' : 'No one has rated this yet'}
           </p>
           <p className="text-sm text-muted-foreground mb-4">
-            {locale === 'ko' ? '당신의 솔직한 평가가 다른 사람들에게 도움이 됩니다.' : 'Your honest rating helps others make better choices.'}
+            {locale === 'ko' ? '당신의 의견이 기준이 됩니다. 첫 번째 리뷰어가 되어보세요.' : 'Your opinion sets the standard. Be the first reviewer.'}
           </p>
+          {subjectId && (
+            <Link
+              href={`/${locale}/write/${subjectId}`}
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all text-sm"
+            >
+              <span>★</span>
+              {locale === 'ko' ? '리뷰 작성하기' : 'Write a Review'}
+            </Link>
+          )}
         </div>
       ) : (
         <InfiniteScroll onLoadMore={loadMore} hasMore={hasMore} loading={loading}>

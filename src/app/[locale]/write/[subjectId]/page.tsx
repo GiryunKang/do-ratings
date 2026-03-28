@@ -11,13 +11,9 @@ export default async function WriteReviewPage({ params }: PageProps) {
   const { locale, subjectId } = await params
   const supabase = await createClient()
 
-  // Require auth
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
-    redirect(`/${locale}/auth/login`)
-  }
 
-  // Fetch subject with category criteria
+  // Fetch subject with category criteria (always — even for non-logged-in users)
   const { data: subject } = await supabase
     .from('subjects')
     .select(`
@@ -44,15 +40,20 @@ export default async function WriteReviewPage({ params }: PageProps) {
   const criteria: Array<{ key: string; ko: string; en: string }> =
     Array.isArray(category?.sub_rating_criteria) ? category.sub_rating_criteria : []
 
-  // Check for existing review
-  const { data: existingReview } = await supabase
-    .from('reviews')
-    .select('id, title, content, sub_ratings, overall_rating')
-    .eq('subject_id', subjectId)
-    .eq('user_id', user.id)
-    .single()
+  // Check for existing review (only if logged in)
+  let existingReview = null
+  if (user) {
+    const { data } = await supabase
+      .from('reviews')
+      .select('id, title, content, sub_ratings, overall_rating')
+      .eq('subject_id', subjectId)
+      .eq('user_id', user.id)
+      .single()
+    existingReview = data
+  }
 
   const isEditing = !!existingReview
+  const isLoggedIn = !!user
 
   return (
     <div className="max-w-lg mx-auto px-4 py-6">
@@ -74,10 +75,25 @@ export default async function WriteReviewPage({ params }: PageProps) {
         </div>
       </div>
 
+      {!isLoggedIn && (
+        <div className="mb-4 p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800">
+          <p className="text-sm font-medium text-indigo-900 dark:text-indigo-200 mb-2">
+            {locale === 'ko' ? '로그인하면 리뷰를 저장할 수 있습니다' : 'Sign in to save your review'}
+          </p>
+          <Link
+            href={`/${locale}/auth/login?redirect=/${locale}/write/${subjectId}`}
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-colors"
+          >
+            {locale === 'ko' ? '로그인 / 회원가입' : 'Sign in / Sign up'}
+          </Link>
+        </div>
+      )}
+
       <ReviewForm
         subjectId={subjectId}
         criteria={criteria}
         locale={locale}
+        readOnly={!isLoggedIn}
         existingReview={
           existingReview
             ? {

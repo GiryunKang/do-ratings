@@ -30,6 +30,7 @@ interface ReviewFormProps {
   criteria: Criterion[]
   locale: string
   existingReview?: ExistingReview
+  readOnly?: boolean
 }
 
 interface ExistingImage {
@@ -43,6 +44,7 @@ export default function ReviewForm({
   criteria,
   locale,
   existingReview,
+  readOnly = false,
 }: ReviewFormProps) {
   const t = useTranslations('review')
   const tCommon = useTranslations('common')
@@ -91,6 +93,10 @@ export default function ReviewForm({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (readOnly) {
+      window.location.href = `/${locale}/auth/login?redirect=/${locale}/write/${subjectId}`
+      return
+    }
     setError(null)
 
     const cleanTitle = sanitizeText(title)
@@ -425,10 +431,12 @@ export default function ReviewForm({
         </button>
         <button
           type="submit"
-          disabled={submitting || !agreed}
+          disabled={!readOnly && (submitting || !agreed)}
           className="flex-1 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:bg-primary/80 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
         >
-          {submitting ? tCommon('loading') : t('submit')}
+          {readOnly
+            ? (locale === 'ko' ? '로그인하고 제출하기' : 'Sign in & Submit')
+            : submitting ? tCommon('loading') : t('submit')}
         </button>
       </div>
     </form>

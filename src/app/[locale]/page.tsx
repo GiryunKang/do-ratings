@@ -277,8 +277,17 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <p className="text-xs text-white/70 mt-1">{locale === 'ko' ? '카테고리' : 'Categories'}</p>
           </GlowCard>
           <GlowCard className="bg-gradient-to-br from-amber-500 to-orange-600 p-4 text-white text-center border-0" glowColor="rgba(251, 191, 36, 0.4)">
-            <CountUp target={totalReviews} className="text-2xl font-bold" />
-            <p className="text-xs text-white/70 mt-1">{locale === 'ko' ? '리뷰' : 'Reviews'}</p>
+            {totalReviews > 0 ? (
+              <>
+                <CountUp target={totalReviews} className="text-2xl font-bold" />
+                <p className="text-xs text-white/70 mt-1">{locale === 'ko' ? '리뷰' : 'Reviews'}</p>
+              </>
+            ) : (
+              <>
+                <p className="text-2xl font-bold">✍️</p>
+                <p className="text-xs text-white/70 mt-1">{locale === 'ko' ? '첫 리뷰를 기다리는 중' : 'Waiting for you'}</p>
+              </>
+            )}
           </GlowCard>
         </div>
       </AnimatedSection>
