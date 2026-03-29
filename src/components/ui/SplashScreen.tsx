@@ -16,7 +16,10 @@ const messages = [
 
 export default function SplashScreen({ locale }: { locale: string }) {
   const [visible, setVisible] = useState(true)
-  const [message] = useState(() => messages[Math.floor(Math.random() * messages.length)])
+  const [message] = useState(() => {
+    const dayIndex = new Date().getDate() % messages.length
+    return messages[dayIndex]
+  })
 
   useEffect(() => {
     // Check if already shown in this session
