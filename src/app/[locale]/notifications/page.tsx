@@ -85,12 +85,14 @@ export default function NotificationsPage() {
   )
 
   // Initial load
+  /* eslint-disable react-hooks/set-state-in-effect -- data fetching on mount */
   useEffect(() => {
     if (!user) return
 
     setLoading(true)
     fetchNotifications(0, true).finally(() => setLoading(false))
   }, [user, fetchNotifications])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   async function handleLoadMore() {
     if (loadingMore || !hasMore) return

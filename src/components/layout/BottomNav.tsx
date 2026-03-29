@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 const tabs = [
   {
@@ -58,6 +58,7 @@ export default function BottomNav() {
   const t = useTranslations('nav')
   const pathname = usePathname()
   const [ripple, setRipple] = useState<{ x: number; y: number; id: number; tabKey: string } | null>(null)
+  const rippleIdRef = useRef(0)
 
   // Detect locale prefix
   const localeMatch = pathname.match(/^\/(ko|en)/)
@@ -66,7 +67,8 @@ export default function BottomNav() {
 
   function handleRipple(e: React.MouseEvent, tabKey: string) {
     const rect = e.currentTarget.getBoundingClientRect()
-    setRipple({ x: e.clientX - rect.left, y: e.clientY - rect.top, id: Date.now(), tabKey })
+    rippleIdRef.current += 1
+    setRipple({ x: e.clientX - rect.left, y: e.clientY - rect.top, id: rippleIdRef.current, tabKey })
     setTimeout(() => setRipple(null), 600)
   }
 

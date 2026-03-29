@@ -58,9 +58,11 @@ export default function BusinessResponse({
     setLoading(false)
   }, [reviewId, subjectId, currentUserId])
 
+  /* eslint-disable react-hooks/set-state-in-effect -- data fetching on mount */
   useEffect(() => {
     fetchData()
   }, [fetchData])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

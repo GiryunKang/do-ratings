@@ -143,11 +143,12 @@ export default async function SubjectPage({ params }: PageProps) {
     .eq('subject_id', id)
     .limit(20)
 
+  type ReviewImageRow = { id: string; storage_path: string; display_order: number }
   const storageBase = process.env.NEXT_PUBLIC_SUPABASE_URL + '/storage/v1/object/public/review-images/'
   const allImages = (reviewsWithImages ?? [])
-    .flatMap(r => ((r as any).review_images as any[]) ?? [])
+    .flatMap(r => ((r as { review_images: ReviewImageRow[] | null }).review_images) ?? [])
     .slice(0, 12)
-    .map((img: any) => ({ id: img.id as string, url: storageBase + (img.storage_path as string) }))
+    .map((img) => ({ id: img.id, url: storageBase + img.storage_path }))
 
   // Calculate rank/percentile within category
   const { count: higherCount } = await supabase

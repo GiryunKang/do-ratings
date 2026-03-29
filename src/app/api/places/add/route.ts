@@ -177,7 +177,7 @@ export async function POST(request: NextRequest) {
         const wikiData = await wikiRes.json()
         const pages = wikiData?.query?.pages
         if (pages) {
-          const page = Object.values(pages)[0] as any
+          const page = Object.values(pages)[0] as { thumbnail?: { source: string } } | undefined
           if (page?.thumbnail?.source) {
             imageUrl = page.thumbnail.source
             imageAttribution = {

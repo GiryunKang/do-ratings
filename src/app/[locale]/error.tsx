@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import Link from 'next/link'
 
 export default function Error({ error, reset }: { error: Error; reset: () => void }) {
   useEffect(() => {
@@ -20,9 +21,9 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
         <button onClick={reset} className="h-9 px-4 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/80">
           다시 시도
         </button>
-        <a href="/" className="h-9 px-4 border border-border rounded-lg text-sm font-medium flex items-center hover:bg-muted">
+        <Link href="/" className="h-9 px-4 border border-border rounded-lg text-sm font-medium flex items-center hover:bg-muted">
           홈으로
-        </a>
+        </Link>
       </div>
     </div>
   )

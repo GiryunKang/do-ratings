@@ -71,11 +71,13 @@ export default function CommentSection({
     setLoading(false)
   }, [reviewId])
 
+  /* eslint-disable react-hooks/set-state-in-effect -- fetch comments when expanded */
   useEffect(() => {
     if (expanded) {
       fetchComments()
     }
   }, [expanded, fetchComments])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleSubmit = async () => {
     if (!currentUserId || !inputValue.trim() || submitting) return

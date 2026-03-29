@@ -22,6 +22,7 @@ export default function SplashScreen({ locale }: { locale: string }) {
     // Check if already shown in this session
     const shown = sessionStorage.getItem('splash_shown')
     if (shown) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration from sessionStorage
       setVisible(false)
       return
     }

@@ -50,6 +50,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const stored = localStorage.getItem('ratings-theme') as Theme | null
     const initial = stored ?? 'system'
+    // Hydration: sync client state from localStorage (only runs once on mount)
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration from localStorage
     setThemeState(initial)
 
     if (initial === 'dark') {

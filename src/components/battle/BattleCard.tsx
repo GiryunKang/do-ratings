@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react'
 import StarRating from '@/components/review/StarRating'
 
+type ReviewInfo = { id: string; title: string; content: string; overall_rating: number; user_nickname: string }
+
 interface BattleCardProps {
   battle: {
     id: string
-    review_a: { id: string; title: string; content: string; overall_rating: number; user_nickname: string }
-    review_b: { id: string; title: string; content: string; overall_rating: number; user_nickname: string }
+    review_a: ReviewInfo
+    review_b: ReviewInfo
     votes_a: number
     votes_b: number
     status: 'active' | 'ended'
@@ -17,6 +19,80 @@ interface BattleCardProps {
   userVote: 'a' | 'b' | null
   locale: string
   onVote: (battleId: string, side: 'a' | 'b') => void
+}
+
+interface ReviewSideProps {
+  review: ReviewInfo
+  side: 'a' | 'b'
+  pct: number
+  isWinner: boolean
+  isMyVote: boolean
+  isEnded: boolean
+  canVote: boolean
+  winnerSide: 'a' | 'b' | 'tie' | null
+  labels: { winner: string; voted: string; voteA: string; voteB: string }
+  onVote: () => void
+}
+
+function ReviewSide({
+  review,
+  side,
+  pct,
+  isWinner,
+  isMyVote,
+  isEnded,
+  canVote,
+  winnerSide,
+  labels,
+  onVote,
+}: ReviewSideProps) {
+  return (
+    <div
+      className={`flex-1 flex flex-col gap-2 p-3 rounded-xl border transition-colors ${
+        isMyVote
+          ? 'border-indigo-400 bg-indigo-50 dark:bg-indigo-950/30'
+          : isWinner && isEnded
+          ? 'border-yellow-400 bg-yellow-50'
+          : 'border-border bg-card'
+      }`}
+    >
+      {isEnded && isWinner && winnerSide !== 'tie' && (
+        <span className="self-start text-xs font-semibold px-2 py-0.5 rounded-full bg-yellow-400 text-yellow-900">
+          {labels.winner}
+        </span>
+      )}
+      {isMyVote && !isEnded && (
+        <span className="self-start text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-500 text-white">
+          {labels.voted}
+        </span>
+      )}
+
+      <h3 className="font-semibold text-sm text-foreground line-clamp-1">{review.title}</h3>
+      <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{review.content}</p>
+      <div className="flex items-center gap-1.5">
+        <StarRating value={review.overall_rating} readonly size="sm" />
+        <span className="text-xs text-muted-foreground font-medium">{review.overall_rating.toFixed(1)}</span>
+      </div>
+      <p className="text-xs text-muted-foreground">@{review.user_nickname}</p>
+
+      <p className="text-sm font-bold text-foreground/80 mt-auto">{pct}%</p>
+
+      <button
+        type="button"
+        disabled={!canVote}
+        onClick={() => canVote && onVote()}
+        className={`w-full py-1.5 rounded-lg text-sm font-semibold transition-all ${
+          isMyVote
+            ? 'bg-indigo-500 text-white cursor-default'
+            : isEnded
+            ? 'bg-muted text-muted-foreground cursor-default'
+            : 'bg-indigo-600 hover:bg-indigo-700 text-white hover:shadow-md'
+        }`}
+      >
+        {isMyVote ? labels.voted : side === 'a' ? labels.voteA : labels.voteB}
+      </button>
+    </div>
+  )
 }
 
 function useCountdown(endsAt: string) {
@@ -57,7 +133,6 @@ export default function BattleCard({
   const countdown = useCountdown(battle.ends_at)
   const isEnded = battle.status === 'ended'
 
-  // Determine winner
   let winnerSide: 'a' | 'b' | 'tie' | null = null
   if (isEnded) {
     if (battle.votes_a > battle.votes_b) winnerSide = 'a'
@@ -65,8 +140,8 @@ export default function BattleCard({
     else winnerSide = 'tie'
   }
 
-  const t = {
-    vsLabel: locale === 'ko' ? 'VS' : 'VS',
+  const labels = {
+    vsLabel: 'VS',
     voteA: locale === 'ko' ? 'A에 투표' : 'Vote A',
     voteB: locale === 'ko' ? 'B에 투표' : 'Vote B',
     voted: locale === 'ko' ? '투표 완료' : 'Voted',
@@ -76,72 +151,7 @@ export default function BattleCard({
     tie: locale === 'ko' ? '무승부' : 'Tie',
   }
 
-  function ReviewSide({
-    review,
-    side,
-    pct,
-    isWinner,
-  }: {
-    review: BattleCardProps['battle']['review_a']
-    side: 'a' | 'b'
-    pct: number
-    isWinner: boolean
-  }) {
-    const isMyVote = userVote === side
-    const canVote = !isEnded && currentUserId && !userVote
-
-    return (
-      <div
-        className={`flex-1 flex flex-col gap-2 p-3 rounded-xl border transition-colors ${
-          isMyVote
-            ? 'border-indigo-400 bg-indigo-50 dark:bg-indigo-950/30'
-            : isWinner && isEnded
-            ? 'border-yellow-400 bg-yellow-50'
-            : 'border-border bg-card'
-        }`}
-      >
-        {/* Winner / voted badge */}
-        {isEnded && isWinner && winnerSide !== 'tie' && (
-          <span className="self-start text-xs font-semibold px-2 py-0.5 rounded-full bg-yellow-400 text-yellow-900">
-            {t.winner}
-          </span>
-        )}
-        {isMyVote && !isEnded && (
-          <span className="self-start text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-500 text-white">
-            {t.voted}
-          </span>
-        )}
-
-        {/* Review info */}
-        <h3 className="font-semibold text-sm text-foreground line-clamp-1">{review.title}</h3>
-        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{review.content}</p>
-        <div className="flex items-center gap-1.5">
-          <StarRating value={review.overall_rating} readonly size="sm" />
-          <span className="text-xs text-muted-foreground font-medium">{review.overall_rating.toFixed(1)}</span>
-        </div>
-        <p className="text-xs text-muted-foreground">@{review.user_nickname}</p>
-
-        {/* Vote percentage */}
-        <p className="text-sm font-bold text-foreground/80 mt-auto">{pct}%</p>
-
-        {/* Vote button */}
-        <button
-          type="button"
-          disabled={!canVote}
-          onClick={() => canVote && onVote(battle.id, side)}
-          className={`w-full py-1.5 rounded-lg text-sm font-semibold transition-all ${
-            isMyVote
-              ? 'bg-indigo-500 text-white cursor-default'
-              : isEnded || userVote
-              ? 'bg-muted text-muted-foreground cursor-default'
-              : 'bg-indigo-600 hover:bg-indigo-700 text-white hover:shadow-md'
-          }`}
-        >
-          {isMyVote ? t.voted : side === 'a' ? t.voteA : t.voteB}
-        </button>
-      </div>
-    )
-  }
+  const canVote = !isEnded && !!currentUserId && !userVote
 
   return (
     <div className="bg-card rounded-2xl border border-border p-4 shadow-sm hover:shadow-md transition-shadow animate-fadeIn">
@@ -150,17 +160,17 @@ export default function BattleCard({
         <div className="flex items-center gap-2">
           {isEnded ? (
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
-              {t.ended}
+              {labels.ended}
             </span>
           ) : (
             <span className="flex items-center gap-1 text-xs text-orange-600 font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-              {t.endsIn} {countdown}
+              {labels.endsIn} {countdown}
             </span>
           )}
           {isEnded && winnerSide === 'tie' && (
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-muted-foreground/30 text-foreground/80">
-              {t.tie}
+              {labels.tie}
             </span>
           )}
         </div>
@@ -174,11 +184,17 @@ export default function BattleCard({
           side="a"
           pct={pctA}
           isWinner={winnerSide === 'a'}
+          isMyVote={userVote === 'a'}
+          isEnded={isEnded}
+          canVote={canVote}
+          winnerSide={winnerSide}
+          labels={labels}
+          onVote={() => onVote(battle.id, 'a')}
         />
 
         {/* VS divider */}
         <div className="flex flex-col items-center justify-center shrink-0">
-          <span className="text-sm font-black text-muted-foreground select-none">{t.vsLabel}</span>
+          <span className="text-sm font-black text-muted-foreground select-none">{labels.vsLabel}</span>
         </div>
 
         <ReviewSide
@@ -186,6 +202,12 @@ export default function BattleCard({
           side="b"
           pct={pctB}
           isWinner={winnerSide === 'b'}
+          isMyVote={userVote === 'b'}
+          isEnded={isEnded}
+          canVote={canVote}
+          winnerSide={winnerSide}
+          labels={labels}
+          onVote={() => onVote(battle.id, 'b')}
         />
       </div>
 

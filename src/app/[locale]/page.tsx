@@ -65,7 +65,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const categoryOrder = ['people', 'places', 'companies', 'restaurants', 'airlines', 'hotels']
 
   // Fetch all data in parallel
-  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+  const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000
+  const sevenDaysAgo = new Date(new Date().getTime() - SEVEN_DAYS_MS).toISOString()
   const [
     { data: categories },
     { data: allSubjects },
@@ -162,9 +163,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const totalReviews = (recentReviews ?? []).length
 
   // Process trending subjects
+  type TrendingSubjectRow = { id: string; name: LocalizedText; image_url: string | null; avg_rating: number | null; review_count: number }
   const trendingMap = new Map<string, TrendingSubject>()
   for (const r of (trendingReviews ?? [])) {
-    const s = pickRelation(r.subjects as any)
+    const s = pickRelation(r.subjects as TrendingSubjectRow | TrendingSubjectRow[] | null)
     if (!s) continue
     const existing = trendingMap.get(s.id)
     if (existing) {
@@ -185,9 +187,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     .slice(0, 6)
 
   // Process popular reviews
+  type PopularSubjectRow = { name: LocalizedText; categories: { name: LocalizedText; slug: string } | { name: LocalizedText; slug: string }[] | null }
+  type ProfileRow = { nickname: string; level: string; avatar_url: string | null }
   const topReviews = (popularReviews ?? []).map(r => {
-    const subject = pickRelation(r.subjects as any)
-    const profile = pickRelation(r.public_profiles as any)
+    const subject = pickRelation(r.subjects as PopularSubjectRow | PopularSubjectRow[] | null)
+    const profile = pickRelation(r.public_profiles as ProfileRow | ProfileRow[] | null)
     return {
       id: r.id,
       title: r.title,

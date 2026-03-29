@@ -78,7 +78,7 @@ Deno.serve(async (req: Request) => {
         title: r.title,
         rating: Number(r.overall_rating),
         subject_name: typeof r.subjects === 'object' && r.subjects !== null
-          ? ((r.subjects as any).name?.en ?? (r.subjects as any).name?.ko ?? '')
+          ? ((r.subjects as { name?: { en?: string; ko?: string } }).name?.en ?? (r.subjects as { name?: { en?: string; ko?: string } }).name?.ko ?? '')
           : '',
       }))
 

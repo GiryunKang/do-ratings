@@ -25,6 +25,7 @@ export default function Header() {
   const router = useRouter()
   const [searchOpen, setSearchOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- standard hydration mount detection
   useEffect(() => { setMounted(true) }, [])
 
   // Detect current locale from path
