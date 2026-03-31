@@ -5,6 +5,8 @@ import HeroBanner from '@/components/home/HeroBanner'
 import AutoScrollRow from '@/components/home/AutoScrollRow'
 import TrendingSection from '@/components/home/TrendingSection'
 import PopularReviewsSection from '@/components/home/PopularReviewsSection'
+import SubjectShuffle from '@/components/home/SubjectShuffle'
+import ActivityTicker from '@/components/home/ActivityTicker'
 import AnimatedSection from '@/components/ui/AnimatedSection'
 import GlowCard from '@/components/ui/GlowCard'
 import CountUp from '@/components/ui/CountUp'
@@ -226,6 +228,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <HeroBanner locale={locale} />
       </AnimatedSection>
 
+      {/* Activity Ticker — live platform pulse */}
+      <ActivityTicker locale={locale} />
+
       {/* Mobile category quick links */}
       <div className="relative md:hidden">
         <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 -mt-2 px-1">
@@ -323,6 +328,23 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             })}
           </div>
         </section>
+      </AnimatedSection>
+
+      {/* 5.5 Subject Shuffle — interactive random discovery */}
+      <AnimatedSection delay={0.1}>
+        <SubjectShuffle
+          subjects={mappedSubjects.map(s => ({
+            id: s.id,
+            name: s.name,
+            avg_rating: s.avg_rating,
+            review_count: s.review_count,
+            image_url: proxyImageUrl(s.image_url),
+            category_slug: s.category_slug,
+            category_name: s.category_name,
+            category_icon: s.category_icon,
+          }))}
+          locale={locale}
+        />
       </AnimatedSection>
 
       {/* 6. Category Showcase - each category with its subjects */}
