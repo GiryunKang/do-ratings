@@ -7,6 +7,9 @@ import TrendingSection from '@/components/home/TrendingSection'
 import PopularReviewsSection from '@/components/home/PopularReviewsSection'
 import SubjectShuffle from '@/components/home/SubjectShuffle'
 import ActivityTicker from '@/components/home/ActivityTicker'
+import StarConstellation from '@/components/home/StarConstellation'
+import ReviewStarterDeck from '@/components/home/ReviewStarterDeck'
+import GhostReviews from '@/components/home/GhostReviews'
 import AnimatedSection from '@/components/ui/AnimatedSection'
 import GlowCard from '@/components/ui/GlowCard'
 import CountUp from '@/components/ui/CountUp'
@@ -223,9 +226,21 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         }}
       />
 
-      {/* 0. Hero Banner - Do! Ratings! */}
+      {/* 0. Hero Banner with Star Constellation overlay */}
       <AnimatedSection delay={0}>
-        <HeroBanner locale={locale} />
+        <div className="relative">
+          <HeroBanner locale={locale} />
+          <StarConstellation
+            subjects={mappedSubjects.map(s => ({
+              id: s.id,
+              name: s.name,
+              category_slug: s.category_slug,
+              category_icon: s.category_icon,
+              category_name: s.category_name,
+            }))}
+            locale={locale}
+          />
+        </div>
       </AnimatedSection>
 
       {/* Activity Ticker — live platform pulse */}
@@ -271,6 +286,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TrendingSection locale={locale} />
           <PopularReviewsSection locale={locale} />
+        </div>
+      </AnimatedSection>
+
+      {/* 2.5 Review Starter Deck + Ghost Reviews — engagement when data is sparse */}
+      <AnimatedSection delay={0.1}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <ReviewStarterDeck locale={locale} />
+          <GhostReviews locale={locale} />
         </div>
       </AnimatedSection>
 
