@@ -221,6 +221,7 @@ export default async function SubjectPage({ params }: PageProps) {
                   src={proxyImageUrl(subject.image_url as string) ?? ''}
                   alt={subjectName}
                   className="w-20 h-20 rounded-lg object-cover"
+                  referrerPolicy="no-referrer"
                 />
               ) : (
                 <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">

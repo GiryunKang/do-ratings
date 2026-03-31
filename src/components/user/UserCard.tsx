@@ -29,6 +29,7 @@ export default function UserCard({ profile }: UserCardProps) {
               src={profile.avatar_url}
               alt={profile.nickname}
               className="w-20 h-20 rounded-full object-cover border-2 border-border"
+              referrerPolicy="no-referrer"
             />
           ) : (
             <span className="w-20 h-20 rounded-full bg-indigo-100 text-indigo-600 text-2xl font-bold flex items-center justify-center">

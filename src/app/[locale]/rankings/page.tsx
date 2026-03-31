@@ -428,6 +428,7 @@ export default function RankingsPage() {
                           src={reviewer.avatar_url}
                           alt={reviewer.nickname}
                           className="w-8 h-8 rounded-full object-cover border border-border shrink-0"
+                          referrerPolicy="no-referrer"
                         />
                       ) : (
                         <span className="w-8 h-8 rounded-full bg-muted text-muted-foreground text-sm font-semibold flex items-center justify-center shrink-0">

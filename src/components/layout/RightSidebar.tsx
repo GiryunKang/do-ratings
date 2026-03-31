@@ -87,6 +87,7 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
                       src={avatarUrl}
                       alt={nickname}
                       className="w-8 h-8 rounded-full object-cover border border-border shrink-0"
+                      referrerPolicy="no-referrer"
                     />
                   ) : (
                     <span className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold flex items-center justify-center shrink-0">

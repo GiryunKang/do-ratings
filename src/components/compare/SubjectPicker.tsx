@@ -181,6 +181,7 @@ export default function SubjectPicker({
                           src={proxyImageUrl(subject.image_url) ?? ''}
                           alt={displayName}
                           className="w-10 h-10 rounded-md object-cover shrink-0"
+                          referrerPolicy="no-referrer"
                         />
                       ) : (
                         <div className="w-10 h-10 rounded-md bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-base font-bold shrink-0 select-none">

@@ -11,6 +11,7 @@ export default function PointingHand({ className }: { className?: string }) {
         imageRendering: 'auto',
       }}
       draggable={false}
+      referrerPolicy="no-referrer"
     />
   )
 }

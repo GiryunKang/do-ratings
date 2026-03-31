@@ -58,6 +58,7 @@ export default function CompareCard({
             src={proxyImageUrl(subject.image_url) ?? ''}
             alt={displayName}
             className="w-20 h-20 rounded-lg object-cover"
+            referrerPolicy="no-referrer"
           />
         ) : (
           <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-2xl font-bold select-none">

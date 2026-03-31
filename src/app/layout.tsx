@@ -11,14 +11,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html className={cn("font-sans", geist.variable)} suppressHydrationWarning>
+    <html className={cn("font-sans overflow-x-hidden", geist.variable)} suppressHydrationWarning>
       <head>
         <link rel="icon" type="image/png" sizes="48x48" href="/ko/icon" />
         <link rel="apple-touch-icon" sizes="180x180" href="/ko/apple-icon" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#4f46e5" />
       </head>
-      <body className="bg-background text-foreground min-h-screen">
+      <body className="bg-background text-foreground min-h-screen overflow-x-hidden">
         {children}
       </body>
     </html>

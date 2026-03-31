@@ -149,6 +149,7 @@ export default function SettingsPage() {
               alt="Avatar preview"
               className="mt-3 w-16 h-16 rounded-full object-cover border border-border"
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+              referrerPolicy="no-referrer"
             />
           )}
         </div>

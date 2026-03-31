@@ -102,6 +102,7 @@ export default function AutoScrollRow({
                   alt={name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement?.classList.add(color, 'flex', 'items-center', 'justify-center'); }}
+                  referrerPolicy="no-referrer"
                 />
                 {originalIndex < 3 && (
                   <span className={`absolute top-2 right-2 w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center ${

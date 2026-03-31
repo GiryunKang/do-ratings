@@ -103,6 +103,7 @@ export default function SubjectShuffle({ subjects, locale }: SubjectShuffleProps
                           e.currentTarget.style.display = 'none'
                           e.currentTarget.parentElement?.classList.add(color.replace('bg-', 'bg-'), 'flex', 'items-center', 'justify-center')
                         }}
+                        referrerPolicy="no-referrer"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
 

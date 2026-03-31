@@ -93,6 +93,7 @@ export default function QuickFaceoff({ subjects, locale }: QuickFaceoffProps) {
                     alt={name}
                     className="w-full h-full object-cover"
                     onError={(e) => { e.currentTarget.style.display = 'none' }}
+                    referrerPolicy="no-referrer"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 </div>

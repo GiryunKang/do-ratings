@@ -185,6 +185,7 @@ export default function ImageUpload({
                 src={img.previewUrl}
                 alt="preview"
                 className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
               />
               {/* Remove button */}
               <button

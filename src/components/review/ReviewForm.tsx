@@ -386,6 +386,7 @@ export default function ReviewForm({
               alt="preview"
               className="w-full h-full object-cover"
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+              referrerPolicy="no-referrer"
             />
           </div>
         )}

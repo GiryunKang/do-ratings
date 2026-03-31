@@ -218,7 +218,7 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
                 <div key={reviewer.id} className="flex items-center gap-3 bg-card rounded-xl border border-border px-4 py-3">
                   <Link href={`/${locale}/user/${reviewer.id}`} className="shrink-0">
                     {reviewer.avatar_url ? (
-                      <img src={reviewer.avatar_url} alt={reviewer.nickname} className="w-10 h-10 rounded-full object-cover" />
+                      <img src={reviewer.avatar_url} alt={reviewer.nickname} className="w-10 h-10 rounded-full object-cover" referrerPolicy="no-referrer" />
                     ) : (
                       <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm">
                         {reviewer.nickname.charAt(0).toUpperCase()}

@@ -13,9 +13,7 @@ export default function ShareMenu({ url, title, type, locale }: ShareMenuProps) 
   const [copied, setCopied] = useState(false)
   const ko = locale === 'ko'
 
-  const fullUrl = typeof window !== 'undefined'
-    ? `${window.location.origin}${url}`
-    : `https://do-ratings.com${url}`
+  const fullUrl = `https://do-ratings.com${url}`
 
   const shareText = type === 'subject'
     ? (ko ? '이 대상을 평가해보세요!' : 'Rate this!')

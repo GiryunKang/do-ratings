@@ -35,7 +35,7 @@ export default function FeaturedCarousel({
   if (subjects.length === 0) return null
 
   return (
-    <div className="relative group/carousel">
+    <div className="relative group/carousel overflow-hidden">
       {/* Scroll buttons — appear on hover */}
       <button
         onClick={() => scroll('left')}
@@ -83,6 +83,7 @@ export default function FeaturedCarousel({
                       src={proxyImageUrl(subject.image_url) ?? ''}
                       alt={subjectName}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      referrerPolicy="no-referrer"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                   </div>

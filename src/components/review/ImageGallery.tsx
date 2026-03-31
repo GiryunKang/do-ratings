@@ -75,6 +75,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
             alt="Review photo"
             className="w-full max-h-64 object-cover rounded-lg cursor-pointer"
             onClick={() => openLightbox(0)}
+            referrerPolicy="no-referrer"
           />
         )}
 
@@ -87,6 +88,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
                 alt={`Review photo ${i + 1}`}
                 className="w-full h-48 object-cover rounded-lg cursor-pointer"
                 onClick={() => openLightbox(i)}
+                referrerPolicy="no-referrer"
               />
             ))}
           </div>
@@ -99,6 +101,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
               alt="Review photo 1"
               className="row-span-2 w-full h-full max-h-64 object-cover rounded-lg cursor-pointer"
               onClick={() => openLightbox(0)}
+              referrerPolicy="no-referrer"
             />
             {displayed.slice(1).map((img, i) => (
               <img
@@ -107,6 +110,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
                 alt={`Review photo ${i + 2}`}
                 className="w-full h-32 object-cover rounded-lg cursor-pointer"
                 onClick={() => openLightbox(i + 1)}
+                referrerPolicy="no-referrer"
               />
             ))}
           </div>
@@ -121,6 +125,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
                   alt={`Review photo ${i + 1}`}
                   className="w-full h-32 object-cover rounded-lg cursor-pointer"
                   onClick={() => openLightbox(i)}
+                  referrerPolicy="no-referrer"
                 />
                 {i === 3 && count > 4 && (
                   <div
@@ -170,6 +175,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
             onClick={(e) => e.stopPropagation()}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
+            referrerPolicy="no-referrer"
           />
 
           {/* Right arrow */}

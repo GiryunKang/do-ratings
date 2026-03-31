@@ -65,11 +65,14 @@ export default function Header() {
           </svg>
         </button>
 
-        <div className="flex items-center gap-2 shrink-0">
-          {/* Theme toggle */}
-          <ThemeToggle />
+        <div className="flex items-center gap-1 md:gap-2 shrink-0">
+          {/* Theme toggle — hidden on small mobile */}
+          <div className="hidden sm:block">
+            <ThemeToggle />
+          </div>
 
-          {/* Language dropdown */}
+          {/* Language dropdown — hidden on small mobile */}
+          <div className="hidden sm:block">
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
@@ -94,6 +97,7 @@ export default function Header() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          </div>
 
           {/* Notifications */}
           <NotificationBell userId={user?.id ?? null} />
