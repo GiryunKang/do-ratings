@@ -10,6 +10,12 @@ import ActivityTicker from '@/components/home/ActivityTicker'
 import StarConstellation from '@/components/home/StarConstellation'
 import ReviewStarterDeck from '@/components/home/ReviewStarterDeck'
 import GhostReviews from '@/components/home/GhostReviews'
+import RatingRoulette from '@/components/home/RatingRoulette'
+import RatingStreak from '@/components/home/RatingStreak'
+import QuickFaceoff from '@/components/home/QuickFaceoff'
+import ReviewFingerprint from '@/components/home/ReviewFingerprint'
+import MysterySubject from '@/components/home/MysterySubject'
+import RatingPrediction from '@/components/home/RatingPrediction'
 import AnimatedSection from '@/components/ui/AnimatedSection'
 import GlowCard from '@/components/ui/GlowCard'
 import CountUp from '@/components/ui/CountUp'
@@ -246,6 +252,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {/* Activity Ticker — live platform pulse */}
       <ActivityTicker locale={locale} />
 
+      {/* Rating Streak — duolingo-style consecutive day tracker */}
+      <RatingStreak locale={locale} />
+
       {/* Mobile category quick links */}
       <div className="relative md:hidden">
         <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 -mt-2 px-1">
@@ -368,6 +377,44 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           }))}
           locale={locale}
         />
+      </AnimatedSection>
+
+      {/* 5.7 Quick Face-off + Mystery Subject */}
+      <AnimatedSection delay={0.1}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <QuickFaceoff
+            subjects={mappedSubjects.map(s => ({
+              id: s.id,
+              name: s.name,
+              avg_rating: s.avg_rating,
+              image_url: proxyImageUrl(s.image_url),
+              category_slug: s.category_slug,
+              category_icon: s.category_icon,
+              category_name: s.category_name,
+            }))}
+            locale={locale}
+          />
+          <MysterySubject locale={locale} />
+        </div>
+      </AnimatedSection>
+
+      {/* 5.8 Rating Roulette + Prediction + Fingerprint */}
+      <AnimatedSection delay={0.1}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <RatingRoulette
+            subjects={mappedSubjects.map(s => ({
+              id: s.id,
+              name: s.name,
+              image_url: proxyImageUrl(s.image_url),
+              category_slug: s.category_slug,
+              category_icon: s.category_icon,
+              category_name: s.category_name,
+            }))}
+            locale={locale}
+          />
+          <RatingPrediction locale={locale} />
+          <ReviewFingerprint locale={locale} />
+        </div>
       </AnimatedSection>
 
       {/* 6. Category Showcase - each category with its subjects */}

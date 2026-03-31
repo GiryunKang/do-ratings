@@ -15,6 +15,7 @@ import ShareMenu from '@/components/ui/ShareMenu'
 import ClaimButton from '@/components/business/ClaimButton'
 import AddToCollectionButton from '@/components/collection/AddToCollectionButton'
 import EmbedWidget from '@/components/embed/EmbedWidget'
+import SentimentRiver from '@/components/subject/SentimentRiver'
 
 interface PageProps {
   params: Promise<{ locale: string; id: string }>
@@ -267,6 +268,11 @@ export default async function SubjectPage({ params }: PageProps) {
               <SubRatingChart criteria={criteria} values={avgSubRatings} locale={locale} />
             </>
           )}
+
+          {/* Sentiment River — review mood over time */}
+          <div className="my-4">
+            <SentimentRiver subjectId={id} locale={locale} />
+          </div>
 
           <hr className="my-4 border-border" />
 
