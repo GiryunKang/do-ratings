@@ -16,6 +16,8 @@ import ClaimButton from '@/components/business/ClaimButton'
 import AddToCollectionButton from '@/components/collection/AddToCollectionButton'
 import EmbedWidget from '@/components/embed/EmbedWidget'
 import SentimentRiver from '@/components/subject/SentimentRiver'
+import FaultlineFeed from '@/components/subject/FaultlineFeed'
+import SevenSecondCollapse from '@/components/subject/SevenSecondCollapse'
 
 interface PageProps {
   params: Promise<{ locale: string; id: string }>
@@ -274,6 +276,12 @@ export default async function SubjectPage({ params }: PageProps) {
           <div className="my-4">
             <SentimentRiver subjectId={id} locale={locale} />
           </div>
+
+          {/* Faultline Feed — trembling crack for polarized subjects */}
+          <FaultlineFeed subjectId={id} locale={locale} />
+
+          {/* Seven Second Collapse — real-time page explosion on rating shift */}
+          <SevenSecondCollapse subjectId={id} previousAvg={subject.avg_rating} locale={locale} />
 
           <hr className="my-4 border-border" />
 

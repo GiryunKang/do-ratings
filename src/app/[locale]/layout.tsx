@@ -14,6 +14,7 @@ import OnboardingTrigger from '@/components/onboarding/OnboardingTrigger'
 import SignupFloatingBar from '@/components/layout/SignupFloatingBar'
 import SplashScreen from '@/components/ui/SplashScreen'
 import ActivitySummary from '@/components/ui/ActivitySummary'
+import PossessionMode from '@/components/ui/PossessionMode'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
@@ -64,6 +65,7 @@ export default async function LocaleLayout({
         <BottomNav />
         <SignupFloatingBar />
         <OnboardingTrigger />
+        <PossessionMode locale={locale} />
       </ThemeProvider>
     </NextIntlClientProvider>
   )
