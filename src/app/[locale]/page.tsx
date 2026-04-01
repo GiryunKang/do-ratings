@@ -16,6 +16,9 @@ import QuickFaceoff from '@/components/home/QuickFaceoff'
 import ReviewFingerprint from '@/components/home/ReviewFingerprint'
 import MysterySubject from '@/components/home/MysterySubject'
 import RatingPrediction from '@/components/home/RatingPrediction'
+import ReviewWorldMap from '@/components/home/ReviewWorldMap'
+import ReviewTheater from '@/components/home/ReviewTheater'
+import WeeklyCrown from '@/components/home/WeeklyCrown'
 import AnimatedSection from '@/components/ui/AnimatedSection'
 import GlowCard from '@/components/ui/GlowCard'
 import CountUp from '@/components/ui/CountUp'
@@ -461,6 +464,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </AnimatedSection>
         )
       })}
+
+      {/* 6.5 Review Theater + Weekly Crown */}
+      <AnimatedSection delay={0.1}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <ReviewTheater locale={locale} />
+          <WeeklyCrown locale={locale} />
+        </div>
+      </AnimatedSection>
+
+      {/* 6.7 World Review Map */}
+      <AnimatedSection delay={0.1}>
+        <ReviewWorldMap locale={locale} />
+      </AnimatedSection>
 
       {/* 7. CTA Banner */}
       <AnimatedSection delay={0.1}>
