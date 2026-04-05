@@ -12,6 +12,7 @@ import ActivityTicker from '@/components/home/ActivityTicker'
 
 const DailyFocusVote = dynamic(() => import('@/components/home/DailyFocusVote'))
 const RatingPrediction = dynamic(() => import('@/components/home/RatingPrediction'))
+const ReviewStarterDeck = dynamic(() => import('@/components/home/ReviewStarterDeck'))
 
 interface LocalizedText {
   [key: string]: string
@@ -444,6 +445,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </div>
           </div>
         </div>
+      </section>
+
+      {/* SECTION 4.5: ReviewStarterDeck — first-time user onboarding */}
+      <section className="px-6 mt-8">
+        <ReviewStarterDeck locale={locale} />
       </section>
 
       {/* SECTION 5: "당신이 아직 평가하지 않은 주제" (Personalized) */}
