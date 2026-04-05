@@ -1,14 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
 import dynamic from 'next/dynamic'
-import FeaturedCarousel from '@/components/home/FeaturedCarousel'
-import HeroBanner from '@/components/home/HeroBanner'
-import TrendingSection from '@/components/home/TrendingSection'
-import PopularReviewsSection from '@/components/home/PopularReviewsSection'
-import ActivityTicker from '@/components/home/ActivityTicker'
 import Link from 'next/link'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
+import FeaturedCarousel from '@/components/home/FeaturedCarousel'
+import TrendingSection from '@/components/home/TrendingSection'
+import PopularReviewsSection from '@/components/home/PopularReviewsSection'
+import ActivityTicker from '@/components/home/ActivityTicker'
 
 const DailyFocusVote = dynamic(() => import('@/components/home/DailyFocusVote'))
 const RatingPrediction = dynamic(() => import('@/components/home/RatingPrediction'))
@@ -155,7 +154,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     subjectsByCategory[s.category_id].push(s)
   }
 
-  // Process ActivityTicker data server-side
   const tickerData = (tickerReviews ?? []).map(r => {
     const profile = Array.isArray(r.public_profiles) ? r.public_profiles[0] : r.public_profiles
     return {
@@ -167,7 +165,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     }
   })
 
-  // Process daily trending for TrendingSection initial data
   const dailyTrendingMap = new Map<string, TrendingSubject>()
   for (const r of (dailyTrendingReviews ?? [])) {
     type DailyTrendingSubject = { id: string; name: LocalizedText; image_url: string | null; avg_rating: number | null; review_count: number }
@@ -191,7 +188,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     .sort((a, b) => b.recentCount - a.recentCount)
     .slice(0, 6)
 
-  // Process daily popular for PopularReviewsSection initial data
   const initialPopularReviews = (dailyPopularReviews ?? []).map(r => {
     const subject = Array.isArray(r.subjects) ? r.subjects[0] : r.subjects
     const profile = Array.isArray(r.public_profiles) ? r.public_profiles[0] : r.public_profiles
@@ -208,7 +204,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     }
   })
 
-  // Daily focus vote data
   const activeVote = (dailyVoteData?.[0] ?? null) as {
     id: string
     question: Record<string, string>
@@ -239,33 +234,90 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         }}
       />
 
-      {/* SECTION 1 — HERO */}
-      <section>
-        <HeroBanner locale={locale} />
-        <div className="px-4 mt-6 max-w-lg">
-          <input
-            type="text"
-            placeholder={locale === 'ko' ? '항공사, 호텔, 맛집을 검색하세요...' : 'Search airlines, hotels, restaurants...'}
-            className="w-full px-5 py-3.5 border border-border bg-background text-sm focus:outline-none focus:border-primary"
-          />
+      {/* SECTION 1 — HERO: "Rate Everything." */}
+      <section className="px-4 pt-8">
+        <h1 className="font-display text-5xl lg:text-6xl text-foreground tracking-tight leading-none mb-3">
+          Rate Everything.
+        </h1>
+        <p className="text-base text-muted-foreground mb-6">
+          {locale === 'ko' ? '세상 모든 것을 평가하세요' : 'Rate everything in the world'}
+        </p>
+        {/* Category quick-access pills */}
+        <div className="flex flex-wrap gap-2 mb-8">
+          {displayCats.map(cat => {
+            const catName = (cat.name as Record<string, string>)[locale] ?? (cat.name as Record<string, string>)['ko']
+            const slug = cat.slug as string
+            const icon = (cat.icon ?? 'folder') as string
+            const color = getCategoryColor(slug)
+            return (
+              <Link
+                key={cat.id}
+                href={`/${locale}/category/${slug}`}
+                className={`inline-flex items-center gap-1.5 px-4 py-2 ${color} text-white text-sm font-medium rounded-full hover:opacity-90 transition-opacity`}
+              >
+                <CategoryIcon name={icon} className="w-4 h-4" />
+                {catName}
+              </Link>
+            )
+          })}
         </div>
       </section>
 
-      {/* SECTION 2 — DAILY FOCUS VOTE */}
-      <section className="px-4 mt-16">
+      {/* SECTION 2 — TODAY'S SUBJECT (Cover Story style) */}
+      <section className="px-4">
+        <h2 className="font-display text-xl text-foreground mb-4 flex items-center gap-2">
+          {locale === 'ko' ? '오늘의 주제' : "Today's Subject"} ✨
+        </h2>
+        {featured[0] && (
+          <div className="bg-card border border-border rounded-xl p-6 border-l-4 border-l-primary">
+            <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-2">
+              TODAY&apos;S SUBJECT
+            </p>
+            <h3 className="font-display text-2xl text-foreground mb-2">
+              {(featured[0].name as Record<string, string>)[locale] ?? (featured[0].name as Record<string, string>)['ko']}
+            </h3>
+            <div className="flex items-baseline gap-1 mb-2">
+              <span className="font-mono text-5xl font-bold text-primary">
+                {featured[0].avg_rating?.toFixed(1) ?? '—'}
+              </span>
+              <span className="font-mono text-lg text-muted-foreground">/ 10</span>
+            </div>
+            <div className="flex items-center gap-1 mb-2">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <span key={i} className={`text-lg ${i < Math.round((featured[0].avg_rating ?? 0) / 2) ? 'text-primary' : 'text-muted-foreground/20'}`}>★</span>
+              ))}
+            </div>
+            <p className="text-sm text-muted-foreground mb-3">
+              {featured[0].review_count.toLocaleString()}{locale === 'ko' ? '명 평가' : ' ratings'}
+            </p>
+            <div className="flex items-center gap-3">
+              <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full ${getCategoryColor(featured[0].category_slug)} text-white`}>
+                <CategoryIcon name={featured[0].category_icon} className="w-3 h-3" />
+                {(featured[0].category_name as Record<string, string>)[locale] ?? (featured[0].category_name as Record<string, string>)['ko']}
+              </span>
+              <Link href={`/${locale}/subject/${featured[0].id}`} className="text-sm font-medium text-primary hover:underline">
+                {locale === 'ko' ? '평가하기 →' : 'Rate now →'}
+              </Link>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* SECTION 3 — DAILY FOCUS VOTE */}
+      <section className="px-4 mt-12">
         <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
-          {locale === 'ko' ? 'Daily Vote' : 'Daily Vote'}
+          Daily Vote
         </p>
         <DailyFocusVote locale={locale} initialVote={activeVote} initialCounts={voteCounts} />
       </section>
 
-      {/* SECTION 3 — LIVE REVIEW FEED */}
-      <section className="px-4 mt-16">
+      {/* SECTION 4 — LIVE REVIEW FEED */}
+      <section className="px-4 mt-12">
         <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
-          {locale === 'ko' ? 'Live Feed' : 'Live Feed'}
+          Live Feed
         </p>
         <h2 className="font-display text-2xl text-foreground mb-6">
-          {locale === 'ko' ? '실실간 리뷰' : 'Real-Time Reviews'}
+          {locale === 'ko' ? '실시간 리뷰' : 'Real-Time Reviews'}
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8 flex flex-col gap-8">
@@ -274,7 +326,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
           <div className="lg:col-span-4">
             <div className="flex items-center gap-2 mb-4">
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
               <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground">
                 {locale === 'ko' ? '실시간' : 'Live'}
               </p>
@@ -293,8 +345,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
-      {/* SECTION 4 — EDITOR'S PICKS */}
-      <section className="px-4 mt-16">
+      {/* SECTION 5 — FEATURED CAROUSEL (Editor's Picks) */}
+      <section className="px-4 mt-12">
         <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
           {locale === 'ko' ? "Editor's Picks" : "Editor's Picks"}
         </p>
@@ -313,10 +365,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         }))} locale={locale} />
       </section>
 
-      {/* SECTION 5 — CATEGORIES */}
-      <section className="px-4 mt-16">
+      {/* SECTION 6 — CATEGORIES */}
+      <section className="px-4 mt-12">
         <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
-          {locale === 'ko' ? 'Categories' : 'Categories'}
+          Categories
         </p>
         <h2 className="font-display text-2xl text-foreground mb-6">
           {locale === 'ko' ? '카테고리' : 'Browse by Category'}
@@ -333,7 +385,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <Link
                 key={cat.id}
                 href={`/${locale}/category/${slug}`}
-                className="flex items-center gap-4 p-5 border border-border bg-card hover:border-foreground/20 hover:bg-muted transition-colors"
+                className="flex items-center gap-4 p-5 border border-border bg-card rounded-xl hover:border-primary/30 hover:shadow-sm transition-all"
               >
                 <span className={`w-10 h-10 rounded-full ${color} flex items-center justify-center shrink-0`}>
                   <CategoryIcon name={icon} className="w-5 h-5 text-white" />
@@ -350,21 +402,21 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
-      {/* SECTION 6 — CTA BANNER */}
-      <section className="px-4 mt-16">
-        <div className="bg-foreground p-8 md:p-12 text-center">
-          <p className="text-[11px] font-semibold tracking-widest uppercase text-background/50 mb-3">
-            {locale === 'ko' ? 'Join Us' : 'Join Us'}
+      {/* SECTION 7 — CTA */}
+      <section className="px-4 mt-12">
+        <div className="bg-primary rounded-xl p-8 md:p-12 text-center">
+          <p className="text-[11px] font-semibold tracking-widest uppercase text-white/60 mb-3">
+            Join Us
           </p>
-          <h2 className="font-display text-2xl text-background mb-3">
+          <h2 className="font-display text-2xl text-white mb-3">
             {locale === 'ko' ? '당신의 의견을 들려주세요' : 'Share Your Opinion'}
           </h2>
-          <p className="text-base max-w-[65ch] text-background/60 mb-6 mx-auto">
+          <p className="text-base max-w-[65ch] text-white/70 mb-6 mx-auto">
             {locale === 'ko' ? '첫 번째 리뷰어가 되어 다른 사람들에게 도움을 주세요.' : 'Be the first reviewer and help others make better choices.'}
           </p>
           <Link
             href={`/${locale}/explore`}
-            className="inline-flex items-center gap-2 bg-background text-foreground font-semibold px-8 py-3 text-sm hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-2 bg-white text-primary font-semibold px-8 py-3 text-sm rounded-full hover:opacity-90 transition-opacity"
           >
             {locale === 'ko' ? '탐색하기' : 'Explore Now'} →
           </Link>
