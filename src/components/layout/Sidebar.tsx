@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { BarChart3, Bookmark, Swords, Bell, Settings, Plus, ChevronDown, Compass, Sparkles } from 'lucide-react'
+import dynamic from 'next/dynamic'
+
+const RatingStreak = dynamic(() => import('@/components/home/RatingStreak'))
 
 import { createClient } from '@/lib/supabase/client'
 import { CategoryIcon } from '@/lib/icons'
@@ -176,6 +179,11 @@ export default function Sidebar({ locale }: { locale: string }) {
             )
           })}
         </nav>
+
+        {/* Rating Streak */}
+        <div className="mt-3 px-1">
+          <RatingStreak locale={locale} />
+        </div>
 
         {/* Legal links */}
         <div className="mt-4 pt-3 border-t border-border flex gap-2 px-1 text-[10px] text-muted-foreground flex-wrap">

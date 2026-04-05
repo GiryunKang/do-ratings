@@ -76,7 +76,7 @@ export default function RatingStreak({ locale }: RatingStreakProps) {
           initial={{ opacity: 0, scale: 0.8, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8 }}
-          className="relative overflow-hidden rounded-xl bg-gradient-to-r from-orange-500/10 via-red-500/10 to-amber-500/10 ring-1 ring-orange-200/30 dark:ring-orange-800/30 px-4 py-3"
+          className="relative overflow-hidden rounded-xl bg-primary/5 border border-primary/20 px-4 py-3"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -89,7 +89,7 @@ export default function RatingStreak({ locale }: RatingStreakProps) {
                 transition={{ duration: 1.5, repeat: Infinity }}
               >
                 {Array.from({ length: flameCount }).map((_, i) => (
-                  <Flame key={i} className="w-6 h-6 text-orange-500" />
+                  <Flame key={i} className="w-6 h-6 text-primary" />
                 ))}
               </motion.span>
               <div>
@@ -112,7 +112,7 @@ export default function RatingStreak({ locale }: RatingStreakProps) {
                 <motion.div
                   key={i}
                   className={`w-1.5 rounded-full ${
-                    i < flameSize ? 'bg-gradient-to-t from-orange-500 to-amber-400' : 'bg-muted/40'
+                    i < flameSize ? 'bg-gradient-to-t from-primary to-orange-400' : 'bg-muted/40'
                   }`}
                   style={{ height: 8 + i * 3 }}
                   initial={{ scaleY: 0 }}
