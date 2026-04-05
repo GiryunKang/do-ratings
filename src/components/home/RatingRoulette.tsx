@@ -104,7 +104,7 @@ export default function RatingRoulette({ subjects, locale }: RatingRouletteProps
                 </span>
                 <span className="text-[11px] text-white/70 font-medium">{catName}</span>
               </div>
-              <p className={`font-serif text-xl text-white font-bold transition-all duration-150 ${picking ? 'opacity-60' : ''} ${revealed ? 'text-2xl' : ''}`}>
+              <p className={`font-display text-xl text-white font-bold transition-all duration-150 ${picking ? 'opacity-60' : ''} ${revealed ? 'text-2xl' : ''}`}>
                 {name}
               </p>
             </div>

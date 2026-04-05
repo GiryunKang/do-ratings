@@ -11,6 +11,7 @@ import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
 
 const DailyFocusVote = dynamic(() => import('@/components/home/DailyFocusVote'))
+const RatingPrediction = dynamic(() => import('@/components/home/RatingPrediction'))
 
 interface LocalizedText {
   [key: string]: string
@@ -71,33 +72,23 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const [
     { data: categories },
     { data: allSubjects },
-    { data: recentReviews },
     { data: trendingReviews },
-    { data: popularReviews },
     { count: totalReviewCount },
     { count: totalUserCount },
     { data: tickerReviews },
     { data: dailyTrendingReviews },
     { data: dailyPopularReviews },
-    { data: worldMapReviews },
-    { data: theaterReviews },
-    { data: crownReviews },
     { data: dailyVoteData },
     { data: dailyVoteCountsData },
   ] = await Promise.all([
     supabase.from('categories').select('*'),
     supabase.from('subjects').select('id, name, avg_rating, review_count, description, category_id, image_url, categories(slug, name, icon)').limit(200),
-    supabase.from('reviews').select('id, title, overall_rating, created_at, subjects(name, categories(name))').order('created_at', { ascending: false }).limit(5),
     supabase.from('reviews').select('subject_id, subjects(id, name, image_url, avg_rating, review_count, categories(slug, name, icon))').gte('created_at', sevenDaysAgo).order('created_at', { ascending: false }).limit(50),
-    supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, created_at, user_id, subject_id, subjects(name, categories(name, slug)), public_profiles(nickname, level, avatar_url)').order('helpful_count', { ascending: false }).limit(5),
     supabase.from('reviews').select('id', { count: 'exact', head: true }),
     supabase.from('users').select('id', { count: 'exact', head: true }),
     supabase.from('reviews').select('id, title, overall_rating, created_at, public_profiles(nickname)').order('created_at', { ascending: false }).limit(10),
     supabase.from('reviews').select('subject_id, subjects(id, name, image_url, avg_rating, review_count)').gte('created_at', oneDayAgo).order('created_at', { ascending: false }).limit(50),
     supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, created_at, subject_id, subjects(name), public_profiles(nickname)').gte('created_at', oneDayAgo).order('helpful_count', { ascending: false }).limit(5),
-    supabase.from('reviews').select('id, title, overall_rating, created_at, country_code, subjects(name), public_profiles(nickname)').not('country_code', 'is', null).order('created_at', { ascending: false }).limit(100),
-    supabase.from('reviews').select('id, title, content, overall_rating, subjects(name), public_profiles(nickname)').gt('helpful_count', 0).order('helpful_count', { ascending: false }).limit(10),
-    supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, subject_id, subjects(name), public_profiles(nickname)').gte('created_at', sevenDaysAgo).order('helpful_count', { ascending: false }).limit(1),
     supabase.from('daily_votes').select('*').eq('is_active', true).gte('ends_at', new Date().toISOString()).order('starts_at', { ascending: false }).limit(1),
     supabase.from('daily_vote_counts').select('*'),
   ])
@@ -164,46 +155,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     subjectsByCategory[s.category_id].push(s)
   }
 
-  type TrendingSubjectRow = { id: string; name: LocalizedText; image_url: string | null; avg_rating: number | null; review_count: number }
-  const trendingMap = new Map<string, TrendingSubject>()
-  for (const r of (trendingReviews ?? [])) {
-    const s = pickRelation(r.subjects as TrendingSubjectRow | TrendingSubjectRow[] | null)
-    if (!s) continue
-    const existing = trendingMap.get(s.id)
-    if (existing) {
-      existing.recentCount++
-    } else {
-      trendingMap.set(s.id, {
-        id: s.id,
-        name: s.name,
-        image_url: s.image_url,
-        avg_rating: s.avg_rating,
-        review_count: s.review_count,
-        recentCount: 1,
-      })
-    }
-  }
-
-  type PopularSubjectRow = { name: LocalizedText; categories: { name: LocalizedText; slug: string } | { name: LocalizedText; slug: string }[] | null }
-  type ProfileRow = { nickname: string; level: string; avatar_url: string | null }
-  const topReviews = (popularReviews ?? []).map(r => {
-    const subject = pickRelation(r.subjects as PopularSubjectRow | PopularSubjectRow[] | null)
-    const profile = pickRelation(r.public_profiles as ProfileRow | ProfileRow[] | null)
-    return {
-      id: r.id,
-      title: r.title,
-      content: r.content,
-      overall_rating: r.overall_rating,
-      helpful_count: r.helpful_count,
-      subject_id: r.subject_id,
-      subject_name: (subject?.name ?? {}) as LocalizedText,
-      nickname: profile?.nickname ?? 'Anonymous',
-    }
-  }).filter(r => r.helpful_count > 0)
-
-  // suppress unused variable warning — topReviews is available for future use
-  void topReviews
-
   // Process ActivityTicker data server-side
   const tickerData = (tickerReviews ?? []).map(r => {
     const profile = Array.isArray(r.public_profiles) ? r.public_profiles[0] : r.public_profiles
@@ -256,18 +207,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       created_at: r.created_at,
     }
   })
-
-  // Process ReviewWorldMap data — kept for /highlights page
-  void worldMapReviews
-
-  // Process ReviewTheater data — kept for /highlights page
-  void theaterReviews
-
-  // Process WeeklyCrown data — kept for /highlights page
-  void crownReviews
-
-  // Process recentReviews — kept for other pages
-  void recentReviews
 
   // Daily focus vote data
   const activeVote = (dailyVoteData?.[0] ?? null) as {
@@ -325,7 +264,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
           {locale === 'ko' ? 'Live Feed' : 'Live Feed'}
         </p>
-        <h2 className="font-serif text-2xl text-foreground mb-6">
+        <h2 className="font-display text-2xl text-foreground mb-6">
           {locale === 'ko' ? '실실간 리뷰' : 'Real-Time Reviews'}
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -347,6 +286,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               totalSubjects={subjects.length}
               totalUsers={totalUserCount ?? 0}
             />
+            <div className="mt-6">
+              <RatingPrediction locale={locale} />
+            </div>
           </div>
         </div>
       </section>
@@ -356,7 +298,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
           {locale === 'ko' ? "Editor's Picks" : "Editor's Picks"}
         </p>
-        <h2 className="font-serif text-2xl text-foreground mb-6">
+        <h2 className="font-display text-2xl text-foreground mb-6">
           {locale === 'ko' ? '주목할 대상' : 'Featured'}
         </h2>
         <FeaturedCarousel subjects={featured.map(s => ({
@@ -376,7 +318,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
           {locale === 'ko' ? 'Categories' : 'Categories'}
         </p>
-        <h2 className="font-serif text-2xl text-foreground mb-6">
+        <h2 className="font-display text-2xl text-foreground mb-6">
           {locale === 'ko' ? '카테고리' : 'Browse by Category'}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -414,7 +356,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <p className="text-[11px] font-semibold tracking-widest uppercase text-background/50 mb-3">
             {locale === 'ko' ? 'Join Us' : 'Join Us'}
           </p>
-          <h2 className="font-serif text-2xl text-background mb-3">
+          <h2 className="font-display text-2xl text-background mb-3">
             {locale === 'ko' ? '당신의 의견을 들려주세요' : 'Share Your Opinion'}
           </h2>
           <p className="text-base max-w-[65ch] text-background/60 mb-6 mx-auto">

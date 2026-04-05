@@ -24,7 +24,6 @@ export default function RatingPrediction({ locale }: RatingPredictionProps) {
   const [prediction, setPrediction] = useState<Prediction | null>(null)
   const [revealed, setRevealed] = useState(false)
 
-  /* eslint-disable react-hooks/set-state-in-effect -- data fetching on mount */
   useEffect(() => {
     if (!user) return
 
@@ -53,9 +52,9 @@ export default function RatingPrediction({ locale }: RatingPredictionProps) {
 
       const picked = unreviewed[Math.floor(Math.random() * unreviewed.length)]
 
-      const subjectAvg = Number(picked.avg_rating ?? 3)
+      const subjectAvg = Number(picked.avg_rating ?? 5)
       const predicted = Math.round((userAvg * 0.6 + subjectAvg * 0.4) * 2) / 2
-      const clampedPrediction = Math.max(1, Math.min(5, predicted))
+      const clampedPrediction = Math.max(1, Math.min(10, predicted))
 
       const cat = Array.isArray(picked.categories) ? picked.categories[0] : picked.categories
       const nameObj = picked.name as Record<string, string>
@@ -70,82 +69,68 @@ export default function RatingPrediction({ locale }: RatingPredictionProps) {
 
     generatePrediction()
   }, [user, locale])
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   if (!user || !prediction) return null
 
   return (
-    <div className="bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-yellow-500/10 rounded-2xl ring-1 ring-amber-200/30 dark:ring-amber-800/30 p-5 relative overflow-hidden">
-      {/* Decorative */}
-      <div className="absolute -top-4 -right-4 text-6xl opacity-10 rotate-12 select-none">🤖</div>
-
+    <div className="border border-border bg-card rounded-xl p-5 relative overflow-hidden">
       <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-        <Sparkles className="w-4 h-4 text-amber-500" />
+        <Sparkles className="w-4 h-4 text-primary" />
         {locale === 'ko' ? 'AI 예측' : 'AI Prediction'}
       </h3>
 
-      <p className="text-sm text-foreground/80 mb-3 [word-break:keep-all]">
+      <p className="text-sm text-muted-foreground mb-3 [word-break:keep-all]">
         {locale === 'ko'
-          ? `비슷한 리뷰 패턴을 분석한 결과, 당신은 이걸...`
-          : `Based on your review pattern, you'd rate this...`}
+          ? '리뷰 패턴 분석 결과, 당신은 이걸...'
+          : 'Based on your review pattern, you\'d rate this...'}
       </p>
 
-      <p className="font-bold text-foreground text-base mb-2">{prediction.subjectName}</p>
+      <p className="font-bold text-foreground text-base mb-3">{prediction.subjectName}</p>
 
       <AnimatePresence mode="wait">
         {!revealed ? (
           <motion.button
             key="hidden"
             onClick={() => setRevealed(true)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 rounded-xl transition-colors"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary/10 hover:bg-primary/15 rounded-lg transition-colors"
           >
-            <span className="flex gap-0.5">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <span key={i} className="text-amber-400/30 text-sm">★</span>
-              ))}
-            </span>
-            <span className="text-xs font-semibold text-amber-600 dark:text-amber-400">
+            <span className="text-2xl font-black text-primary/20 font-mono tracking-tighter">?.?</span>
+            <span className="text-xs font-semibold text-primary">
               {locale === 'ko' ? '예측 보기' : 'See prediction'}
             </span>
           </motion.button>
         ) : (
           <motion.div
             key="revealed"
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: 'spring', stiffness: 300 }}
           >
-            <div className="flex items-center gap-2 mb-3">
-              <span className="flex gap-0.5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <motion.span
-                    key={i}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                    className={`text-lg ${i < Math.round(prediction.predictedRating) ? 'text-amber-400' : 'text-muted-foreground/20'}`}
-                  >
-                    ★
-                  </motion.span>
-                ))}
-              </span>
-              <span className="text-lg font-black text-amber-500">{prediction.predictedRating.toFixed(1)}</span>
+            <div className="flex items-baseline gap-1 mb-4">
+              <motion.span
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-3xl font-black text-primary font-mono"
+              >
+                {prediction.predictedRating.toFixed(1)}
+              </motion.span>
+              <span className="text-sm text-muted-foreground font-mono">/ 10</span>
             </div>
 
             <div className="flex gap-2">
               <Link
                 href={`/${locale}/subject/${prediction.subjectId}`}
-                className="flex-1 text-center text-xs font-semibold text-white bg-gradient-to-r from-amber-500 to-orange-500 rounded-full py-2 hover:shadow-md transition-all"
+                className="flex-1 text-center text-xs font-semibold text-white bg-primary rounded-lg py-2.5 hover:opacity-90 transition-opacity"
               >
-                {locale === 'ko' ? '맞나 확인하러 가기' : 'Prove it right'}
+                {locale === 'ko' ? '맞나 확인하기' : 'Prove it right'}
               </Link>
               <Link
                 href={`/${locale}/subject/${prediction.subjectId}`}
-                className="flex-1 text-center text-xs font-semibold text-foreground bg-card ring-1 ring-foreground/10 rounded-full py-2 hover:bg-muted transition-all"
+                className="flex-1 text-center text-xs font-semibold text-foreground border border-border rounded-lg py-2.5 hover:bg-muted transition-colors"
               >
-                {locale === 'ko' ? '틀렸어! 반박하기' : 'Wrong! Prove it wrong'}
+                {locale === 'ko' ? '틀렸어! 반박' : 'Prove it wrong'}
               </Link>
             </div>
           </motion.div>

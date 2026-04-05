@@ -101,7 +101,7 @@ export default function FeaturedCarousel({
                       <span className="text-[11px] text-primary font-semibold">★ {subject.avg_rating.toFixed(1)}</span>
                     )}
                   </div>
-                  <h3 className="font-serif text-white text-base md:text-lg leading-tight line-clamp-2">
+                  <h3 className="font-display text-white text-base md:text-lg leading-tight line-clamp-2">
                     {subjectName}
                   </h3>
                 </div>

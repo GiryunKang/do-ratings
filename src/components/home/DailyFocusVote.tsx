@@ -114,7 +114,7 @@ export default function DailyFocusVote({ locale, initialVote, initialCounts }: D
 
       <div className="bg-card border border-border overflow-hidden">
         <div className="p-6 pb-4">
-          <h3 className="font-serif text-xl font-bold text-foreground mb-2">{question}</h3>
+          <h3 className="font-display text-xl font-bold text-foreground mb-2">{question}</h3>
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <Clock className="w-3.5 h-3.5" />

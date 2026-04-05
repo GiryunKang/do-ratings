@@ -11,7 +11,7 @@ export default function HeroBanner({ locale }: HeroBannerProps) {
     <section className="bg-card border border-border p-12 lg:p-20">
       <div className="max-w-2xl">
         <h1
-          className="font-serif text-5xl lg:text-6xl text-foreground mb-6 tracking-tighter leading-none"
+          className="font-display text-5xl lg:text-6xl text-foreground mb-6 tracking-tighter leading-none"
           style={{ whiteSpace: 'pre-line' }}
         >
           {locale === 'ko' ? '세상 모든 것을\n평가하는 곳.' : 'Rate Everything\nin the World.'}

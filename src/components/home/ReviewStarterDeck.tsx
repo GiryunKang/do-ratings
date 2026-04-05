@@ -46,7 +46,7 @@ export default function ReviewStarterDeck({ locale }: ReviewStarterDeckProps) {
 
       <div className="bg-card border border-border p-8 text-center">
         <p className="text-3xl mb-4">{card.emoji}</p>
-        <p className="font-serif text-lg font-bold text-foreground mb-2">
+        <p className="font-display text-lg font-bold text-foreground mb-2">
           {locale === 'ko' ? card.ko : card.en}
         </p>
         <p className="text-xs text-muted-foreground mb-6">

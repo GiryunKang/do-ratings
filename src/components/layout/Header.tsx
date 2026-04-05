@@ -41,9 +41,12 @@ export default function Header() {
         {/* Logo */}
         <Link
           href={`/${locale}`}
-          className="shrink-0 text-lg font-serif italic text-primary"
+          className="shrink-0 text-lg font-display tracking-tight"
         >
-          Do! Ratings!
+          <span className="text-foreground">DO</span>
+          <span className="text-primary">!</span>
+          <span className="text-foreground"> RATINGS</span>
+          <span className="text-primary">!</span>
         </Link>
 
         {/* Search bar — hidden on mobile */}

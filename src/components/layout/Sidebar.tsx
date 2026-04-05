@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { BarChart3, Bookmark, Swords, Bell, Settings, Plus, ChevronDown } from 'lucide-react'
+import { BarChart3, Bookmark, Swords, Bell, Settings, Plus, ChevronDown, Compass, Sparkles } from 'lucide-react'
 
 import { createClient } from '@/lib/supabase/client'
 import { CategoryIcon } from '@/lib/icons'
@@ -76,6 +76,8 @@ export default function Sidebar({ locale }: { locale: string }) {
   ]
 
   const moreItems = [
+    { href: `/${locale}/discover`, label: locale === 'ko' ? '발견' : 'Discover', icon: <Compass className="w-4 h-4" /> },
+    { href: `/${locale}/highlights`, label: locale === 'ko' ? '하이라이트' : 'Highlights', icon: <Sparkles className="w-4 h-4" /> },
     { href: `/${locale}/dashboard`, label: locale === 'ko' ? '대시보드' : 'Dashboard', icon: <BarChart3 className="w-4 h-4" /> },
     { href: `/${locale}/collections`, label: locale === 'ko' ? '컬렉션' : 'Collections', icon: <Bookmark className="w-4 h-4" /> },
     { href: `/${locale}/battles`, label: locale === 'ko' ? '배틀' : 'Battles', icon: <Swords className="w-4 h-4" /> },
