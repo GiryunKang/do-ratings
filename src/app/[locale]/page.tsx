@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import { Search } from 'lucide-react'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
 import FeaturedCarousel from '@/components/home/FeaturedCarousel'
@@ -53,7 +54,6 @@ function pickRelation<T>(value: T | T[] | null | undefined): T | null {
   if (Array.isArray(value)) {
     return value[0] ?? null
   }
-
   return value ?? null
 }
 
@@ -79,6 +79,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     { data: dailyPopularReviews },
     { data: dailyVoteData },
     { data: dailyVoteCountsData },
+    { data: popularReviewsData },
   ] = await Promise.all([
     supabase.from('categories').select('*'),
     supabase.from('subjects').select('id, name, avg_rating, review_count, description, category_id, image_url, categories(slug, name, icon)').limit(200),
@@ -90,6 +91,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, created_at, subject_id, subjects(name), public_profiles(nickname)').gte('created_at', oneDayAgo).order('helpful_count', { ascending: false }).limit(5),
     supabase.from('daily_votes').select('*').eq('is_active', true).gte('ends_at', new Date().toISOString()).order('starts_at', { ascending: false }).limit(1),
     supabase.from('daily_vote_counts').select('*'),
+    supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, subject_id, subjects(name, categories(slug, name)), public_profiles(nickname)').gt('helpful_count', 0).order('helpful_count', { ascending: false }).limit(3),
   ])
 
   const cats = ((categories ?? []) as CategoryRecord[]).sort((a, b) => {
@@ -102,7 +104,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   const mappedSubjects = subjects.map((subject) => {
     const category = pickRelation(subject.categories)
-
     return {
       id: subject.id,
       name: subject.name,
@@ -217,6 +218,26 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   const displayCats = cats.slice(0, 6)
 
+  // Process popular reviews for 인기 평가글 section
+  type PopularReviewSubject = { name: Record<string, string>; categories: { slug: string; name: Record<string, string> } | { slug: string; name: Record<string, string> }[] | null }
+  type PopularReviewProfile = { nickname: string }
+  const popularReviewCards = (popularReviewsData ?? []).map(r => {
+    const subject = Array.isArray(r.subjects) ? r.subjects[0] : r.subjects as PopularReviewSubject | null
+    const profile = Array.isArray(r.public_profiles) ? r.public_profiles[0] : r.public_profiles as PopularReviewProfile | null
+    const cat = subject?.categories ? (Array.isArray(subject.categories) ? subject.categories[0] : subject.categories) : null
+    return {
+      id: r.id,
+      title: r.title,
+      content: r.content,
+      overall_rating: r.overall_rating,
+      helpful_count: r.helpful_count,
+      subject_id: r.subject_id,
+      subjectName: (subject?.name ?? {} as Record<string, string>)[locale] ?? '',
+      categoryName: (cat?.name ?? {} as Record<string, string>)[locale] ?? '',
+      nickname: profile?.nickname ?? 'Anonymous',
+    }
+  }).filter(r => r.helpful_count > 0)
+
   return (
     <div className="pb-16">
       {/* JSON-LD Structured Data */}
@@ -234,85 +255,254 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         }}
       />
 
-      {/* SECTION 1 — HERO: "Rate Everything." */}
+      {/* SECTION 1: "무엇이든 평가하세요" Search Module */}
       <section className="px-4 pt-8">
-        <h1 className="font-display text-5xl lg:text-6xl text-foreground tracking-tight leading-none mb-3">
-          Rate Everything.
-        </h1>
-        <p className="text-base text-muted-foreground mb-6">
-          {locale === 'ko' ? '세상 모든 것을 평가하세요' : 'Rate everything in the world'}
-        </p>
-        {/* Category quick-access pills */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          {displayCats.map(cat => {
-            const catName = (cat.name as Record<string, string>)[locale] ?? (cat.name as Record<string, string>)['ko']
-            const slug = cat.slug as string
-            const icon = (cat.icon ?? 'folder') as string
-            const color = getCategoryColor(slug)
-            return (
-              <Link
-                key={cat.id}
-                href={`/${locale}/category/${slug}`}
-                className={`inline-flex items-center gap-1.5 px-4 py-2 ${color} text-white text-sm font-medium rounded-full hover:opacity-90 transition-opacity`}
-              >
-                <CategoryIcon name={icon} className="w-4 h-4" />
-                {catName}
-              </Link>
-            )
-          })}
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+          <h2 className="font-display text-2xl text-foreground mb-4">
+            {locale === 'ko' ? '무엇이든 평가하세요' : 'Rate Anything'}
+          </h2>
+          <div className="relative mb-4">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder={locale === 'ko' ? '항공사, 호텔, 맛집, 인물...' : 'Airlines, hotels, restaurants, people...'}
+              className="w-full pl-12 pr-4 py-3.5 border border-border bg-background rounded-full text-sm focus:outline-none focus:border-primary"
+            />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {displayCats.map(cat => {
+              const catName = (cat.name as Record<string, string>)[locale] ?? (cat.name as Record<string, string>)['ko']
+              const slug = cat.slug as string
+              const icon = (cat.icon ?? 'folder') as string
+              const color = getCategoryColor(slug)
+              return (
+                <Link
+                  key={cat.id}
+                  href={`/${locale}/category/${slug}`}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 ${color} text-white text-xs font-medium rounded-full hover:opacity-90 transition-opacity`}
+                >
+                  <CategoryIcon name={icon} className="w-3.5 h-3.5" />
+                  {catName}
+                </Link>
+              )
+            })}
+            <Link
+              href={`/${locale}/explore`}
+              className="inline-flex items-center gap-1 px-3.5 py-2 border border-dashed border-primary text-primary text-xs font-medium rounded-full hover:bg-primary/5 transition-colors"
+            >
+              + {locale === 'ko' ? '주제 추가' : 'Add Topic'}
+            </Link>
+          </div>
+          <p className="text-xs text-muted-foreground mt-3">
+            {locale === 'ko' ? '새로운 평가 주제를 직접 추가할 수 있어요' : 'You can add new topics to rate'}
+          </p>
         </div>
       </section>
 
-      {/* SECTION 2 — TODAY'S SUBJECT (Cover Story style) */}
-      <section className="px-4">
-        <h2 className="font-display text-xl text-foreground mb-4 flex items-center gap-2">
-          {locale === 'ko' ? '오늘의 주제' : "Today's Subject"} ✨
-        </h2>
-        {featured[0] && (
-          <div className="bg-card border border-border rounded-xl p-6 border-l-4 border-l-primary">
-            <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-2">
-              TODAY&apos;S SUBJECT
-            </p>
-            <h3 className="font-display text-2xl text-foreground mb-2">
-              {(featured[0].name as Record<string, string>)[locale] ?? (featured[0].name as Record<string, string>)['ko']}
-            </h3>
-            <div className="flex items-baseline gap-1 mb-2">
-              <span className="font-mono text-5xl font-bold text-primary">
-                {featured[0].avg_rating?.toFixed(1) ?? '—'}
-              </span>
-              <span className="font-mono text-lg text-muted-foreground">/ 10</span>
-            </div>
-            <div className="flex items-center gap-1 mb-2">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <span key={i} className={`text-lg ${i < Math.round((featured[0].avg_rating ?? 0) / 2) ? 'text-primary' : 'text-muted-foreground/20'}`}>★</span>
+      {/* SECTION 2: Cover Story + Live Index (Editorial Split) */}
+      <section className="px-4 mt-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* LEFT: Cover Story (7 cols) */}
+          <div className="lg:col-span-7 relative overflow-hidden">
+            <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-2">Cover Story</p>
+            {featured[0] && (
+              <div className="relative">
+                {/* Ghost category stamp */}
+                <span className="absolute top-0 right-0 font-display text-[80px] leading-none text-foreground/[0.04] uppercase select-none pointer-events-none">
+                  {(featured[0].category_name as Record<string, string>)['en']?.toUpperCase() ?? ''}
+                </span>
+                <h3 className="font-display text-3xl lg:text-4xl text-foreground mb-2">
+                  {(featured[0].name as Record<string, string>)[locale] ?? (featured[0].name as Record<string, string>)['ko']}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4 italic">
+                  &ldquo;{locale === 'ko' ? '주목받는 평가 대상' : 'Featured subject'}&rdquo;
+                </p>
+                <div className="flex items-baseline gap-2 mb-3">
+                  <span className="font-mono text-6xl font-bold text-primary">
+                    {featured[0].avg_rating?.toFixed(1) ?? '—'}
+                  </span>
+                  <span className="font-mono text-xl text-muted-foreground">/ 10</span>
+                </div>
+                <div className="flex items-center gap-1 mb-3">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span key={i} className={`text-xl ${i < Math.round((featured[0].avg_rating ?? 0) / 2) ? 'text-primary' : 'text-muted-foreground/20'}`}>★</span>
+                  ))}
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full ${getCategoryColor(featured[0].category_slug)} text-white`}>
+                    <CategoryIcon name={featured[0].category_icon} className="w-3 h-3" />
+                    {(featured[0].category_name as Record<string, string>)[locale] ?? ''}
+                  </span>
+                  <Link href={`/${locale}/subject/${featured[0].id}`} className="text-sm font-medium text-primary hover:underline">
+                    {locale === 'ko' ? '평가하기 →' : 'Rate now →'}
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+          {/* RIGHT: Live Index (5 cols) */}
+          <div className="lg:col-span-5">
+            <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">Live Index</p>
+            <div className="space-y-0 divide-y divide-border">
+              {featured.slice(1, 5).map((s) => (
+                <Link key={s.id} href={`/${locale}/subject/${s.id}`} className="flex items-center justify-between py-3 hover:bg-muted/50 transition-colors">
+                  <div>
+                    <p className="font-medium text-sm text-foreground">{(s.name as Record<string, string>)[locale] ?? (s.name as Record<string, string>)['ko']}</p>
+                    <span className={`inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded ${getCategoryColor(s.category_slug)} text-white mt-1`}>
+                      {(s.category_name as Record<string, string>)[locale] ?? ''}
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-mono text-xl font-semibold text-primary">{s.avg_rating?.toFixed(1) ?? '—'}</span>
+                    <p className="text-[10px] text-muted-foreground">{s.review_count} {locale === 'ko' ? '평가' : 'ratings'}</p>
+                  </div>
+                </Link>
               ))}
             </div>
-            <p className="text-sm text-muted-foreground mb-3">
-              {featured[0].review_count.toLocaleString()}{locale === 'ko' ? '명 평가' : ' ratings'}
-            </p>
-            <div className="flex items-center gap-3">
-              <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full ${getCategoryColor(featured[0].category_slug)} text-white`}>
-                <CategoryIcon name={featured[0].category_icon} className="w-3 h-3" />
-                {(featured[0].category_name as Record<string, string>)[locale] ?? (featured[0].category_name as Record<string, string>)['ko']}
-              </span>
-              <Link href={`/${locale}/subject/${featured[0].id}`} className="text-sm font-medium text-primary hover:underline">
-                {locale === 'ko' ? '평가하기 →' : 'Rate now →'}
-              </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 3: Taste Ticker Ribbon */}
+      <section className="mt-10 bg-primary py-3 overflow-hidden">
+        <div className="animate-ticker whitespace-nowrap flex">
+          {[...featured, ...featured].map((s, i) => (
+            <span key={i} className="inline-flex items-center gap-2 mx-6 text-white text-sm font-medium">
+              {(s.name as Record<string, string>)[locale] ?? (s.name as Record<string, string>)['ko']}
+              <span className="font-mono font-bold">{s.avg_rating?.toFixed(1) ?? '—'}</span>
+              <span className="text-white/40">●</span>
+            </span>
+          ))}
+        </div>
+      </section>
+
+      {/* SECTION 4: Top 5 + Categories (Asymmetric 65/35) */}
+      <section className="px-4 mt-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* LEFT: Top 5 (8 cols) */}
+          <div className="lg:col-span-8">
+            <h2 className="font-display text-xl text-foreground mb-4 flex items-center gap-2">
+              {locale === 'ko' ? '이번 주 TOP 5' : 'Weekly TOP 5'} 🔥
+            </h2>
+            <div className="space-y-3">
+              {featured.slice(0, 5).map((s, idx) => {
+                const barWidth = ((s.avg_rating ?? 0) / 10) * 100
+                const barColors = ['bg-primary', 'bg-secondary', 'bg-blue-500', 'bg-purple-500', 'bg-rose-500']
+                return (
+                  <div key={s.id} className="flex items-center gap-3">
+                    <span className={`font-display text-lg w-6 text-center ${idx < 3 ? 'text-primary font-bold' : 'text-muted-foreground'}`}>{idx + 1}</span>
+                    <span className="text-sm font-medium text-foreground w-28 truncate">
+                      {(s.name as Record<string, string>)[locale] ?? (s.name as Record<string, string>)['ko']}
+                    </span>
+                    <div className="flex-1 h-3 bg-muted rounded-full overflow-hidden">
+                      <div className={`h-full ${barColors[idx]} rounded-full transition-all`} style={{ width: `${barWidth}%` }} />
+                    </div>
+                    <span className="font-mono text-sm font-semibold text-foreground w-8 text-right">{s.avg_rating?.toFixed(1)}</span>
+                  </div>
+                )
+              })}
             </div>
           </div>
-        )}
+          {/* RIGHT: Categories (4 cols) */}
+          <div className="lg:col-span-4">
+            <h2 className="font-display text-xl text-foreground mb-4">
+              {locale === 'ko' ? '카테고리' : 'Categories'}
+            </h2>
+            <div className="space-y-2">
+              {displayCats.map(cat => {
+                const catName = (cat.name as Record<string, string>)[locale] ?? (cat.name as Record<string, string>)['ko']
+                const slug = cat.slug as string
+                const icon = (cat.icon ?? 'folder') as string
+                const color = getCategoryColor(slug)
+                const catSubjects = subjectsByCategory[cat.id] ?? []
+                return (
+                  <Link
+                    key={cat.id}
+                    href={`/${locale}/category/${slug}`}
+                    className="flex items-center gap-3 p-3 border border-border rounded-lg hover:border-primary/30 transition-colors"
+                  >
+                    <span className={`w-8 h-8 rounded-lg ${color} flex items-center justify-center shrink-0`}>
+                      <CategoryIcon name={icon} className="w-4 h-4 text-white" />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="font-medium text-sm text-foreground">{catName}</p>
+                      <p className="text-[11px] text-muted-foreground">{catSubjects.length}{locale === 'ko' ? '개 주제' : ' subjects'}</p>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        </div>
       </section>
 
-      {/* SECTION 3 — DAILY FOCUS VOTE */}
-      <section className="px-4 mt-12">
-        <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
-          Daily Vote
+      {/* SECTION 5: "당신이 아직 평가하지 않은 주제" (Personalized) */}
+      <section className="px-4 mt-10">
+        <h2 className="font-display text-xl text-foreground mb-2">
+          {locale === 'ko' ? '당신이 아직 평가하지 않은 주제' : "Topics You Haven't Rated"}
+        </h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          {locale === 'ko' ? '로그인하면 맞춤 추천을 받을 수 있어요' : 'Log in for personalized recommendations'}
         </p>
-        <DailyFocusVote locale={locale} initialVote={activeVote} initialCounts={voteCounts} />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {featured.slice(3, 7).map(s => (
+            <div key={s.id} className="bg-card border border-border rounded-xl p-4">
+              <span className={`inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full ${getCategoryColor(s.category_slug)} text-white mb-2`}>
+                {(s.category_name as Record<string, string>)[locale] ?? ''}
+              </span>
+              <p className="font-medium text-sm text-foreground mb-1 truncate">
+                {(s.name as Record<string, string>)[locale] ?? (s.name as Record<string, string>)['ko']}
+              </p>
+              <p className="font-mono text-lg font-semibold text-primary mb-3">{s.avg_rating?.toFixed(1) ?? '—'}</p>
+              <Link
+                href={`/${locale}/subject/${s.id}`}
+                className="inline-flex items-center justify-center w-full px-3 py-1.5 bg-primary text-white text-xs font-medium rounded-full hover:opacity-90 transition-opacity"
+              >
+                {locale === 'ko' ? '평가하기' : 'Rate'}
+              </Link>
+            </div>
+          ))}
+        </div>
       </section>
 
-      {/* SECTION 4 — LIVE REVIEW FEED */}
-      <section className="px-4 mt-12">
+      {/* SECTION 6: 인기 평가글 (Popular Reviews Feed) */}
+      <section className="px-4 mt-10">
+        <h2 className="font-display text-xl text-foreground mb-2 flex items-center gap-2">
+          {locale === 'ko' ? '인기 평가글' : 'Popular Reviews'} 🔥
+        </h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          {locale === 'ko' ? '지금 가장 많은 공감을 받고 있는 평가' : 'Most liked reviews right now'}
+        </p>
+        <div className="space-y-4">
+          {popularReviewCards.map(review => (
+            <div
+              key={review.id}
+              className="bg-card border border-border rounded-xl p-5 border-l-4 hover:shadow-sm transition-shadow"
+              style={{ borderLeftColor: 'var(--primary)' }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[10px] px-1.5 py-0.5 bg-muted rounded text-muted-foreground">{review.categoryName}</span>
+                <span className="text-sm font-medium text-foreground">{review.subjectName}</span>
+                <span className="ml-auto font-mono text-lg font-semibold text-primary">{review.overall_rating}점</span>
+              </div>
+              <p className="font-medium text-sm text-foreground mb-1">{review.title}</p>
+              <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{review.content}</p>
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <div className="flex items-center gap-3">
+                  <span className="flex items-center gap-1">👍 {review.helpful_count}</span>
+                  <span>{review.nickname}</span>
+                </div>
+                <Link href={`/${locale}/subject/${review.subject_id}`} className="text-primary hover:underline">
+                  {locale === 'ko' ? '나도 평가하기' : 'Rate this too'}
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* SECTION 7: Live Feed (Trending + Popular + Activity Ticker + RatingPrediction) */}
+      <section className="px-4 mt-10">
         <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
           Live Feed
         </p>
@@ -345,7 +535,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
-      {/* SECTION 5 — FEATURED CAROUSEL (Editor's Picks) */}
+      {/* SECTION 8: Featured Carousel */}
       <section className="px-4 mt-12">
         <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
           {locale === 'ko' ? "Editor's Picks" : "Editor's Picks"}
@@ -365,61 +555,89 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         }))} locale={locale} />
       </section>
 
-      {/* SECTION 6 — CATEGORIES */}
-      <section className="px-4 mt-12">
-        <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
-          Categories
-        </p>
-        <h2 className="font-display text-2xl text-foreground mb-6">
-          {locale === 'ko' ? '카테고리' : 'Browse by Category'}
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {displayCats.map(cat => {
-            const catName = (cat.name as Record<string, string>)[locale] ?? (cat.name as Record<string, string>)['ko']
-            const slug = cat.slug as string
-            const icon = (cat.icon ?? 'folder') as string
-            const color = getCategoryColor(slug)
-            const catSubjects = subjectsByCategory[cat.id] ?? []
-
-            return (
-              <Link
-                key={cat.id}
-                href={`/${locale}/category/${slug}`}
-                className="flex items-center gap-4 p-5 border border-border bg-card rounded-xl hover:border-primary/30 hover:shadow-sm transition-all"
-              >
-                <span className={`w-10 h-10 rounded-full ${color} flex items-center justify-center shrink-0`}>
-                  <CategoryIcon name={icon} className="w-5 h-5 text-white" />
-                </span>
-                <div className="min-w-0">
-                  <p className="font-semibold text-sm text-foreground truncate">{catName}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {catSubjects.length}{locale === 'ko' ? '개' : ' subjects'}
-                  </p>
+      {/* SECTION 9: Community Pulse (3 columns) */}
+      <section className="px-4 mt-10 bg-muted/50 -mx-0 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Leaderboard */}
+          <div>
+            <h3 className="font-display text-lg text-foreground mb-4">{locale === 'ko' ? '이번 주 리뷰왕' : 'Top Reviewers'} 👑</h3>
+            <div className="space-y-3">
+              {(['🥇', '🥈', '🥉'] as const).map((medal, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span>{medal}</span>
+                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">
+                    {String.fromCharCode(75 + i)}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-foreground">{['김리뷰', '이평가', '박별점'][i]}</p>
+                    <p className="text-[11px] text-muted-foreground">🔥 {[12, 8, 5][i]}{locale === 'ko' ? '일 연속' : ' day streak'}</p>
+                  </div>
+                  <span className="font-mono text-sm font-semibold text-foreground">{[42, 38, 31][i]}{locale === 'ko' ? '리뷰' : ''}</span>
                 </div>
-              </Link>
-            )
-          })}
+              ))}
+            </div>
+          </div>
+          {/* Daily Vote (compact) */}
+          <div>
+            <h3 className="font-display text-lg text-foreground mb-4">{locale === 'ko' ? '오늘의 투표' : 'Daily Poll'}</h3>
+            <DailyFocusVote locale={locale} initialVote={activeVote} initialCounts={voteCounts} />
+          </div>
+          {/* Live Activity */}
+          <div>
+            <h3 className="font-display text-lg text-foreground mb-4 flex items-center gap-2">
+              {locale === 'ko' ? '실시간' : 'Live'} <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
+            </h3>
+            <ActivityTicker
+              locale={locale}
+              recentReviews={tickerData}
+              totalReviews={totalReviewCount ?? 0}
+              totalSubjects={subjects.length}
+              totalUsers={totalUserCount ?? 0}
+            />
+          </div>
         </div>
       </section>
 
-      {/* SECTION 7 — CTA */}
-      <section className="px-4 mt-12">
-        <div className="bg-primary rounded-xl p-8 md:p-12 text-center">
-          <p className="text-[11px] font-semibold tracking-widest uppercase text-white/60 mb-3">
-            Join Us
+      {/* SECTION 10: Challenge CTA Banner */}
+      <section className="px-4 mt-10">
+        <div className="bg-primary rounded-xl p-6 md:p-8 flex items-center justify-between">
+          <div>
+            <p className="text-[11px] font-semibold tracking-widest uppercase text-white/60 mb-1">
+              {locale === 'ko' ? '오늘의 챌린지' : "Today's Challenge"}
+            </p>
+            <p className="font-display text-lg md:text-xl text-white">
+              {locale === 'ko' ? '가장 좋아하는 카페를 평가하세요!' : 'Rate your favorite cafe!'}
+            </p>
+          </div>
+          <Link
+            href={`/${locale}/explore`}
+            className="w-12 h-12 rounded-full bg-white flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity"
+          >
+            <span className="text-primary text-xl">→</span>
+          </Link>
+        </div>
+      </section>
+
+      {/* SECTION 11: CTA — "평가하고 싶은 주제가 없으신가요?" */}
+      <section className="px-4 mt-10 pb-8">
+        <div className="border border-border rounded-xl p-8 text-center">
+          <p className="text-foreground font-medium mb-2">
+            {locale === 'ko' ? '평가하고 싶은 주제가 없으신가요?' : "Can't find what you want to rate?"}
           </p>
-          <h2 className="font-display text-2xl text-white mb-3">
-            {locale === 'ko' ? '당신의 의견을 들려주세요' : 'Share Your Opinion'}
-          </h2>
-          <p className="text-base max-w-[65ch] text-white/70 mb-6 mx-auto">
-            {locale === 'ko' ? '첫 번째 리뷰어가 되어 다른 사람들에게 도움을 주세요.' : 'Be the first reviewer and help others make better choices.'}
+          <p className="text-sm text-muted-foreground mb-4">
+            {locale === 'ko' ? '직접 추가하고 첫 번째 평가자가 되어보세요' : 'Add it yourself and be the first to rate'}
           </p>
           <Link
             href={`/${locale}/explore`}
-            className="inline-flex items-center gap-2 bg-white text-primary font-semibold px-8 py-3 text-sm rounded-full hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-2 bg-primary text-white font-semibold px-8 py-3 text-sm rounded-full hover:opacity-90 transition-opacity"
           >
-            {locale === 'ko' ? '탐색하기' : 'Explore Now'} →
+            {locale === 'ko' ? '주제 추가하기' : 'Add Topic'}
           </Link>
+          <p className="mt-3">
+            <Link href={`/${locale}/explore`} className="text-sm text-primary hover:underline">
+              {locale === 'ko' ? '또는 탐색하기 →' : 'or explore →'}
+            </Link>
+          </p>
         </div>
       </section>
     </div>
