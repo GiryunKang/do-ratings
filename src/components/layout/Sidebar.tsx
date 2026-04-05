@@ -21,7 +21,7 @@ interface Category {
 
 export default function Sidebar({ locale }: { locale: string }) {
   const [categories, setCategories] = useState<Category[]>([])
-  const [categoriesOpen, setCategoriesOpen] = useState(true)
+  const [categoriesOpen, setCategoriesOpen] = useState(false)
   const [categoryRequestOpen, setCategoryRequestOpen] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
