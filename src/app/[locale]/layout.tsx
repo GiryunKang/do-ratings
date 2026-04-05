@@ -53,7 +53,7 @@ export default async function LocaleLayout({
           <div className="hidden md:block w-64 shrink-0">
             <Sidebar locale={locale} />
           </div>
-          <main className="flex-1 min-w-0 min-h-screen pb-20 md:pb-0 lg:mr-72 bg-background">
+          <main className="flex-1 min-w-0 min-h-[100dvh] pb-20 md:pb-0 lg:mr-72 bg-background">
             {children}
           </main>
           <RightSidebar locale={locale} />

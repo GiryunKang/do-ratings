@@ -3,41 +3,14 @@ import { proxyImageUrl } from '@/lib/utils/image-proxy'
 import dynamic from 'next/dynamic'
 import FeaturedCarousel from '@/components/home/FeaturedCarousel'
 import HeroBanner from '@/components/home/HeroBanner'
-import AutoScrollRow from '@/components/home/AutoScrollRow'
 import TrendingSection from '@/components/home/TrendingSection'
 import PopularReviewsSection from '@/components/home/PopularReviewsSection'
 import ActivityTicker from '@/components/home/ActivityTicker'
-import RatingStreak from '@/components/home/RatingStreak'
-import AnimatedSection from '@/components/ui/AnimatedSection'
-import GlowCard from '@/components/ui/GlowCard'
-import CountUp from '@/components/ui/CountUp'
-import SpotlightCard from '@/components/home/SpotlightCard'
 import Link from 'next/link'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
-import {
-  MessageCircle,
-  Layers,
-  PenLine,
-  Sparkles,
-  Clapperboard,
-  Crown,
-  Globe,
-} from 'lucide-react'
 
 const DailyFocusVote = dynamic(() => import('@/components/home/DailyFocusVote'))
-const StarConstellation = dynamic(() => import('@/components/home/StarConstellation'))
-const SubjectShuffle = dynamic(() => import('@/components/home/SubjectShuffle'))
-const ReviewStarterDeck = dynamic(() => import('@/components/home/ReviewStarterDeck'))
-const GhostReviews = dynamic(() => import('@/components/home/GhostReviews'))
-const RatingRoulette = dynamic(() => import('@/components/home/RatingRoulette'))
-const QuickFaceoff = dynamic(() => import('@/components/home/QuickFaceoff'))
-const ReviewFingerprint = dynamic(() => import('@/components/home/ReviewFingerprint'))
-const MysterySubject = dynamic(() => import('@/components/home/MysterySubject'))
-const RatingPrediction = dynamic(() => import('@/components/home/RatingPrediction'))
-const ReviewWorldMap = dynamic(() => import('@/components/home/ReviewWorldMap'))
-const ReviewTheater = dynamic(() => import('@/components/home/ReviewTheater'))
-const WeeklyCrown = dynamic(() => import('@/components/home/WeeklyCrown'))
 
 interface LocalizedText {
   [key: string]: string
@@ -185,23 +158,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     featured = balanced.slice(0, 8)
   }
 
-  const spotlights = [...mappedSubjects]
-    .sort((a, b) => (
-      (b.avg_rating ?? 0) - (a.avg_rating ?? 0) ||
-      b.review_count - a.review_count ||
-      a.id.localeCompare(b.id)
-    ))
-    .slice(0, 3)
-
   const subjectsByCategory: Record<string, typeof mappedSubjects> = {}
   for (const s of mappedSubjects) {
     if (!subjectsByCategory[s.category_id]) subjectsByCategory[s.category_id] = []
     subjectsByCategory[s.category_id].push(s)
   }
-
-  const totalSubjects = subjects.length
-  const totalCategories = cats.length
-  const totalReviews = (recentReviews ?? []).length
 
   type TrendingSubjectRow = { id: string; name: LocalizedText; image_url: string | null; avg_rating: number | null; review_count: number }
   const trendingMap = new Map<string, TrendingSubject>()
@@ -239,6 +200,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       nickname: profile?.nickname ?? 'Anonymous',
     }
   }).filter(r => r.helpful_count > 0)
+
+  // suppress unused variable warning — topReviews is available for future use
+  void topReviews
 
   // Process ActivityTicker data server-side
   const tickerData = (tickerReviews ?? []).map(r => {
@@ -293,78 +257,17 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     }
   })
 
-  // Process ReviewWorldMap data server-side
-  const worldMapData = (worldMapReviews ?? []).map(r => {
-    const subject = Array.isArray(r.subjects) ? r.subjects[0] : r.subjects
-    const profile = Array.isArray(r.public_profiles) ? r.public_profiles[0] : r.public_profiles
-    const nameObj = (subject?.name ?? {}) as Record<string, string>
-    return {
-      id: r.id,
-      title: r.title,
-      overall_rating: r.overall_rating,
-      subject_name: nameObj[locale] ?? nameObj['ko'] ?? '',
-      nickname: (profile?.nickname as string) ?? 'Anonymous',
-      country_code: r.country_code ?? '',
-      created_at: r.created_at,
-    }
-  })
+  // Process ReviewWorldMap data — kept for /highlights page
+  void worldMapReviews
 
-  // Process ReviewTheater data server-side
-  const theaterData = (theaterReviews ?? []).map(r => {
-    const subject = Array.isArray(r.subjects) ? r.subjects[0] : r.subjects
-    const profile = Array.isArray(r.public_profiles) ? r.public_profiles[0] : r.public_profiles
-    const nameObj = (subject?.name ?? {}) as Record<string, string>
-    return {
-      id: r.id,
-      title: r.title,
-      content: (r.content as string).slice(0, 200),
-      overall_rating: r.overall_rating,
-      subject_name: nameObj[locale] ?? nameObj['ko'] ?? '',
-      nickname: (profile?.nickname as string) ?? 'Anonymous',
-    }
-  })
+  // Process ReviewTheater data — kept for /highlights page
+  void theaterReviews
 
-  // Process WeeklyCrown data server-side
-  const crownData = await (async () => {
-    if (!crownReviews || crownReviews.length === 0) return null
-    const r = crownReviews[0]
-    const subject = Array.isArray(r.subjects) ? r.subjects[0] : r.subjects
-    const profile = Array.isArray(r.public_profiles) ? r.public_profiles[0] : r.public_profiles
-    const nameObj = (subject?.name ?? {}) as Record<string, string>
+  // Process WeeklyCrown data — kept for /highlights page
+  void crownReviews
 
-    let trophySvg: string | null = null
-    try {
-      const apiKey = process.env.QUIVER_AI_API_KEY
-      if (apiKey) {
-        const { QuiverAI } = await import('@quiverai/sdk')
-        const client = new QuiverAI({ bearerAuth: apiKey })
-        const response = await client.createSVGs.generateSVG({
-          model: 'arrow-preview',
-          prompt: 'A golden trophy award badge for best review of the week. Crown on top, star in center, laurel wreath border. Gold and amber colors.',
-          instructions: 'badge style, medal-like, gold and amber palette',
-          n: 1,
-          temperature: 0.5,
-        })
-        const result = response.result as { data?: { svg?: string }[] } | undefined
-        const svgDoc = result?.data?.[0]
-        if (svgDoc?.svg) trophySvg = svgDoc.svg
-      }
-    } catch {
-      // QuiverAI unavailable, component uses fallback SVG
-    }
-
-    return {
-      id: r.id,
-      title: r.title,
-      content: (r.content as string).slice(0, 150),
-      overall_rating: r.overall_rating,
-      helpful_count: r.helpful_count,
-      subject_id: r.subject_id,
-      subject_name: nameObj[locale] ?? nameObj['ko'] ?? '',
-      nickname: (profile?.nickname as string) ?? 'Anonymous',
-      trophySvg,
-    }
-  })()
+  // Process recentReviews — kept for other pages
+  void recentReviews
 
   // Daily focus vote data
   const activeVote = (dailyVoteData?.[0] ?? null) as {
@@ -378,19 +281,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     .filter(c => c.vote_id === activeVote?.id)
     .map(c => ({ option_id: c.option_id, count: c.count }))
 
-  // MysterySubject data — pass mapped subjects instead of re-fetching
-  const mysterySubjects = mappedSubjects.map(s => ({
-    id: s.id,
-    name: s.name as Record<string, string>,
-    category_slug: s.category_slug as string,
-    category_icon: s.category_icon as string,
-    category_name: s.category_name as Record<string, string>,
-    avg_rating: s.avg_rating,
-    review_count: s.review_count,
-  }))
+  const displayCats = cats.slice(0, 6)
 
   return (
-    <div className="px-4 py-4 space-y-6">
+    <div className="pb-16">
       {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
@@ -406,63 +300,65 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         }}
       />
 
-      {/* 0. Hero Banner with Star Constellation overlay */}
-      <AnimatedSection delay={0}>
-        <div className="relative">
-          <HeroBanner locale={locale} />
-          <StarConstellation
-            subjects={mappedSubjects.map(s => ({
-              id: s.id,
-              name: s.name,
-              category_slug: s.category_slug,
-              category_icon: s.category_icon,
-              category_name: s.category_name,
-            }))}
-            locale={locale}
+      {/* SECTION 1 — HERO */}
+      <section>
+        <HeroBanner locale={locale} />
+        <div className="px-4 mt-6 max-w-lg">
+          <input
+            type="text"
+            placeholder={locale === 'ko' ? '항공사, 호텔, 맛집을 검색하세요...' : 'Search airlines, hotels, restaurants...'}
+            className="w-full px-5 py-3.5 border border-border bg-background text-sm focus:outline-none focus:border-primary"
           />
         </div>
-      </AnimatedSection>
+      </section>
 
-      {/* Activity Ticker — live platform pulse */}
-      <ActivityTicker
-        locale={locale}
-        recentReviews={tickerData}
-        totalReviews={totalReviewCount ?? 0}
-        totalSubjects={totalSubjects}
-        totalUsers={totalUserCount ?? 0}
-      />
-
-      {/* Rating Streak — duolingo-style consecutive day tracker */}
-      <RatingStreak locale={locale} />
-
-      {/* Daily Focus Vote — engagement driver */}
-      <AnimatedSection delay={0.05}>
+      {/* SECTION 2 — DAILY FOCUS VOTE */}
+      <section className="px-4 mt-16">
+        <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
+          {locale === 'ko' ? 'Daily Vote' : 'Daily Vote'}
+        </p>
         <DailyFocusVote locale={locale} initialVote={activeVote} initialCounts={voteCounts} />
-      </AnimatedSection>
+      </section>
 
-      {/* Mobile category quick links */}
-      <div className="relative md:hidden">
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 -mt-2 px-1">
-          {cats.map(cat => {
-            const catName = (cat.name as Record<string, string>)[locale] ?? (cat.name as Record<string, string>)['ko']
-            const color = getCategoryColor(cat.slug)
-            return (
-              <Link key={cat.id} href={`/${locale}/category/${cat.slug}`}
-                className={`shrink-0 flex items-center gap-1.5 px-3.5 py-2 bg-card shadow-sm ring-1 ring-foreground/[0.06] rounded-full text-xs font-semibold hover:shadow-md hover:scale-105 active:scale-95 transition-all`}>
-                <span className={`w-5 h-5 rounded-full ${color} flex items-center justify-center`}>
-                  <CategoryIcon name={(cat.icon ?? 'folder') as string} className="w-3 h-3 text-white" />
-                </span>
-                {catName}
-              </Link>
-            )
-          })}
+      {/* SECTION 3 — LIVE REVIEW FEED */}
+      <section className="px-4 mt-16">
+        <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
+          {locale === 'ko' ? 'Live Feed' : 'Live Feed'}
+        </p>
+        <h2 className="font-serif text-2xl text-foreground mb-6">
+          {locale === 'ko' ? '실실간 리뷰' : 'Real-Time Reviews'}
+        </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8 flex flex-col gap-8">
+            <TrendingSection locale={locale} initialItems={initialTrendingItems} />
+            <PopularReviewsSection locale={locale} initialReviews={initialPopularReviews} />
+          </div>
+          <div className="lg:col-span-4">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground">
+                {locale === 'ko' ? '실시간' : 'Live'}
+              </p>
+            </div>
+            <ActivityTicker
+              locale={locale}
+              recentReviews={tickerData}
+              totalReviews={totalReviewCount ?? 0}
+              totalSubjects={subjects.length}
+              totalUsers={totalUserCount ?? 0}
+            />
+          </div>
         </div>
-        {/* Fade hint — wider for better scroll indication */}
-        <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent pointer-events-none" />
-      </div>
+      </section>
 
-      {/* 1. Featured Carousel */}
-      <AnimatedSection delay={0.05}>
+      {/* SECTION 4 — EDITOR'S PICKS */}
+      <section className="px-4 mt-16">
+        <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
+          {locale === 'ko' ? "Editor's Picks" : "Editor's Picks"}
+        </p>
+        <h2 className="font-serif text-2xl text-foreground mb-6">
+          {locale === 'ko' ? '주목할 대상' : 'Featured'}
+        </h2>
         <FeaturedCarousel subjects={featured.map(s => ({
           id: s.id,
           name: s.name,
@@ -473,208 +369,65 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           category_icon: s.category_icon,
           image_url: proxyImageUrl(s.image_url),
         }))} locale={locale} />
-      </AnimatedSection>
+      </section>
 
-      {/* 2. Trending + Popular Reviews — side by side */}
-      <AnimatedSection delay={0.1}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <TrendingSection locale={locale} initialItems={initialTrendingItems} />
-          <PopularReviewsSection locale={locale} initialReviews={initialPopularReviews} />
+      {/* SECTION 5 — CATEGORIES */}
+      <section className="px-4 mt-16">
+        <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
+          {locale === 'ko' ? 'Categories' : 'Categories'}
+        </p>
+        <h2 className="font-serif text-2xl text-foreground mb-6">
+          {locale === 'ko' ? '카테고리' : 'Browse by Category'}
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {displayCats.map(cat => {
+            const catName = (cat.name as Record<string, string>)[locale] ?? (cat.name as Record<string, string>)['ko']
+            const slug = cat.slug as string
+            const icon = (cat.icon ?? 'folder') as string
+            const color = getCategoryColor(slug)
+            const catSubjects = subjectsByCategory[cat.id] ?? []
+
+            return (
+              <Link
+                key={cat.id}
+                href={`/${locale}/category/${slug}`}
+                className="flex items-center gap-4 p-5 border border-border bg-card hover:border-foreground/20 hover:bg-muted transition-colors"
+              >
+                <span className={`w-10 h-10 rounded-full ${color} flex items-center justify-center shrink-0`}>
+                  <CategoryIcon name={icon} className="w-5 h-5 text-white" />
+                </span>
+                <div className="min-w-0">
+                  <p className="font-semibold text-sm text-foreground truncate">{catName}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {catSubjects.length}{locale === 'ko' ? '개' : ' subjects'}
+                  </p>
+                </div>
+              </Link>
+            )
+          })}
         </div>
-      </AnimatedSection>
+      </section>
 
-      {/* 2.5 Review Starter Deck + Ghost Reviews — engagement when data is sparse */}
-      <AnimatedSection delay={0.1}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <ReviewStarterDeck locale={locale} />
-          <GhostReviews locale={locale} />
-        </div>
-      </AnimatedSection>
-
-      {/* 3. Quick Stats Banner */}
-      <AnimatedSection delay={0.1}>
-        <div className="grid grid-cols-3 gap-3">
-          <GlowCard className="p-4 text-center">
-            <CountUp target={totalSubjects} className="text-2xl font-bold text-foreground" />
-            <p className="text-xs text-muted-foreground mt-1">{locale === 'ko' ? '등록된 대상' : 'Subjects'}</p>
-          </GlowCard>
-          <GlowCard className="p-4 text-center">
-            <CountUp target={totalCategories} className="text-2xl font-bold text-foreground" />
-            <p className="text-xs text-muted-foreground mt-1">{locale === 'ko' ? '카테고리' : 'Categories'}</p>
-          </GlowCard>
-          <GlowCard className="bg-primary p-4 text-center">
-            {totalReviews > 0 ? (
-              <>
-                <CountUp target={totalReviews} className="text-2xl font-bold text-foreground" />
-                <p className="text-xs text-foreground/70 mt-1">{locale === 'ko' ? '리뷰' : 'Reviews'}</p>
-              </>
-            ) : (
-              <>
-                <p className="text-2xl font-bold text-foreground">—</p>
-                <p className="text-xs text-foreground/70 mt-1">{locale === 'ko' ? '첫 리뷰를 기다리는 중' : 'Waiting for you'}</p>
-              </>
-            )}
-          </GlowCard>
-        </div>
-      </AnimatedSection>
-
-      {/* 5. Spotlight: "어떻게 생각하세요?" */}
-      <AnimatedSection delay={0.1}>
-        <section>
-          <h2 className="text-base font-bold text-foreground mb-3 flex items-center gap-2">
-            <MessageCircle className="w-5 h-5 text-primary" />
-            {locale === 'ko' ? '이 대상에 대해 어떻게 생각하세요?' : 'What do you think about...?'}
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {spotlights.map(subject => {
-              const name = subject.name[locale] ?? subject.name['ko']
-              const desc = subject.description?.[locale] ?? subject.description?.['ko'] ?? ''
-              const catName = subject.category_name[locale] ?? subject.category_name['ko']
-              return (
-                <SpotlightCard
-                  key={subject.id}
-                  href={`/${locale}/subject/${subject.id}`}
-                  name={name}
-                  desc={desc}
-                  catName={catName}
-                  categorySlug={subject.category_slug}
-                  categoryIcon={subject.category_icon}
-                  rateLabel={locale === 'ko' ? '평가하기 →' : 'Rate now →'}
-                />
-              )
-            })}
-          </div>
-        </section>
-      </AnimatedSection>
-
-      {/* 5.5 Subject Shuffle — interactive random discovery */}
-      <AnimatedSection delay={0.1}>
-        <SubjectShuffle
-          subjects={mappedSubjects.map(s => ({
-            id: s.id,
-            name: s.name,
-            avg_rating: s.avg_rating,
-            review_count: s.review_count,
-            image_url: proxyImageUrl(s.image_url),
-            category_slug: s.category_slug,
-            category_name: s.category_name,
-            category_icon: s.category_icon,
-          }))}
-          locale={locale}
-        />
-      </AnimatedSection>
-
-      {/* 5.7 Quick Face-off + Mystery Subject */}
-      <AnimatedSection delay={0.1}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <QuickFaceoff
-            subjects={mappedSubjects.map(s => ({
-              id: s.id,
-              name: s.name,
-              avg_rating: s.avg_rating,
-              image_url: proxyImageUrl(s.image_url),
-              category_slug: s.category_slug,
-              category_icon: s.category_icon,
-              category_name: s.category_name,
-            }))}
-            locale={locale}
-          />
-          <MysterySubject locale={locale} subjects={mysterySubjects} />
-        </div>
-      </AnimatedSection>
-
-      {/* 5.8 Rating Roulette + Prediction + Fingerprint */}
-      <AnimatedSection delay={0.1}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <RatingRoulette
-            subjects={mappedSubjects.map(s => ({
-              id: s.id,
-              name: s.name,
-              image_url: proxyImageUrl(s.image_url),
-              category_slug: s.category_slug,
-              category_icon: s.category_icon,
-              category_name: s.category_name,
-            }))}
-            locale={locale}
-          />
-          <RatingPrediction locale={locale} />
-          <ReviewFingerprint locale={locale} />
-        </div>
-      </AnimatedSection>
-
-      {/* 6. Category Showcase - each category with its subjects */}
-      {cats.map((cat, index) => {
-        const catSubjects = subjectsByCategory[cat.id] ?? []
-        if (catSubjects.length === 0) return null
-        const catName = (cat.name as Record<string, string>)[locale] ?? (cat.name as Record<string, string>)['ko']
-        const slug = cat.slug as string
-        const icon = (cat.icon ?? 'folder') as string
-
-        return (
-          <AnimatedSection key={cat.id} delay={0.05 * index}>
-            <section>
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-base font-bold text-foreground flex items-center gap-2">
-                  <span className={`w-7 h-7 rounded-full ${getCategoryColor(slug)} flex items-center justify-center`}>
-                    <CategoryIcon name={icon} className="w-4 h-4 text-white" />
-                  </span>
-                  {catName}
-                  <span className="text-xs font-normal text-muted-foreground ml-1">({catSubjects.length})</span>
-                </h2>
-                <Link href={`/${locale}/category/${slug}`} className="text-xs text-primary hover:opacity-70 font-medium flex items-center gap-1 transition-opacity">
-                  {locale === 'ko' ? '모두 보기' : 'See all'}
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
-                </Link>
-              </div>
-
-              {/* Auto-scrolling subject cards */}
-              <AutoScrollRow
-                subjects={catSubjects.slice(0, 20).map(s => ({
-                  id: s.id,
-                  name: s.name,
-                  description: s.description,
-                  avg_rating: s.avg_rating,
-                  review_count: s.review_count,
-                  image_url: proxyImageUrl(s.image_url),
-                }))}
-                categorySlug={slug}
-                categoryIcon={icon}
-                locale={locale}
-                speed={25}
-              />
-            </section>
-          </AnimatedSection>
-        )
-      })}
-
-      {/* 6.5 Review Theater + Weekly Crown */}
-      <AnimatedSection delay={0.1}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <ReviewTheater locale={locale} initialReviews={theaterData} />
-          <WeeklyCrown locale={locale} initialCrown={crownData} />
-        </div>
-      </AnimatedSection>
-
-      {/* 6.7 World Review Map */}
-      <AnimatedSection delay={0.1}>
-        <ReviewWorldMap locale={locale} initialReviews={worldMapData} />
-      </AnimatedSection>
-
-      {/* 7. CTA Banner */}
-      <AnimatedSection delay={0.1}>
-        <div className="bg-foreground p-8 md:p-10 text-center">
-          <h2 className="font-serif text-xl md:text-2xl text-background mb-2">
+      {/* SECTION 6 — CTA BANNER */}
+      <section className="px-4 mt-16">
+        <div className="bg-foreground p-8 md:p-12 text-center">
+          <p className="text-[11px] font-semibold tracking-widest uppercase text-background/50 mb-3">
+            {locale === 'ko' ? 'Join Us' : 'Join Us'}
+          </p>
+          <h2 className="font-serif text-2xl text-background mb-3">
             {locale === 'ko' ? '당신의 의견을 들려주세요' : 'Share Your Opinion'}
           </h2>
-          <p className="text-sm text-background/60 mb-5 max-w-md mx-auto">
-            {locale === 'ko' ? '첫 번째 리뷰어가 되어 다른 사람들에게 도움을 주세요!' : 'Be the first reviewer and help others!'}
+          <p className="text-base max-w-[65ch] text-background/60 mb-6 mx-auto">
+            {locale === 'ko' ? '첫 번째 리뷰어가 되어 다른 사람들에게 도움을 주세요.' : 'Be the first reviewer and help others make better choices.'}
           </p>
-          <Link href={`/${locale}/explore`}
-            className="inline-flex items-center gap-2 bg-background text-foreground font-semibold px-6 py-2.5 text-sm hover:opacity-90 transition-opacity">
+          <Link
+            href={`/${locale}/explore`}
+            className="inline-flex items-center gap-2 bg-background text-foreground font-semibold px-8 py-3 text-sm hover:opacity-90 transition-opacity"
+          >
             {locale === 'ko' ? '탐색하기' : 'Explore Now'} →
           </Link>
         </div>
-      </AnimatedSection>
+      </section>
     </div>
   )
 }
