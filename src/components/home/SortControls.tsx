@@ -63,7 +63,7 @@ export default function SortControls({
                 }}
                 className={`w-full text-left px-4 py-2 text-sm transition-colors ${
                   sort === opt.value
-                    ? 'text-indigo-600 bg-indigo-50 dark:bg-indigo-950/30 font-medium'
+                    ? 'text-primary bg-primary/10 font-medium'
                     : 'text-foreground/80 hover:bg-muted/50'
                 }`}
               >
@@ -97,7 +97,7 @@ export default function SortControls({
               }}
               className={`w-full text-left px-4 py-2 text-sm ${
                 category === 'all'
-                  ? 'text-indigo-600 bg-indigo-50 dark:bg-indigo-950/30 font-medium'
+                  ? 'text-primary bg-primary/10 font-medium'
                   : 'text-foreground/80 hover:bg-muted/50'
               }`}
             >
@@ -112,7 +112,7 @@ export default function SortControls({
                 }}
                 className={`w-full text-left px-4 py-2 text-sm ${
                   category === cat.slug
-                    ? 'text-indigo-600 bg-indigo-50 dark:bg-indigo-950/30 font-medium'
+                    ? 'text-primary bg-primary/10 font-medium'
                     : 'text-foreground/80 hover:bg-muted/50'
                 }`}
               >

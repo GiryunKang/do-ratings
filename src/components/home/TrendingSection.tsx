@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { TrendingUp } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
 
@@ -16,6 +17,7 @@ interface TrendingItem {
 
 interface TrendingSectionProps {
   locale: string
+  initialItems?: TrendingItem[]
 }
 
 type Period = 'daily' | 'weekly' | 'monthly'
@@ -26,24 +28,24 @@ const periodLabels: Record<Period, { ko: string; en: string }> = {
   monthly: { ko: '월간', en: 'Monthly' },
 }
 
-const periodColors: Record<Period, string> = {
-  daily: 'bg-red-500 text-white',
-  weekly: 'bg-orange-500 text-white',
-  monthly: 'bg-amber-500 text-white',
-}
-
 const periodDays: Record<Period, number> = {
   daily: 1,
   weekly: 7,
   monthly: 30,
 }
 
-export default function TrendingSection({ locale }: TrendingSectionProps) {
+export default function TrendingSection({ locale, initialItems }: TrendingSectionProps) {
   const [period, setPeriod] = useState<Period>('daily')
-  const [items, setItems] = useState<TrendingItem[]>([])
-  const [loading, setLoading] = useState(true)
+  const [items, setItems] = useState<TrendingItem[]>(initialItems ?? [])
+  const [loading, setLoading] = useState(!initialItems || initialItems.length === 0)
+  const initialLoadDone = useRef(!!initialItems && initialItems.length > 0)
 
   useEffect(() => {
+    if (initialLoadDone.current && period === 'daily') {
+      initialLoadDone.current = false
+      return
+    }
+
     async function fetchTrending() {
       setLoading(true)
       const supabase = createClient()
@@ -86,7 +88,7 @@ export default function TrendingSection({ locale }: TrendingSectionProps) {
     <section>
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5">
-          <span>🔥</span>
+          <TrendingUp className="w-5 h-5 text-primary" />
           {locale === 'ko' ? '인기 Do! Ratings!' : 'Trending Do! Ratings!'}
         </h2>
         <div className="flex gap-1">
@@ -94,10 +96,10 @@ export default function TrendingSection({ locale }: TrendingSectionProps) {
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`px-2.5 py-1 text-[11px] font-bold rounded-full transition-all ${
+              className={`px-2.5 py-1 text-[11px] font-bold rounded-full border transition-all ${
                 period === p
-                  ? periodColors[p]
-                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                  ? 'border-primary text-primary bg-transparent'
+                  : 'border-border text-muted-foreground hover:border-foreground/30'
               }`}
             >
               {locale === 'ko' ? periodLabels[p].ko : periodLabels[p].en}
@@ -124,20 +126,20 @@ export default function TrendingSection({ locale }: TrendingSectionProps) {
                   <div className="h-24 relative overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={proxyImageUrl(item.image_url) ?? ''} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" onError={(e) => { e.currentTarget.style.display = 'none'; }} referrerPolicy="no-referrer" />
-                    <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                      🔥 {index + 1}
+                    <div className="absolute top-2 left-2 bg-foreground text-background text-[10px] font-bold px-2 py-0.5 rounded-full">
+                      {index + 1}
                     </div>
                   </div>
                 ) : (
-                  <div className="h-16 bg-gradient-to-br from-red-400 to-orange-500 flex items-center justify-center relative">
-                    <span className="text-2xl">🔥</span>
-                    <span className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{index + 1}</span>
+                  <div className="h-16 bg-muted flex items-center justify-center relative">
+                    <TrendingUp className="w-6 h-6 text-muted-foreground" />
+                    <span className="absolute top-2 left-2 bg-foreground text-background text-[10px] font-bold px-2 py-0.5 rounded-full">{index + 1}</span>
                   </div>
                 )}
                 <div className="p-3">
                   <h4 className="text-sm font-semibold text-foreground truncate">{name}</h4>
                   <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
-                    {item.avg_rating != null && <span className="text-yellow-500 font-medium">★ {item.avg_rating.toFixed(1)}</span>}
+                    {item.avg_rating != null && <span className="text-primary font-medium">★ {item.avg_rating.toFixed(1)}</span>}
                     <span>{item.recentCount} {locale === 'ko' ? '개 리뷰' : 'reviews'}</span>
                   </div>
                 </div>
@@ -147,7 +149,7 @@ export default function TrendingSection({ locale }: TrendingSectionProps) {
         </div>
       ) : (
         <div className="bg-card rounded-xl shadow-sm ring-1 ring-foreground/[0.06] p-6 text-center">
-          <p className="text-3xl mb-2">🔥</p>
+          <TrendingUp className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
           <p className="text-sm font-medium text-foreground mb-1">
             {locale === 'ko' ? '아직 이 기간의 리뷰가 없습니다' : 'No reviews for this period yet'}
           </p>

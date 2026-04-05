@@ -92,7 +92,7 @@ export default function PlaceSearch({ categorySlug, locale }: PlaceSearchProps) 
   return (
     <div className="bg-card rounded-xl border border-border p-4 mb-6">
       <h3 className="text-sm font-semibold text-foreground/80 mb-3 flex items-center gap-2">
-        <MapPinIcon className="w-4 h-4 text-indigo-500" />
+        <MapPinIcon className="w-4 h-4 text-primary" />
         {locale === 'ko'
           ? (categorySlug === 'restaurants' ? 'Google에서 레스토랑 검색' : 'Google에서 장소 검색')
           : (categorySlug === 'restaurants' ? 'Search restaurants on Google' : 'Search places on Google')
@@ -105,10 +105,10 @@ export default function PlaceSearch({ categorySlug, locale }: PlaceSearchProps) 
           value={query}
           onChange={(e) => handleInputChange(e.target.value)}
           placeholder={locale === 'ko' ? '장소명을 입력하세요...' : 'Enter a place name...'}
-          className="w-full rounded-lg border border-border px-4 py-2.5 text-sm focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+          className="w-full rounded-lg border border-border px-4 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
         {loading && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
         )}
       </div>
 
@@ -116,8 +116,8 @@ export default function PlaceSearch({ categorySlug, locale }: PlaceSearchProps) 
         <ul className="mt-3 divide-y divide-border max-h-80 overflow-y-auto">
           {results.map((place) => (
             <li key={place.google_place_id} className="py-3 flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center shrink-0 mt-0.5">
-                <MapPinIcon className="w-4 h-4 text-indigo-500" />
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                <MapPinIcon className="w-4 h-4 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground">{place.name}</p>
@@ -131,7 +131,7 @@ export default function PlaceSearch({ categorySlug, locale }: PlaceSearchProps) 
               <button
                 onClick={() => handleAddPlace(place)}
                 disabled={adding === place.google_place_id}
-                className="text-xs font-medium text-white bg-indigo-600 rounded-full px-3 py-1.5 hover:bg-indigo-700 transition-colors disabled:opacity-50 shrink-0"
+                className="text-xs font-medium bg-foreground text-background rounded-full px-3 py-1.5 hover:opacity-90 transition-opacity disabled:opacity-50 shrink-0"
               >
                 {adding === place.google_place_id
                   ? '...'

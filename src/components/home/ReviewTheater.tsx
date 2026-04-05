@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { createClient } from '@/lib/supabase/client'
+import { Clapperboard } from 'lucide-react'
 
 interface TheaterReview {
   id: string
@@ -15,47 +15,16 @@ interface TheaterReview {
 
 interface ReviewTheaterProps {
   locale: string
+  initialReviews?: TheaterReview[]
 }
 
-export default function ReviewTheater({ locale }: ReviewTheaterProps) {
-  const [reviews, setReviews] = useState<TheaterReview[]>([])
+export default function ReviewTheater({ locale, initialReviews }: ReviewTheaterProps) {
+  const [reviews] = useState<TheaterReview[]>(initialReviews ?? [])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [displayedText, setDisplayedText] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const [phase, setPhase] = useState<'title' | 'content' | 'pause'>('title')
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
-
-  /* eslint-disable react-hooks/set-state-in-effect -- data fetching on mount */
-  useEffect(() => {
-    async function fetchReviews() {
-      const supabase = createClient()
-      const { data } = await supabase
-        .from('reviews')
-        .select('id, title, content, overall_rating, subjects(name), public_profiles(nickname)')
-        .gt('helpful_count', 0)
-        .order('helpful_count', { ascending: false })
-        .limit(10)
-
-      if (!data || data.length === 0) return
-
-      setReviews(data.map(r => {
-        const subject = Array.isArray(r.subjects) ? r.subjects[0] : r.subjects
-        const profile = Array.isArray(r.public_profiles) ? r.public_profiles[0] : r.public_profiles
-        const nameObj = (subject?.name ?? {}) as Record<string, string>
-        return {
-          id: r.id,
-          title: r.title,
-          content: r.content.slice(0, 200),
-          overall_rating: r.overall_rating,
-          subject_name: nameObj[locale] ?? nameObj['ko'] ?? '',
-          nickname: (profile?.nickname as string) ?? 'Anonymous',
-        }
-      }))
-    }
-
-    fetchReviews()
-  }, [locale])
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   const typeText = useCallback((text: string, onComplete: () => void) => {
     setIsTyping(true)
@@ -110,7 +79,7 @@ export default function ReviewTheater({ locale }: ReviewTheaterProps) {
   return (
     <section>
       <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-        <span className="text-lg">🎭</span>
+        <Clapperboard className="w-5 h-5 text-amber-500" />
         {locale === 'ko' ? '리뷰 극장' : 'Review Theater'}
       </h2>
 

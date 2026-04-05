@@ -137,7 +137,7 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
               value={categorySlug}
               onChange={e => setCategorySlug(e.target.value)}
               required
-              className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-background"
+              className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background"
             >
               {categories.length === 0 && (
                 <option value="">{isKo ? '로딩 중...' : 'Loading...'}</option>
@@ -168,7 +168,7 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
               value={nameKo}
               onChange={e => setNameKo(e.target.value)}
               placeholder={isKo ? '한국어 이름을 입력하세요' : 'Enter Korean name'}
-              className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
 
@@ -183,7 +183,7 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
               value={nameEn}
               onChange={e => setNameEn(e.target.value)}
               placeholder={isKo ? '영어 이름을 입력하세요 (선택)' : 'Enter English name'}
-              className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
 
@@ -197,7 +197,7 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
               onChange={e => isKo ? setDescKo(e.target.value) : setDescEn(e.target.value)}
               placeholder={isKo ? '간단한 설명을 입력하세요' : 'Enter a brief description'}
               rows={3}
-              className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+              className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
             />
           </div>
 
@@ -211,7 +211,7 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
               value={imageUrl}
               onChange={e => setImageUrl(e.target.value)}
               placeholder={isKo ? 'https://... 이미지 주소를 입력하세요' : 'https://... Enter image URL'}
-              className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
             <p className="mt-1 text-[11px] text-muted-foreground">
               {isKo
@@ -237,7 +237,7 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
             <button
               type="submit"
               disabled={loading || (!nameKo && !nameEn)}
-              className="flex-1 rounded-xl bg-indigo-600 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 active:bg-indigo-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 rounded-xl bg-foreground py-2.5 text-sm font-semibold text-background hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading
                 ? (isKo ? '추가 중...' : 'Adding...')

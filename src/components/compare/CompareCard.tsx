@@ -61,7 +61,7 @@ export default function CompareCard({
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-2xl font-bold select-none">
+          <div className="w-20 h-20 rounded-lg bg-muted flex items-center justify-center text-foreground text-2xl font-bold select-none">
             {firstLetter}
           </div>
         )}
@@ -70,7 +70,7 @@ export default function CompareCard({
       {/* Subject name */}
       <a
         href={`/${locale}/subject/${subject.id}`}
-        className="text-sm font-semibold text-foreground hover:text-indigo-600 text-center leading-tight transition-colors"
+        className="text-sm font-semibold text-foreground hover:text-primary text-center leading-tight transition-colors"
       >
         {displayName}
       </a>
@@ -108,7 +108,7 @@ export default function CompareCard({
                 </div>
                 <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                   <div
-                    className={`h-full rounded-full transition-all duration-300 ${isHighlight ? 'bg-green-500' : 'bg-indigo-400'}`}
+                    className={`h-full rounded-full transition-all duration-300 ${isHighlight ? 'bg-green-500' : 'bg-primary'}`}
                     style={{ width: `${widthPercent}%` }}
                   />
                 </div>

@@ -3,6 +3,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { ThumbsUp, MessageCircle, User, Trophy, Sword } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+
 import { createClient } from '@/lib/supabase/client'
 import { timeAgo } from '@/lib/utils/timeAgo'
 
@@ -20,12 +23,12 @@ interface Notification {
   created_at: string
 }
 
-const TYPE_ICON: Record<Notification['type'], string> = {
-  helpful: '👍',
-  comment: '💬',
-  follow: '👤',
-  achievement: '🏆',
-  battle: '⚔️',
+const TYPE_ICON: Record<Notification['type'], LucideIcon> = {
+  helpful: ThumbsUp,
+  comment: MessageCircle,
+  follow: User,
+  achievement: Trophy,
+  battle: Sword,
 }
 
 const PAGE_SIZE = 10
@@ -199,7 +202,7 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
             {unreadCount > 0 && (
               <button
                 onClick={markAllRead}
-                className="text-xs text-indigo-600 hover:text-indigo-800 font-medium transition-colors"
+                className="text-xs text-primary hover:text-primary/70 font-medium transition-colors"
               >
                 {t('markAllRead')}
               </button>
@@ -220,17 +223,19 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
               </div>
             ) : (
               <ul>
-                {notifications.map((notif) => (
+                {notifications.map((notif) => {
+                  const NotifIcon = TYPE_ICON[notif.type]
+                  return (
                   <li key={notif.id}>
                     <button
                       onClick={() => handleNotificationClick(notif)}
                       className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-muted/50 transition-colors border-b border-border/50 last:border-0 ${
-                        !notif.is_read ? 'bg-indigo-50/40 dark:bg-indigo-950/20' : ''
+                        !notif.is_read ? 'bg-primary/5' : ''
                       }`}
                     >
                       {/* Type icon */}
-                      <span className="text-lg shrink-0 mt-0.5">
-                        {TYPE_ICON[notif.type]}
+                      <span className="shrink-0 mt-0.5">
+                        <NotifIcon className="w-4 h-4 text-muted-foreground" />
                       </span>
 
                       <div className="flex-1 min-w-0">
@@ -250,11 +255,12 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
 
                       {/* Unread dot */}
                       {!notif.is_read && (
-                        <span className="w-2 h-2 rounded-full bg-indigo-500 shrink-0 mt-1.5" />
+                        <span className="w-2 h-2 rounded-full bg-primary shrink-0 mt-1.5" />
                       )}
                     </button>
                   </li>
-                ))}
+                  )
+                })}
               </ul>
             )}
           </div>
@@ -266,7 +272,7 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
                 setOpen(false)
                 router.push(`/${locale}/notifications`)
               }}
-              className="w-full text-center text-xs text-indigo-600 hover:text-indigo-800 font-medium transition-colors"
+              className="w-full text-center text-xs text-primary hover:text-primary/70 font-medium transition-colors"
             >
               {t('notifications')} &rarr;
             </button>

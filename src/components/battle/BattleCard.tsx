@@ -50,7 +50,7 @@ function ReviewSide({
     <div
       className={`flex-1 flex flex-col gap-2 p-3 rounded-xl border transition-colors ${
         isMyVote
-          ? 'border-indigo-400 bg-indigo-50 dark:bg-indigo-950/30'
+          ? 'border-primary bg-primary/10'
           : isWinner && isEnded
           ? 'border-yellow-400 bg-yellow-50'
           : 'border-border bg-card'
@@ -62,7 +62,7 @@ function ReviewSide({
         </span>
       )}
       {isMyVote && !isEnded && (
-        <span className="self-start text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-500 text-white">
+        <span className="self-start text-xs font-semibold px-2 py-0.5 rounded-full bg-foreground text-background">
           {labels.voted}
         </span>
       )}
@@ -83,10 +83,10 @@ function ReviewSide({
         onClick={() => canVote && onVote()}
         className={`w-full py-1.5 rounded-lg text-sm font-semibold transition-all ${
           isMyVote
-            ? 'bg-indigo-500 text-white cursor-default'
+            ? 'bg-foreground text-background cursor-default'
             : isEnded
             ? 'bg-muted text-muted-foreground cursor-default'
-            : 'bg-indigo-600 hover:bg-indigo-700 text-white hover:shadow-md'
+            : 'bg-foreground text-background hover:opacity-90 hover:shadow-md'
         }`}
       >
         {isMyVote ? labels.voted : side === 'a' ? labels.voteA : labels.voteB}
@@ -215,13 +215,13 @@ export default function BattleCard({
       <div className="mt-4 flex rounded-full overflow-hidden h-2 bg-muted">
         <div
           className={`h-full transition-all duration-500 ${
-            userVote === 'a' ? 'bg-indigo-500' : 'bg-gray-400'
+            userVote === 'a' ? 'bg-primary' : 'bg-gray-400'
           }`}
           style={{ width: `${pctA}%` }}
         />
         <div
           className={`h-full transition-all duration-500 ${
-            userVote === 'b' ? 'bg-indigo-500' : 'bg-muted-foreground/30'
+            userVote === 'b' ? 'bg-primary' : 'bg-muted-foreground/30'
           }`}
           style={{ width: `${pctB}%` }}
         />

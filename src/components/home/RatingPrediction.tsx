@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import { Sparkles } from 'lucide-react'
+
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/hooks/useAuth'
 
@@ -78,7 +80,7 @@ export default function RatingPrediction({ locale }: RatingPredictionProps) {
       <div className="absolute -top-4 -right-4 text-6xl opacity-10 rotate-12 select-none">🤖</div>
 
       <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-        <span>🔮</span>
+        <Sparkles className="w-4 h-4 text-amber-500" />
         {locale === 'ko' ? 'AI 예측' : 'AI Prediction'}
       </h3>
 

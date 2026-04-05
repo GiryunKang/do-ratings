@@ -50,7 +50,7 @@ export default function SubjectShuffle({ subjects, locale }: SubjectShuffleProps
         <button
           onClick={handleShuffle}
           disabled={isShuffling}
-          className="group flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-full bg-gradient-to-r from-violet-500 to-indigo-500 text-white shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all disabled:opacity-60"
+          className="group flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-full bg-foreground text-background shadow-md hover:shadow-lg hover:opacity-90 active:scale-95 transition-opacity disabled:opacity-60"
         >
           <motion.span
             animate={isShuffling ? { rotate: 360 } : { rotate: 0 }}

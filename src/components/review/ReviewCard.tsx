@@ -73,7 +73,7 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
 
   const categoryColor = review.category_slug
     ? getCategoryColor(review.category_slug)
-    : 'bg-indigo-500'
+    : 'bg-primary'
 
   const handleShare = () => {
     const url = window.location.origin + '/' + locale + subjectHref
@@ -134,7 +134,7 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
 
         {/* Title */}
         <Link href={subjectHref} className="block group mt-2">
-          <h3 className="text-base font-semibold text-foreground group-hover:text-indigo-600 transition-colors">
+          <h3 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
             {review.title}
           </h3>
         </Link>

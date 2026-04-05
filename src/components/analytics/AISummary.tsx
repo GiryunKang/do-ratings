@@ -116,7 +116,7 @@ export default function AISummary({ subjectId, locale }: AISummaryProps) {
       {/* Loading state */}
       {loading && (
         <div className="h-[160px] flex items-center justify-center">
-          <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       )}
 
@@ -127,7 +127,7 @@ export default function AISummary({ subjectId, locale }: AISummaryProps) {
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"
+                className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
                 style={{ animationDelay: `${i * 0.15}s` }}
               />
             ))}
@@ -177,7 +177,7 @@ export default function AISummary({ subjectId, locale }: AISummaryProps) {
                   <span className="text-xs text-muted-foreground w-5 text-right">{star}★</span>
                   <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden">
                     <div
-                      className="h-2 rounded-full bg-indigo-400 transition-all duration-500"
+                      className="h-2 rounded-full bg-primary transition-all duration-500"
                       style={{ width: `${pct}%` }}
                     />
                   </div>

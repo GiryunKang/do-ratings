@@ -3,13 +3,10 @@
 import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
+import { Sparkles, Lock, Star } from 'lucide-react'
+
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
-
-interface MysterySubjectProps {
-  locale: string
-}
 
 interface SubjectData {
   id: string
@@ -21,8 +18,12 @@ interface SubjectData {
   review_count: number
 }
 
-export default function MysterySubject({ locale }: MysterySubjectProps) {
-  const [subject, setSubject] = useState<SubjectData | null>(null)
+interface MysterySubjectProps {
+  locale: string
+  subjects?: SubjectData[]
+}
+
+export default function MysterySubject({ locale, subjects: subjectsProp }: MysterySubjectProps) {
   const [revealed, setRevealed] = useState(false)
   const [countdown, setCountdown] = useState('')
 
@@ -33,39 +34,13 @@ export default function MysterySubject({ locale }: MysterySubjectProps) {
     return now.getHours() >= revealHour
   }, [])
 
-  /* eslint-disable react-hooks/set-state-in-effect -- data fetching on mount */
-  useEffect(() => {
-    async function fetchMystery() {
-      const supabase = createClient()
-
-      const today = new Date()
-      const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate()
-
-      const { data: subjects } = await supabase
-        .from('subjects')
-        .select('id, name, avg_rating, review_count, categories(slug, name, icon)')
-        .limit(200)
-
-      if (!subjects || subjects.length === 0) return
-
-      const index = seed % subjects.length
-      const picked = subjects[index]
-      const cat = Array.isArray(picked.categories) ? picked.categories[0] : picked.categories
-
-      setSubject({
-        id: picked.id,
-        name: picked.name as Record<string, string>,
-        category_slug: (cat?.slug ?? '') as string,
-        category_icon: (cat?.icon ?? 'folder') as string,
-        category_name: (cat?.name ?? {}) as Record<string, string>,
-        avg_rating: picked.avg_rating,
-        review_count: picked.review_count,
-      })
-    }
-
-    fetchMystery()
-  }, [])
-  /* eslint-enable react-hooks/set-state-in-effect */
+  const subject = useMemo(() => {
+    if (!subjectsProp || subjectsProp.length === 0) return null
+    const today = new Date()
+    const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate()
+    const index = seed % subjectsProp.length
+    return subjectsProp[index]
+  }, [subjectsProp])
 
   useEffect(() => {
     function updateCountdown() {
@@ -98,11 +73,11 @@ export default function MysterySubject({ locale }: MysterySubjectProps) {
   return (
     <section>
       <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-        <span className="text-lg">🔮</span>
+        <Sparkles className="w-5 h-5 text-violet-500" />
         {locale === 'ko' ? '오늘의 미스터리' : 'Mystery of the Day'}
       </h2>
 
-      <div className="relative bg-gradient-to-br from-violet-500/10 via-indigo-500/5 to-purple-500/10 rounded-2xl ring-1 ring-violet-200/30 dark:ring-violet-800/30 overflow-hidden">
+      <div className="relative bg-card rounded-2xl ring-1 ring-border overflow-hidden">
         <AnimatePresence mode="wait">
           {!isRevealTime && !revealed ? (
             <motion.div
@@ -116,9 +91,9 @@ export default function MysterySubject({ locale }: MysterySubjectProps) {
               <motion.div
                 animate={{ rotate: [0, -3, 3, 0], scale: [1, 1.05, 1] }}
                 transition={{ duration: 3, repeat: Infinity }}
-                className="text-5xl mb-3"
+                className="flex justify-center mb-3"
               >
-                🔒
+                <Lock className="w-12 h-12 text-violet-400" />
               </motion.div>
 
               <p className="font-bold text-foreground mb-1">
@@ -126,7 +101,7 @@ export default function MysterySubject({ locale }: MysterySubjectProps) {
               </p>
 
               {countdown && (
-                <div className="flex items-center justify-center gap-1 text-lg font-mono font-bold text-violet-600 dark:text-violet-400">
+                <div className="flex items-center justify-center gap-1 text-lg font-mono font-bold text-primary">
                   {countdown.split(' ').map((part, i) => (
                     <motion.span
                       key={i}
@@ -156,14 +131,14 @@ export default function MysterySubject({ locale }: MysterySubjectProps) {
               style={{ perspective: 600 }}
             >
               <div className="text-center">
-                <motion.span
+                <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: [0, 1.3, 1] }}
                   transition={{ duration: 0.5 }}
-                  className="inline-block text-4xl mb-3"
+                  className="inline-flex mb-3"
                 >
-                  ✨
-                </motion.span>
+                  <Star className="w-10 h-10 text-violet-400 fill-violet-300" />
+                </motion.div>
 
                 <div className="flex items-center justify-center gap-1.5 mb-2">
                   <span className={`w-5 h-5 rounded-full ${color} flex items-center justify-center`}>
@@ -184,7 +159,7 @@ export default function MysterySubject({ locale }: MysterySubjectProps) {
 
                 <Link
                   href={`/${locale}/subject/${subject.id}`}
-                  className="inline-flex items-center gap-1.5 px-5 py-2 text-sm font-semibold text-white bg-gradient-to-r from-violet-500 to-indigo-500 rounded-full shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all"
+                  className="inline-flex items-center gap-1.5 px-5 py-2 text-sm font-semibold bg-foreground text-background rounded-full shadow-md hover:shadow-lg hover:opacity-90 active:scale-95 transition-opacity"
                 >
                   {locale === 'ko' ? '평가하기' : 'Rate Now'} →
                 </Link>

@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Plus } from 'lucide-react'
+
 import { useAuth } from '@/lib/hooks/useAuth'
 import AddSubjectModal from '@/components/subject/AddSubjectModal'
 
@@ -21,7 +23,7 @@ export default function AddSubjectButton({ categorySlug, locale }: AddSubjectBut
         onClick={() => user ? setOpen(true) : router.push(`/${locale}/auth/login`)}
         className="text-xs text-primary hover:underline font-medium flex items-center gap-1"
       >
-        <span>➕</span> {locale === 'ko' ? '평가 대상 추가' : 'Add Subject'}
+        <Plus className="w-3.5 h-3.5" /> {locale === 'ko' ? '평가 대상 추가' : 'Add Subject'}
       </button>
       {open && (
         <AddSubjectModal

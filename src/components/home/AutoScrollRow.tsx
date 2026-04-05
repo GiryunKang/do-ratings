@@ -121,7 +121,7 @@ export default function AutoScrollRow({
               </div>
             )}
             <div className="p-3">
-              <h4 className="text-sm font-semibold text-foreground group-hover:text-indigo-600 transition-colors truncate">{name}</h4>
+              <h4 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">{name}</h4>
               {desc && <p className="text-xs text-muted-foreground truncate mt-0.5">{desc}</p>}
               <div className="flex items-center gap-1 mt-2 text-xs">
                 {subject.avg_rating ? (

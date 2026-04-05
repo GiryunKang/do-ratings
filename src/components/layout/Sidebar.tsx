@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { BarChart3, Bookmark, Swords, Bell, Settings, Plus, ChevronDown } from 'lucide-react'
+
 import { createClient } from '@/lib/supabase/client'
 import { CategoryIcon } from '@/lib/icons'
 import { Button } from '@/components/ui/button'
@@ -74,11 +76,11 @@ export default function Sidebar({ locale }: { locale: string }) {
   ]
 
   const moreItems = [
-    { href: `/${locale}/dashboard`, label: locale === 'ko' ? '대시보드' : 'Dashboard', emoji: '📊' },
-    { href: `/${locale}/collections`, label: locale === 'ko' ? '컬렉션' : 'Collections', emoji: '📚' },
-    { href: `/${locale}/battles`, label: locale === 'ko' ? '배틀' : 'Battles', emoji: '⚔️' },
-    { href: `/${locale}/notifications`, label: locale === 'ko' ? '알림' : 'Notifications', emoji: '🔔' },
-    { href: `/${locale}/admin`, label: locale === 'ko' ? '관리자' : 'Admin', emoji: '⚙️' },
+    { href: `/${locale}/dashboard`, label: locale === 'ko' ? '대시보드' : 'Dashboard', icon: <BarChart3 className="w-4 h-4" /> },
+    { href: `/${locale}/collections`, label: locale === 'ko' ? '컬렉션' : 'Collections', icon: <Bookmark className="w-4 h-4" /> },
+    { href: `/${locale}/battles`, label: locale === 'ko' ? '배틀' : 'Battles', icon: <Swords className="w-4 h-4" /> },
+    { href: `/${locale}/notifications`, label: locale === 'ko' ? '알림' : 'Notifications', icon: <Bell className="w-4 h-4" /> },
+    { href: `/${locale}/admin`, label: locale === 'ko' ? '관리자' : 'Admin', icon: <Settings className="w-4 h-4" /> },
   ]
 
   return (
@@ -115,17 +117,9 @@ export default function Sidebar({ locale }: { locale: string }) {
           <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
             {locale === 'ko' ? '카테고리' : 'Categories'}
           </span>
-          <svg
+          <ChevronDown
             className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${categoriesOpen ? 'rotate-180' : ''}`}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
+          />
         </button>
 
         {categoriesOpen && (
@@ -137,7 +131,7 @@ export default function Sidebar({ locale }: { locale: string }) {
                 <Button
                   key={cat.id}
                   variant={isActive ? 'secondary' : 'ghost'}
-                  className="w-full justify-start gap-2"
+                  className={`w-full justify-start gap-2 ${isActive ? 'border-l-2 border-primary pl-[6px]' : ''}`}
                   render={<Link href={catHref} />}
                 >
                   <CategoryIcon
@@ -150,9 +144,9 @@ export default function Sidebar({ locale }: { locale: string }) {
             })}
             <button
               onClick={() => user ? setCategoryRequestOpen(true) : router.push(`/${locale}/auth/login`)}
-              className="w-full text-left px-2 py-1.5 text-xs text-primary hover:bg-muted rounded-md transition-colors flex items-center gap-1.5"
+              className="w-full text-left px-2 py-1.5 text-xs text-primary hover:bg-muted rounded-md transition-colors duration-150 flex items-center gap-1.5"
             >
-              <span>➕</span>
+              <Plus className="w-3.5 h-3.5" />
               {locale === 'ko' ? '카테고리 추가 요청' : 'Request New Category'}
             </button>
           </nav>
@@ -171,10 +165,10 @@ export default function Sidebar({ locale }: { locale: string }) {
               <Button
                 key={item.href}
                 variant={isActive ? 'secondary' : 'ghost'}
-                className="w-full justify-start gap-2"
+                className={`w-full justify-start gap-2 ${isActive ? 'border-l-2 border-primary pl-[6px]' : ''}`}
                 render={<Link href={item.href} />}
               >
-                <span className="text-base leading-none">{item.emoji}</span>
+                <span className="text-muted-foreground">{item.icon}</span>
                 <span>{item.label}</span>
               </Button>
             )

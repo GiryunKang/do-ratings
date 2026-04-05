@@ -267,7 +267,7 @@ export default function ReviewForm({
               width: 8 + Math.random() * 8,
               height: 8 + Math.random() * 8,
               borderRadius: Math.random() > 0.5 ? '50%' : '2px',
-              background: ['#facc15', '#f59e0b', '#6366f1', '#ec4899', '#10b981', '#3b82f6'][Math.floor(Math.random() * 6)],
+              background: ['#facc15', '#f59e0b', '#f97316', '#ec4899', '#10b981', '#3b82f6'][Math.floor(Math.random() * 6)],
             }}
           />
         ))}
@@ -344,7 +344,7 @@ export default function ReviewForm({
           onChange={(e) => setTitle(e.target.value)}
           placeholder={t('titlePlaceholder')}
           maxLength={100}
-          className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
 

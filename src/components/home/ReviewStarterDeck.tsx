@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { motion, useMotionValue, useTransform, PanInfo } from 'framer-motion'
 import Link from 'next/link'
+import { Layers, ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface ReviewStarterDeckProps {
   locale: string
@@ -23,113 +23,52 @@ const PROMPTS: PromptCard[] = [
   { emoji: '🏢', ko: '당신의 회사를 평가해보세요', en: 'Rate your company', category: '기업', categorySlug: 'companies' },
   { emoji: '📍', ko: '좋아하는 장소를 추천하세요', en: 'Recommend a favorite place', category: '장소', categorySlug: 'places' },
   { emoji: '👤', ko: '존경하는 인물에게 별점을', en: 'Rate someone you admire', category: '인물', categorySlug: 'people' },
-  { emoji: '⭐', ko: '오늘 경험한 것 하나를 평가하세요', en: 'Rate one thing from today', category: '전체', categorySlug: '' },
 ]
 
-function Card({
-  card,
-  index,
-  totalCards,
-  locale,
-  onSwipe,
-}: {
-  card: PromptCard
-  index: number
-  totalCards: number
-  locale: string
-  onSwipe: () => void
-}) {
-  const isTop = index === totalCards - 1
-  const x = useMotionValue(0)
-  const rotate = useTransform(x, [-200, 200], [-15, 15])
-  const motionOpacity = useTransform(x, [-200, -100, 0, 100, 200], [0.5, 1, 1, 1, 0.5])
-
-  const stackOffset = (totalCards - 1 - index) * 4
-  const stackScale = 1 - (totalCards - 1 - index) * 0.04
-
-  function handleDragEnd(_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) {
-    if (Math.abs(info.offset.x) > 100) {
-      onSwipe()
-    }
-  }
-
-  return (
-    <motion.div
-      className="absolute inset-0"
-      style={{
-        x: isTop ? x : 0,
-        rotate: isTop ? rotate : 0,
-        opacity: isTop ? motionOpacity : 1,
-        y: stackOffset,
-        scale: stackScale,
-        zIndex: index,
-      }}
-      drag={isTop ? 'x' : false}
-      dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.8}
-      onDragEnd={handleDragEnd}
-      whileHover={isTop ? { scale: 1.02 } : {}}
-      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-    >
-      <div className="w-full h-full bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-pink-500/10 dark:from-indigo-500/20 dark:via-purple-500/10 dark:to-pink-500/20 rounded-2xl ring-1 ring-foreground/[0.08] shadow-lg p-6 flex flex-col items-center justify-center text-center cursor-grab active:cursor-grabbing select-none">
-        <span className="text-5xl mb-4">{card.emoji}</span>
-        <p className="text-base font-bold text-foreground mb-2 [word-break:keep-all]">
-          {locale === 'ko' ? card.ko : card.en}
-        </p>
-        <span className="text-xs text-muted-foreground mb-4">
-          {locale === 'ko' ? card.category : card.categorySlug || 'All'}
-        </span>
-        <Link
-          href={`/${locale}/explore${card.categorySlug ? `?category=${card.categorySlug}` : ''}`}
-          className="inline-flex items-center gap-1.5 px-5 py-2 text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {locale === 'ko' ? '평가하러 가기' : 'Start Rating'}
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-          </svg>
-        </Link>
-        {isTop && (
-          <p className="text-[10px] text-muted-foreground/60 mt-3">
-            {locale === 'ko' ? '← 밀어서 다음 카드' : '← Swipe for next'}
-          </p>
-        )}
-      </div>
-    </motion.div>
-  )
-}
-
 export default function ReviewStarterDeck({ locale }: ReviewStarterDeckProps) {
-  const [deck, setDeck] = useState(() => [...PROMPTS])
+  const [index, setIndex] = useState(0)
+  const card = PROMPTS[index]
 
-  function handleSwipe() {
-    setDeck(prev => {
-      const next = [...prev]
-      const removed = next.pop()
-      if (removed) next.unshift(removed)
-      return next
-    })
+  function next() {
+    setIndex((i) => (i + 1) % PROMPTS.length)
   }
 
-  const visibleCards = deck.slice(-3)
+  function prev() {
+    setIndex((i) => (i - 1 + PROMPTS.length) % PROMPTS.length)
+  }
 
   return (
     <section>
       <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-        <span className="text-lg">🃏</span>
+        <Layers className="w-5 h-5 text-primary" />
         {locale === 'ko' ? '무엇을 평가할까요?' : 'What Will You Rate?'}
       </h2>
-      <div className="relative w-full max-w-sm mx-auto" style={{ height: 260 }}>
-        {visibleCards.map((card, i) => (
-          <Card
-            key={card.categorySlug + card.emoji}
-            card={card}
-            index={i}
-            totalCards={visibleCards.length}
-            locale={locale}
-            onSwipe={handleSwipe}
-          />
-        ))}
+
+      <div className="bg-card border border-border p-8 text-center">
+        <p className="text-3xl mb-4">{card.emoji}</p>
+        <p className="font-serif text-lg font-bold text-foreground mb-2">
+          {locale === 'ko' ? card.ko : card.en}
+        </p>
+        <p className="text-xs text-muted-foreground mb-6">
+          {locale === 'ko' ? card.category : card.categorySlug}
+        </p>
+
+        <Link
+          href={`/${locale}/explore${card.categorySlug ? `?category=${card.categorySlug}` : ''}`}
+          className="inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-semibold bg-foreground text-background hover:opacity-90 transition-opacity"
+        >
+          {locale === 'ko' ? '평가하러 가기' : 'Start Rating'} →
+        </Link>
+
+        <div className="flex items-center justify-center gap-4 mt-6">
+          <button onClick={prev} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <span className="text-xs text-muted-foreground tabular-nums">{index + 1} / {PROMPTS.length}</span>
+          <button onClick={next} className="p-1.5 border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </section>
   )

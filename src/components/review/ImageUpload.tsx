@@ -117,7 +117,7 @@ export default function ImageUpload({
         className={[
           'relative border-2 border-dashed rounded-xl px-4 py-6 flex flex-col items-center justify-center gap-2 transition-colors',
           isDragOver && canAdd
-            ? 'border-indigo-400 bg-indigo-50 dark:bg-indigo-950/30'
+            ? 'border-primary bg-primary/10'
             : 'border-border bg-muted/50',
           !canAdd ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
         ].join(' ')}
@@ -125,7 +125,7 @@ export default function ImageUpload({
         {/* Compressing overlay */}
         {compressing && (
           <div className="absolute inset-0 rounded-xl bg-card/70 flex items-center justify-center z-10">
-            <span className="text-sm text-indigo-600 font-medium animate-pulse">
+            <span className="text-sm text-primary font-medium animate-pulse">
               Compressing…
             </span>
           </div>
@@ -151,7 +151,7 @@ export default function ImageUpload({
             type="button"
             disabled={!canAdd || compressing}
             onClick={() => fileInputRef.current?.click()}
-            className="text-indigo-600 font-medium underline disabled:cursor-not-allowed disabled:opacity-50"
+            className="text-primary font-medium underline disabled:cursor-not-allowed disabled:opacity-50"
           >
             browse
           </button>

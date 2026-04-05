@@ -4,6 +4,8 @@ import { useCallback, useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { Star } from 'lucide-react'
+
 import { createClient } from '@/lib/supabase/client'
 import { useInfiniteScroll } from '@/lib/hooks/useInfiniteScroll'
 import { useAuth } from '@/lib/hooks/useAuth'
@@ -180,7 +182,9 @@ export default function ReviewList({ subjectId, userId }: ReviewListProps) {
         </div>
       ) : items.length === 0 && !loading ? (
         <div className="text-center py-10">
-          <div className="text-4xl mb-3">⭐</div>
+          <div className="flex justify-center mb-3">
+            <Star className="w-10 h-10 text-yellow-400 fill-yellow-300" />
+          </div>
           <p className="text-foreground font-bold text-base mb-1">
             {locale === 'ko' ? '아직 아무도 평가하지 않았습니다' : 'No one has rated this yet'}
           </p>
@@ -190,7 +194,7 @@ export default function ReviewList({ subjectId, userId }: ReviewListProps) {
           {subjectId && (
             <Link
               href={`/${locale}/write/${subjectId}`}
-              className="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all text-sm"
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-foreground text-background font-semibold rounded-full shadow-md hover:shadow-lg hover:opacity-90 transition-opacity text-sm"
             >
               <span>★</span>
               {locale === 'ko' ? '리뷰 작성하기' : 'Write a Review'}

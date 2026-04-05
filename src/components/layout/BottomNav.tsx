@@ -4,53 +4,33 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useState, useRef } from 'react'
+import { Home, BarChart2, Search, FileText, User } from 'lucide-react'
 
 const tabs = [
   {
     key: 'home',
     href: '',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l9-9 9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9" />
-      </svg>
-    ),
+    icon: <Home className="w-6 h-6" strokeWidth={1.8} />,
   },
   {
     key: 'rankings',
     href: '/rankings',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-      </svg>
-    ),
+    icon: <BarChart2 className="w-6 h-6" strokeWidth={1.8} />,
   },
   {
     key: 'explore',
     href: '/explore',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
-      </svg>
-    ),
+    icon: <Search className="w-6 h-6" strokeWidth={1.8} />,
   },
   {
     key: 'feed',
     href: '/feed',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v8a2 2 0 01-2 2z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 4v6h6M9 12h6M9 16h6" />
-      </svg>
-    ),
+    icon: <FileText className="w-6 h-6" strokeWidth={1.8} />,
   },
   {
     key: 'profile',
     href: '/profile',
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-      </svg>
-    ),
+    icon: <User className="w-6 h-6" strokeWidth={1.8} />,
   },
 ]
 
@@ -73,7 +53,7 @@ export default function BottomNav() {
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-border md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border md:hidden">
       <div className="flex items-stretch h-16">
         {tabs.map((tab) => {
           const href = basePath + tab.href
@@ -87,9 +67,9 @@ export default function BottomNav() {
               key={tab.key}
               href={href}
               onClick={(e) => handleRipple(e, tab.key)}
-              className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-xs transition-colors relative overflow-hidden ${
+              className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-xs transition-colors duration-150 relative overflow-hidden ${
                 isActive
-                  ? 'text-indigo-600'
+                  ? 'text-primary'
                   : 'text-muted-foreground hover:text-foreground/80'
               }`}
             >
@@ -102,17 +82,17 @@ export default function BottomNav() {
                     width: 40,
                     height: 40,
                     borderRadius: '50%',
-                    background: 'rgba(99, 102, 241, 0.3)',
+                    background: 'color-mix(in srgb, var(--primary) 20%, transparent)',
                     animation: 'ripple 0.6s ease-out forwards',
                     pointerEvents: 'none',
                   }}
                 />
               )}
-              <span className={isActive ? 'transform scale-110 transition-transform duration-200' : ''}>
+              <span className={isActive ? 'transform scale-110 transition-transform duration-150' : ''}>
                 {tab.icon}
               </span>
               <span>{t(tab.key as 'home' | 'explore' | 'rankings' | 'feed' | 'profile')}</span>
-              {isActive && <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-scaleIn" />}
+              {isActive && <span className="w-1.5 h-1.5 rounded-full bg-primary animate-scaleIn" />}
             </Link>
           )
         })}

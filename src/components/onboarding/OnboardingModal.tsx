@@ -88,7 +88,7 @@ export default function OnboardingModal({ locale, onComplete }: OnboardingModalP
             <div
               key={i}
               className={`h-2 w-2 rounded-full transition-colors duration-300 ${
-                i === step ? 'bg-indigo-600' : 'bg-muted'
+                i === step ? 'bg-primary' : 'bg-muted'
               }`}
             />
           ))}
@@ -122,12 +122,12 @@ export default function OnboardingModal({ locale, onComplete }: OnboardingModalP
                       onClick={() => toggleCategory(cat.id)}
                       className={`relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 p-4 transition-all duration-150 ${
                         isSelected
-                          ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30'
+                          ? 'border-primary bg-primary/10'
                           : 'border-border bg-card hover:border-border'
                       }`}
                     >
                       {isSelected && (
-                        <span className="absolute top-2 right-2 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-white text-[10px]">
+                        <span className="absolute top-2 right-2 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-background text-[10px]">
                           ✓
                         </span>
                       )}
@@ -164,7 +164,7 @@ export default function OnboardingModal({ locale, onComplete }: OnboardingModalP
         {/* Next / Get Started button */}
         <button
           onClick={goNext}
-          className="mt-8 w-full rounded-xl bg-indigo-600 py-3 text-sm font-semibold text-white hover:bg-indigo-700 active:bg-indigo-800 transition-colors"
+          className="mt-8 w-full rounded-xl bg-foreground py-3 text-sm font-semibold text-background hover:opacity-90 transition-opacity"
         >
           {step === totalSteps - 1 ? t('getStarted') : t('next')}
         </button>

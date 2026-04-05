@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
+import { Flame } from 'lucide-react'
+
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/hooks/useAuth'
-import Link from 'next/link'
 
 interface ActivityData {
   reviewCount: number
@@ -138,8 +140,9 @@ export default function ActivitySummary({ locale }: { locale: string }) {
             {/* Top Review */}
             {data.topReview && data.topReview.helpful_count > 0 && (
               <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-800 dark:border-amber-500/20 rounded-xl p-3 mb-4">
-                <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold mb-1">
-                  🔥 {ko ? '가장 인기 있는 리뷰' : 'Most Popular Review'}
+                <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold mb-1 flex items-center gap-1">
+                  <Flame className="w-3.5 h-3.5" />
+                  {ko ? '가장 인기 있는 리뷰' : 'Most Popular Review'}
                 </p>
                 <Link
                   href={`/${locale}/subject/${data.topReview.subject_id}`}

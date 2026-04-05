@@ -121,12 +121,12 @@ export default function SubjectPicker({
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder={locale === 'ko' ? '검색...' : 'Search...'}
-          className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 mb-2"
+          className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary mb-2"
         />
 
         {/* Category lock note */}
         {categoryId && (
-          <p className="text-xs text-indigo-500 mb-2">
+          <p className="text-xs text-primary mb-2">
             {locale === 'ko' ? '같은 카테고리만 표시됩니다' : 'Same category only'}
           </p>
         )}
@@ -136,7 +136,7 @@ export default function SubjectPicker({
           {loading ? (
             <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
               <svg
-                className="animate-spin h-5 w-5 mr-2 text-indigo-400"
+                className="animate-spin h-5 w-5 mr-2 text-primary"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -173,7 +173,7 @@ export default function SubjectPicker({
                   <li key={subject.id}>
                     <button
                       onClick={() => handleSelect(subject)}
-                      className="w-full flex items-center gap-3 px-2 py-2.5 text-left hover:bg-indigo-50 dark:bg-indigo-950/30 rounded-lg transition-colors"
+                      className="w-full flex items-center gap-3 px-2 py-2.5 text-left hover:bg-primary/10 rounded-lg transition-colors"
                     >
                       {/* Thumbnail or placeholder */}
                       {subject.image_url ? (
@@ -184,7 +184,7 @@ export default function SubjectPicker({
                           referrerPolicy="no-referrer"
                         />
                       ) : (
-                        <div className="w-10 h-10 rounded-md bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-base font-bold shrink-0 select-none">
+                        <div className="w-10 h-10 rounded-md bg-muted flex items-center justify-center text-foreground text-base font-bold shrink-0 select-none">
                           {displayName.charAt(0).toUpperCase()}
                         </div>
                       )}

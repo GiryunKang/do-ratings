@@ -1,97 +1,81 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { createClient } from '@/lib/supabase/client'
+import { PenTool, BarChart3, Globe, Users } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 
 interface Activity {
   id: string
-  icon: string
+  Icon: LucideIcon
   text: string
   timeAgo: string
 }
 
-interface ActivityTickerProps {
-  locale: string
+interface RecentReviewData {
+  id: string
+  title: string
+  overall_rating: number
+  created_at: string
+  nickname: string
 }
 
-export default function ActivityTicker({ locale }: ActivityTickerProps) {
-  const [activities, setActivities] = useState<Activity[]>([])
+interface ActivityTickerProps {
+  locale: string
+  recentReviews?: RecentReviewData[]
+  totalReviews?: number
+  totalSubjects?: number
+  totalUsers?: number
+}
+
+export default function ActivityTicker({ locale, recentReviews, totalReviews = 0, totalSubjects = 0, totalUsers = 0 }: ActivityTickerProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  /* eslint-disable react-hooks/set-state-in-effect -- data fetching on mount */
-  useEffect(() => {
-    async function fetchActivity() {
-      const supabase = createClient()
+  const activities = useMemo(() => {
+    const items: Activity[] = []
 
-      const { data: reviews } = await supabase
-        .from('reviews')
-        .select('id, title, overall_rating, created_at, public_profiles(nickname)')
-        .order('created_at', { ascending: false })
-        .limit(10)
-
-      const { count: totalReviews } = await supabase
-        .from('reviews')
-        .select('id', { count: 'exact', head: true })
-
-      const { count: totalSubjects } = await supabase
-        .from('subjects')
-        .select('id', { count: 'exact', head: true })
-
-      const { count: totalUsers } = await supabase
-        .from('users')
-        .select('id', { count: 'exact', head: true })
-
-      const items: Activity[] = []
-
-      for (const r of reviews ?? []) {
-        const profile = Array.isArray(r.public_profiles) ? r.public_profiles[0] : r.public_profiles
-        const nickname = (profile?.nickname as string) ?? 'Someone'
-        const stars = '★'.repeat(Math.round(r.overall_rating))
-        items.push({
-          id: r.id,
-          icon: '✍️',
-          text: locale === 'ko'
-            ? `${nickname}님이 "${r.title}" 리뷰를 작성했습니다 ${stars}`
-            : `${nickname} wrote "${r.title}" ${stars}`,
-          timeAgo: formatTimeAgo(r.created_at, locale),
-        })
-      }
-
+    for (const r of recentReviews ?? []) {
+      const stars = '★'.repeat(Math.round(r.overall_rating))
       items.push({
-        id: 'stat-reviews',
-        icon: '📊',
+        id: r.id,
+        Icon: PenTool,
         text: locale === 'ko'
-          ? `지금까지 총 ${totalReviews ?? 0}개의 리뷰가 작성되었습니다`
-          : `${totalReviews ?? 0} reviews written so far`,
-        timeAgo: '',
+          ? `${r.nickname}님이 "${r.title}" 리뷰를 작성했습니다 ${stars}`
+          : `${r.nickname} wrote "${r.title}" ${stars}`,
+        timeAgo: formatTimeAgo(r.created_at, locale),
       })
-
-      items.push({
-        id: 'stat-subjects',
-        icon: '🌍',
-        text: locale === 'ko'
-          ? `${totalSubjects ?? 0}개의 대상이 등록되어 평가를 기다리고 있습니다`
-          : `${totalSubjects ?? 0} subjects waiting to be rated`,
-        timeAgo: '',
-      })
-
-      items.push({
-        id: 'stat-users',
-        icon: '👥',
-        text: locale === 'ko'
-          ? `${totalUsers ?? 0}명의 리뷰어가 참여하고 있습니다`
-          : `${totalUsers ?? 0} reviewers have joined`,
-        timeAgo: '',
-      })
-
-      setActivities(items)
     }
 
-    fetchActivity()
-  }, [locale])
-  /* eslint-enable react-hooks/set-state-in-effect */
+    items.push({
+      id: 'stat-reviews',
+      Icon: BarChart3,
+      text: locale === 'ko'
+        ? `지금까지 총 ${totalReviews}개의 리뷰가 작성되었습니다`
+        : `${totalReviews} reviews written so far`,
+      timeAgo: '',
+    })
+
+    items.push({
+      id: 'stat-subjects',
+      Icon: Globe,
+      text: locale === 'ko'
+        ? `${totalSubjects}개의 대상이 등록되어 평가를 기다리고 있습니다`
+        : `${totalSubjects} subjects waiting to be rated`,
+      timeAgo: '',
+    })
+
+    items.push({
+      id: 'stat-users',
+      Icon: Users,
+      text: locale === 'ko'
+        ? `${totalUsers}명의 리뷰어가 참여하고 있습니다`
+        : `${totalUsers} reviewers have joined`,
+      timeAgo: '',
+    })
+
+    return items
+  }, [recentReviews, totalReviews, totalSubjects, totalUsers, locale])
 
   useEffect(() => {
     if (activities.length === 0) return
@@ -103,12 +87,12 @@ export default function ActivityTicker({ locale }: ActivityTickerProps) {
     }
   }, [activities.length])
 
-  if (activities.length === 0) return null
+  if (!activities || activities.length === 0) return null
 
   const current = activities[currentIndex]
 
   return (
-    <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-pink-500/5 ring-1 ring-foreground/[0.04] px-4 py-2.5">
+    <div className="relative overflow-hidden rounded-xl bg-card border border-border px-4 py-2.5">
       <div className="flex items-center gap-3">
         <div className="shrink-0 w-2 h-2 rounded-full bg-green-500 animate-pulse" />
         <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider shrink-0">
@@ -124,7 +108,7 @@ export default function ActivityTicker({ locale }: ActivityTickerProps) {
               transition={{ duration: 0.3 }}
               className="absolute inset-0 flex items-center gap-2 text-sm text-foreground/80 truncate"
             >
-              <span>{current.icon}</span>
+              <current.Icon className="w-3.5 h-3.5 shrink-0 text-muted-foreground" />
               <span className="truncate">{current.text}</span>
               {current.timeAgo && (
                 <span className="text-[11px] text-muted-foreground shrink-0">{current.timeAgo}</span>

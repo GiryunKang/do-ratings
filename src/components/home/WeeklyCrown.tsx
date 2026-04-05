@@ -1,9 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
+import { Crown } from 'lucide-react'
 
 interface CrownReview {
   id: string
@@ -14,11 +13,12 @@ interface CrownReview {
   subject_id: string
   subject_name: string
   nickname: string
-  trophySvg: string | null
+  trophySvg?: string | null
 }
 
 interface WeeklyCrownProps {
   locale: string
+  initialCrown?: CrownReview | null
 }
 
 const TROPHY_FALLBACK = `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -31,81 +31,15 @@ const TROPHY_FALLBACK = `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.
   <path d="M28 8l4-4 4 4" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" fill="none"/>
 </svg>`
 
-export default function WeeklyCrown({ locale }: WeeklyCrownProps) {
-  const [crown, setCrown] = useState<CrownReview | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  /* eslint-disable react-hooks/set-state-in-effect -- data fetching on mount */
-  useEffect(() => {
-    async function fetchCrown() {
-      const supabase = createClient()
-      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-
-      const { data } = await supabase
-        .from('reviews')
-        .select('id, title, content, overall_rating, helpful_count, subject_id, subjects(name), public_profiles(nickname)')
-        .gte('created_at', weekAgo)
-        .order('helpful_count', { ascending: false })
-        .limit(1)
-
-      if (!data || data.length === 0) {
-        setLoading(false)
-        return
-      }
-
-      const r = data[0]
-      const subject = Array.isArray(r.subjects) ? r.subjects[0] : r.subjects
-      const profile = Array.isArray(r.public_profiles) ? r.public_profiles[0] : r.public_profiles
-      const nameObj = (subject?.name ?? {}) as Record<string, string>
-
-      let trophySvg: string | null = null
-      try {
-        const res = await fetch('/api/design/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'badge',
-            prompt: `A golden trophy award badge for best review of the week. Crown on top, star in center, laurel wreath border. Gold and amber colors.`,
-          }),
-        })
-        if (res.ok) {
-          const { svg } = await res.json()
-          trophySvg = svg
-        }
-      } catch {
-        // Quiver AI unavailable, use fallback
-      }
-
-      setCrown({
-        id: r.id,
-        title: r.title,
-        content: r.content.slice(0, 150),
-        overall_rating: r.overall_rating,
-        helpful_count: r.helpful_count,
-        subject_id: r.subject_id,
-        subject_name: nameObj[locale] ?? nameObj['ko'] ?? '',
-        nickname: (profile?.nickname as string) ?? 'Anonymous',
-        trophySvg,
-      })
-      setLoading(false)
-    }
-
-    fetchCrown()
-  }, [locale])
-  /* eslint-enable react-hooks/set-state-in-effect */
-
-  if (loading) {
-    return (
-      <div className="bg-gradient-to-br from-amber-500/10 to-yellow-500/10 rounded-2xl ring-1 ring-amber-200/30 dark:ring-amber-800/30 h-48 animate-pulse" />
-    )
-  }
+export default function WeeklyCrown({ locale, initialCrown }: WeeklyCrownProps) {
+  const crown = initialCrown ?? null
 
   if (!crown) return null
 
   return (
     <section>
       <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-        <span className="text-lg">👑</span>
+        <Crown className="w-5 h-5 text-amber-500" />
         {locale === 'ko' ? '이번 주의 왕관' : 'Weekly Crown'}
       </h2>
 
@@ -140,7 +74,7 @@ export default function WeeklyCrown({ locale }: WeeklyCrownProps) {
                 transition={{ duration: 2, repeat: Infinity }}
                 className="text-amber-500 text-sm"
               >
-                👑
+                <Crown className="w-4 h-4 text-amber-500" />
               </motion.span>
               <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
                 {locale === 'ko' ? '이번 주 최고 리뷰' : 'Best Review This Week'}

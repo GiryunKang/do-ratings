@@ -1,15 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import { usePathname, useRouter } from 'next/navigation'
+import { Search, Globe } from 'lucide-react'
+
 import { useAuth } from '@/lib/hooks/useAuth'
 import SearchBar from '@/components/search/SearchBar'
 import NotificationBell from '@/components/notification/NotificationBell'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import { Button } from '@/components/ui/button'
-import ShimmerText from '@/components/ui/ShimmerText'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -24,9 +25,6 @@ export default function Header() {
   const pathname = usePathname()
   const router = useRouter()
   const [searchOpen, setSearchOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
-  // eslint-disable-next-line react-hooks/set-state-in-effect -- standard hydration mount detection
-  useEffect(() => { setMounted(true) }, [])
 
   // Detect current locale from path
   const locale = pathname.startsWith('/en') ? 'en' : 'ko'
@@ -38,19 +36,14 @@ export default function Header() {
     'User'
 
   return (
-    <header className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+    <header className="sticky top-0 z-40 bg-background border-b border-border">
       <div className="max-w-7xl mx-auto flex items-center h-14 px-4 gap-4">
         {/* Logo */}
         <Link
           href={`/${locale}`}
-          className="shrink-0 text-lg font-bold text-primary"
-          style={{
-            opacity: mounted ? 1 : 0,
-            transform: mounted ? 'translateY(0)' : 'translateY(-10px)',
-            transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-          }}
+          className="shrink-0 text-lg font-serif italic text-primary"
         >
-          Do! <ShimmerText>Ratings!</ShimmerText>
+          Do! Ratings!
         </Link>
 
         {/* Search bar — hidden on mobile */}
@@ -59,10 +52,8 @@ export default function Header() {
         </div>
 
         {/* Mobile search icon */}
-        <button onClick={() => setSearchOpen(!searchOpen)} className="md:hidden p-2 text-muted-foreground hover:text-foreground ml-auto">
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+        <button onClick={() => setSearchOpen(!searchOpen)} className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors duration-150 ml-auto">
+          <Search className="w-5 h-5" />
         </button>
 
         <div className="flex items-center gap-1 md:gap-2 shrink-0">
@@ -77,7 +68,7 @@ export default function Header() {
             <DropdownMenuTrigger
               render={
                 <Button variant="ghost" size="sm" className="gap-1">
-                  <span>🌐</span>
+                  <Globe className="w-4 h-4" />
                   <span>{locale === 'ko' ? '한국어' : 'English'}</span>
                 </Button>
               }

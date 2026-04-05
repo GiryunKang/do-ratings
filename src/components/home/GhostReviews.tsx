@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import { PenLine } from 'lucide-react'
 
 interface GhostReviewsProps {
   locale: string
@@ -18,7 +19,7 @@ export default function GhostReviews({ locale }: GhostReviewsProps) {
   return (
     <section className="relative">
       <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-        <span className="text-lg">👻</span>
+        <PenLine className="w-5 h-5 text-primary" />
         {locale === 'ko' ? '여기에 당신의 리뷰가 올 수 있습니다' : 'Your Review Could Be Here'}
       </h2>
 

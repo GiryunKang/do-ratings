@@ -137,7 +137,7 @@ export default function TrendChart({ subjectId }: TrendChartProps) {
               onClick={() => setPeriod(p)}
               className={`px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
                 period === p
-                  ? 'bg-indigo-500 text-white'
+                  ? 'bg-foreground text-background'
                   : 'bg-muted text-muted-foreground hover:bg-muted'
               }`}
             >
@@ -149,7 +149,7 @@ export default function TrendChart({ subjectId }: TrendChartProps) {
 
       {loading ? (
         <div className="h-[200px] flex items-center justify-center">
-          <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       ) : !hasEnoughData ? (
         <div className="h-[200px] flex items-center justify-center text-sm text-muted-foreground">
@@ -185,10 +185,10 @@ export default function TrendChart({ subjectId }: TrendChartProps) {
             <Line
               type="monotone"
               dataKey="avgRating"
-              stroke="#6366f1"
+              stroke="#D4A017"
               strokeWidth={2}
-              dot={{ r: 3, fill: '#6366f1', strokeWidth: 0 }}
-              activeDot={{ r: 5, fill: '#6366f1' }}
+              dot={{ r: 3, fill: '#D4A017', strokeWidth: 0 }}
+              activeDot={{ r: 5, fill: '#D4A017' }}
             />
           </LineChart>
         </ResponsiveContainer>

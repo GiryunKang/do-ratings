@@ -2,6 +2,8 @@
 
 import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Swords } from 'lucide-react'
+
 import { getCategoryColor } from '@/lib/utils/category-colors'
 import { CategoryIcon } from '@/lib/icons'
 
@@ -47,7 +49,7 @@ export default function QuickFaceoff({ subjects, locale }: QuickFaceoffProps) {
     <section>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-base font-bold text-foreground flex items-center gap-2">
-          <span className="text-lg">🆚</span>
+          <Swords className="w-5 h-5 text-indigo-500" />
           {locale === 'ko' ? '퀵 대결' : 'Quick Face-off'}
         </h2>
         <span className="text-xs text-muted-foreground font-medium">

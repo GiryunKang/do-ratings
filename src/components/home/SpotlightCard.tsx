@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
@@ -25,14 +24,10 @@ export default function SpotlightCard({
   rateLabel,
 }: SpotlightCardProps) {
   return (
-    <motion.div
-      whileHover={{ scale: 1.02, rotateY: 3, rotateX: -2 }}
-      transition={{ type: 'spring', stiffness: 300 }}
-      style={{ transformStyle: 'preserve-3d' }}
-    >
+    <div className="hover:-translate-y-1 transition-transform duration-200">
       <Link
         href={href}
-        className="relative bg-card rounded-2xl shadow-sm ring-1 ring-foreground/[0.06] p-5 hover:ring-indigo-300 hover:shadow-lg transition-all group overflow-hidden block"
+        className="relative bg-card rounded-2xl shadow-sm ring-1 ring-foreground/[0.06] p-5 hover:ring-border hover:shadow-md transition-all group overflow-hidden block"
       >
         {/* Category color top accent */}
         <div className={`absolute top-0 left-0 right-0 h-1 ${getCategoryColor(categorySlug)}`} />
@@ -42,12 +37,12 @@ export default function SpotlightCard({
           </span>
           <span className="text-xs text-muted-foreground">{catName}</span>
         </div>
-        <h3 className="font-bold text-foreground group-hover:text-indigo-600 transition-colors text-lg mb-1">{name}</h3>
+        <h3 className="font-bold text-foreground group-hover:text-primary transition-colors text-lg mb-1">{name}</h3>
         {desc && <p className="text-xs text-muted-foreground line-clamp-1 mb-3">{desc}</p>}
-        <span className="inline-flex items-center gap-1 text-xs font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full px-4 py-1.5 shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all">
+        <span className="inline-flex items-center gap-1 text-xs font-semibold text-background bg-foreground rounded-full px-4 py-1.5 shadow-sm transition-all">
           {rateLabel}
         </span>
       </Link>
-    </motion.div>
+    </div>
   )
 }

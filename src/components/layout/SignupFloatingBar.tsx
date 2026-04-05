@@ -45,7 +45,7 @@ export default function SignupFloatingBar() {
         <div className="flex items-center gap-2 shrink-0">
           <Link
             href={`/${locale}/auth/signup`}
-            className="px-4 py-1.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-sm font-semibold rounded-full hover:shadow-md hover:scale-105 transition-all"
+            className="px-4 py-1.5 bg-foreground text-background text-sm font-semibold rounded-full hover:opacity-90 transition-opacity"
           >
             {locale === 'ko' ? '가입하기' : 'Sign up'}
           </Link>

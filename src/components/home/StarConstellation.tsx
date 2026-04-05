@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { CategoryIcon } from '@/lib/icons'
@@ -39,29 +39,38 @@ const ORBIT_PRESETS = [
 
 export default function StarConstellation({ subjects, locale }: StarConstellationProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
-  const [positions, setPositions] = useState<Record<string, { x: number; y: number }>>({})
+  const containerRef = useRef<HTMLDivElement>(null)
   const animRef = useRef<number>(0)
   const startTimeRef = useRef(Date.now())
+  const starRefsMap = useRef<Map<string, HTMLDivElement>>(new Map())
 
   const stars: ConstellationStar[] = subjects.slice(0, 8).map((s, i) => ({
     ...s,
     orbit: { ...ORBIT_PRESETS[i % ORBIT_PRESETS.length], offset: (i * 45) % 360 },
   }))
 
+  const setStarRef = useCallback((id: string) => (el: HTMLDivElement | null) => {
+    if (el) {
+      starRefsMap.current.set(id, el)
+    } else {
+      starRefsMap.current.delete(id)
+    }
+  }, [])
+
   useEffect(() => {
     function animate() {
       const elapsed = (Date.now() - startTimeRef.current) / 1000
-      const newPositions: Record<string, { x: number; y: number }> = {}
 
       for (const star of stars) {
+        const el = starRefsMap.current.get(star.id)
+        if (!el) continue
         const angle = ((elapsed / star.orbit.speed) * 360 + star.orbit.offset) * (Math.PI / 180)
-        newPositions[star.id] = {
-          x: star.orbit.cx + star.orbit.rx * Math.cos(angle),
-          y: star.orbit.cy + star.orbit.ry * Math.sin(angle),
-        }
+        const x = star.orbit.cx + star.orbit.rx * Math.cos(angle)
+        const y = star.orbit.cy + star.orbit.ry * Math.sin(angle)
+        el.style.left = `${x}%`
+        el.style.top = `${y}%`
       }
 
-      setPositions(newPositions)
       animRef.current = requestAnimationFrame(animate)
     }
 
@@ -72,7 +81,7 @@ export default function StarConstellation({ subjects, locale }: StarConstellatio
   }, [subjects])
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div ref={containerRef} className="absolute inset-0 overflow-hidden pointer-events-none">
       {/* Orbit rings (decorative) */}
       <svg className="absolute inset-0 w-full h-full opacity-[0.06]" viewBox="0 0 100 100" preserveAspectRatio="none">
         {ORBIT_PRESETS.slice(0, 4).map((o, i) => (
@@ -82,8 +91,6 @@ export default function StarConstellation({ subjects, locale }: StarConstellatio
 
       {/* Stars */}
       {stars.map((star) => {
-        const pos = positions[star.id]
-        if (!pos) return null
         const color = getCategoryColor(star.category_slug)
         const isHovered = hoveredId === star.id
         const name = star.name[locale] ?? star.name['ko'] ?? ''
@@ -92,10 +99,11 @@ export default function StarConstellation({ subjects, locale }: StarConstellatio
         return (
           <div
             key={star.id}
+            ref={setStarRef(star.id)}
             className="absolute pointer-events-auto"
             style={{
-              left: `${pos.x}%`,
-              top: `${pos.y}%`,
+              left: `${star.orbit.cx}%`,
+              top: `${star.orbit.cy}%`,
               transform: 'translate(-50%, -50%)',
               zIndex: isHovered ? 20 : 10,
             }}
@@ -130,7 +138,7 @@ export default function StarConstellation({ subjects, locale }: StarConstellatio
                 <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{name}</p>
                 <Link
                   href={`/${locale}/subject/${star.id}`}
-                  className="mt-2 block text-center text-[10px] font-semibold text-white bg-indigo-500 hover:bg-indigo-600 rounded-full py-1 transition-colors"
+                  className="mt-2 block text-center text-[10px] font-semibold bg-foreground text-background rounded-full py-1 hover:opacity-90 transition-opacity"
                 >
                   {locale === 'ko' ? '첫 번째 리뷰어 되기 ✨' : 'Be the first reviewer ✨'}
                 </Link>

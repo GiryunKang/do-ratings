@@ -1,9 +1,8 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
+import { Globe } from 'lucide-react'
 
 interface MapReview {
   id: string
@@ -17,6 +16,7 @@ interface MapReview {
 
 interface ReviewWorldMapProps {
   locale: string
+  initialReviews?: MapReview[]
 }
 
 interface CountryData {
@@ -46,44 +46,11 @@ const COUNTRY_POSITIONS: Record<string, { cx: number; cy: number; name_ko: strin
   ES: { cx: 185, cy: 125, name_ko: '스페인', name_en: 'Spain' },
 }
 
-export default function ReviewWorldMap({ locale }: ReviewWorldMapProps) {
-  const [reviews, setReviews] = useState<MapReview[]>([])
+export default function ReviewWorldMap({ locale, initialReviews }: ReviewWorldMapProps) {
+  const reviews = initialReviews ?? []
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
 
-  /* eslint-disable react-hooks/set-state-in-effect -- data fetching on mount */
-  useEffect(() => {
-    async function fetchReviews() {
-      const supabase = createClient()
-      const { data } = await supabase
-        .from('reviews')
-        .select('id, title, overall_rating, created_at, country_code, subjects(name), public_profiles(nickname)')
-        .not('country_code', 'is', null)
-        .order('created_at', { ascending: false })
-        .limit(100)
-
-      if (!data) return
-
-      const mapped: MapReview[] = data.map(r => {
-        const subject = Array.isArray(r.subjects) ? r.subjects[0] : r.subjects
-        const profile = Array.isArray(r.public_profiles) ? r.public_profiles[0] : r.public_profiles
-        const nameObj = (subject?.name ?? {}) as Record<string, string>
-        return {
-          id: r.id,
-          title: r.title,
-          overall_rating: r.overall_rating,
-          subject_name: nameObj[locale] ?? nameObj['ko'] ?? '',
-          nickname: (profile?.nickname as string) ?? 'Anonymous',
-          country_code: r.country_code ?? '',
-          created_at: r.created_at,
-        }
-      })
-
-      setReviews(mapped)
-    }
-
-    fetchReviews()
-  }, [locale])
-  /* eslint-enable react-hooks/set-state-in-effect */
+  if (reviews.length === 0) return null
 
   const countryData = useMemo(() => {
     const grouped = new Map<string, MapReview[]>()
@@ -114,7 +81,7 @@ export default function ReviewWorldMap({ locale }: ReviewWorldMapProps) {
   return (
     <section>
       <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-        <span className="text-lg">🗺️</span>
+        <Globe className="w-5 h-5 text-indigo-500" />
         {locale === 'ko' ? '세계 리뷰 지도' : 'World Review Map'}
       </h2>
 

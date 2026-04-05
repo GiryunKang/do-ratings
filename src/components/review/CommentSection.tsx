@@ -238,7 +238,7 @@ export default function CommentSection({
                 onChange={(e) => setInputValue(e.target.value.slice(0, 500))}
                 placeholder={t('writeComment')}
                 rows={1}
-                className="flex-1 text-xs resize-none rounded-lg border border-border bg-card px-3 py-2 focus:outline-none focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200 placeholder-gray-400 min-h-[34px]"
+                className="flex-1 text-xs resize-none rounded-lg border border-border bg-card px-3 py-2 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 placeholder-gray-400 min-h-[34px]"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault()
@@ -250,7 +250,7 @@ export default function CommentSection({
                 type="button"
                 onClick={handleSubmit}
                 disabled={!inputValue.trim() || submitting}
-                className="shrink-0 text-xs bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="shrink-0 text-xs bg-foreground text-background hover:opacity-90 px-3 py-2 rounded-lg transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {t('submit')}
               </button>

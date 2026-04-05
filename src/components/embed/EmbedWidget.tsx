@@ -70,8 +70,8 @@ export default function EmbedWidget({ subjectId, subjectName, avgRating, reviewC
               onClick={() => setSize(s.key)}
               className={`px-3 py-1 rounded-lg text-xs font-medium border transition-colors ${
                 size === s.key
-                  ? 'bg-indigo-600 text-white border-indigo-600'
-                  : 'bg-background text-muted-foreground border-border hover:border-indigo-300 hover:text-indigo-600'
+                  ? 'bg-foreground text-background border-foreground'
+                  : 'bg-background text-muted-foreground border-border hover:border-primary hover:text-primary'
               }`}
             >
               {t(s.labelKey)}
@@ -133,7 +133,7 @@ export default function EmbedWidget({ subjectId, subjectName, avgRating, reviewC
             className={`mt-2 w-full py-2 rounded-lg text-sm font-semibold transition-colors ${
               copied
                 ? 'bg-green-50 dark:bg-green-950/30 text-green-700 border border-green-200'
-                : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                : 'bg-foreground text-background hover:opacity-90'
             }`}
           >
             {copied ? t('copied') : t('copyCode')}

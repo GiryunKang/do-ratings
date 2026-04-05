@@ -32,7 +32,7 @@ export default function UserCard({ profile }: UserCardProps) {
               referrerPolicy="no-referrer"
             />
           ) : (
-            <span className="w-20 h-20 rounded-full bg-indigo-100 text-indigo-600 text-2xl font-bold flex items-center justify-center">
+            <span className="w-20 h-20 rounded-full bg-primary/10 text-primary text-2xl font-bold flex items-center justify-center">
               {profile.nickname.charAt(0).toUpperCase()}
             </span>
           )}

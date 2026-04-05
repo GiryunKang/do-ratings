@@ -183,14 +183,14 @@ export default function ReviewFeed({ categories, locale, subjects }: ReviewFeedP
               const catName = subject.category_name[locale] ?? subject.category_name['ko']
               return (
                 <Link key={subject.id} href={`/${locale}/subject/${subject.id}`}
-                  className="bg-card rounded-xl border border-border p-4 hover:border-indigo-300 hover:shadow-md transition-all group">
+                  className="bg-card rounded-xl border border-border p-4 hover:border-primary/30 hover:shadow-md transition-all group">
                   <div className="flex items-center gap-2 mb-2">
                     <span className={`w-6 h-6 rounded-full ${getCategoryColor(subject.category_slug)} flex items-center justify-center`}>
                       <CategoryIcon name={subject.category_icon} className="w-3.5 h-3.5 text-white" />
                     </span>
                     <span className="text-xs text-muted-foreground">{catName}</span>
                   </div>
-                  <h4 className="font-semibold text-foreground group-hover:text-indigo-600 transition-colors">{name}</h4>
+                  <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">{name}</h4>
                   {desc && <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{desc}</p>}
                   <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
                     {subject.avg_rating ? (

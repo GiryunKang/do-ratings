@@ -108,7 +108,7 @@ export default function CategoryRequestModal({ locale, onClose }: CategoryReques
                 onChange={e => setNameKo(e.target.value)}
                 placeholder={isKo ? '예: 영화' : 'e.g. 영화'}
                 required
-                className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
 
@@ -122,7 +122,7 @@ export default function CategoryRequestModal({ locale, onClose }: CategoryReques
                 value={nameEn}
                 onChange={e => setNameEn(e.target.value)}
                 placeholder={isKo ? '예: Movies (선택)' : 'e.g. Movies (optional)'}
-                className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
 
@@ -136,7 +136,7 @@ export default function CategoryRequestModal({ locale, onClose }: CategoryReques
                 value={iconSuggestion}
                 onChange={e => setIconSuggestion(e.target.value)}
                 placeholder={isKo ? '예: 🎬 또는 film' : 'e.g. 🎬 or film'}
-                className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
 
@@ -150,7 +150,7 @@ export default function CategoryRequestModal({ locale, onClose }: CategoryReques
                 onChange={e => setReason(e.target.value)}
                 placeholder={isKo ? '이 카테고리가 필요한 이유를 적어주세요.' : 'Why do you think this category should be added?'}
                 rows={3}
-                className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                className="w-full rounded-xl border border-border px-3 py-2.5 text-sm text-foreground placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
               />
             </div>
 
@@ -171,7 +171,7 @@ export default function CategoryRequestModal({ locale, onClose }: CategoryReques
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 rounded-xl bg-indigo-600 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 active:bg-indigo-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 rounded-xl bg-foreground py-2.5 text-sm font-semibold text-background hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (isKo ? '제출 중...' : 'Submitting...') : (isKo ? '요청하기' : 'Submit Request')}
               </button>

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Flame } from 'lucide-react'
+
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/hooks/useAuth'
 
@@ -21,23 +23,31 @@ export default function RatingStreak({ locale }: RatingStreakProps) {
     async function fetchStreak() {
       if (!user) return
       const supabase = createClient()
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+
+      const { data } = await supabase
+        .from('reviews')
+        .select('created_at')
+        .eq('user_id', user.id)
+        .gte('created_at', thirtyDaysAgo)
+        .order('created_at', { ascending: false })
+
+      if (!data || data.length === 0) return
+
+      const reviewDays = new Set(
+        data.map(r => {
+          const d = new Date(r.created_at)
+          return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
+        })
+      )
+
       const today = new Date()
       let currentStreak = 0
-
       for (let i = 0; i < 30; i++) {
         const day = new Date(today)
         day.setDate(day.getDate() - i)
-        const dayStart = new Date(day.getFullYear(), day.getMonth(), day.getDate()).toISOString()
-        const dayEnd = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1).toISOString()
-
-        const { count } = await supabase
-          .from('reviews')
-          .select('id', { count: 'exact', head: true })
-          .eq('user_id', user.id)
-          .gte('created_at', dayStart)
-          .lt('created_at', dayEnd)
-
-        if ((count ?? 0) > 0) {
+        const key = `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`
+        if (reviewDays.has(key)) {
           currentStreak++
         } else if (i > 0) {
           break
@@ -57,7 +67,7 @@ export default function RatingStreak({ locale }: RatingStreakProps) {
   if (!user || streak === 0) return null
 
   const flameSize = Math.min(streak, 7)
-  const flameEmojis = streak >= 7 ? '🔥🔥🔥' : streak >= 3 ? '🔥🔥' : '🔥'
+  const flameCount = streak >= 7 ? 3 : streak >= 3 ? 2 : 1
 
   return (
     <AnimatePresence>
@@ -71,14 +81,16 @@ export default function RatingStreak({ locale }: RatingStreakProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <motion.span
-                className="text-2xl"
+                className="flex items-center"
                 animate={{
                   scale: [1, 1.2, 1],
                   rotate: [0, -5, 5, 0],
                 }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               >
-                {flameEmojis}
+                {Array.from({ length: flameCount }).map((_, i) => (
+                  <Flame key={i} className="w-6 h-6 text-orange-500" />
+                ))}
               </motion.span>
               <div>
                 <p className="text-sm font-bold text-foreground">

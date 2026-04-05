@@ -57,7 +57,7 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
                   </div>
                   <Link
                     href={`/${locale}/category/${cat.slug}`}
-                    className="text-xs font-medium text-indigo-600 border border-indigo-200 dark:border-indigo-800 rounded-full px-3 py-1 hover:bg-indigo-50 dark:bg-indigo-950/30 transition-colors shrink-0"
+                    className="text-xs font-medium text-primary border border-border rounded-full px-3 py-1 hover:bg-muted transition-colors duration-150 shrink-0"
                   >
                     {t('explore')}
                   </Link>
@@ -90,7 +90,7 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
                       referrerPolicy="no-referrer"
                     />
                   ) : (
-                    <span className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold flex items-center justify-center shrink-0">
+                    <span className="w-8 h-8 rounded-full bg-primary/10 text-primary text-sm font-semibold flex items-center justify-center shrink-0">
                       {nickname.charAt(0).toUpperCase()}
                     </span>
                   )}

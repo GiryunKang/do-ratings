@@ -121,7 +121,7 @@ export default function ClaimButton({
         <button
           type="button"
           onClick={() => setShowForm(true)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-border rounded-full text-sm text-muted-foreground hover:border-indigo-400 hover:text-indigo-600 transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-border rounded-full text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -153,7 +153,7 @@ export default function ClaimButton({
               value={businessName}
               onChange={(e) => setBusinessName(e.target.value)}
               required
-              className="w-full text-sm rounded-lg border border-border bg-card px-3 py-2 focus:outline-none focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200"
+              className="w-full text-sm rounded-lg border border-border bg-card px-3 py-2 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30"
             />
           </div>
           <div>
@@ -165,14 +165,14 @@ export default function ClaimButton({
               value={businessEmail}
               onChange={(e) => setBusinessEmail(e.target.value)}
               required
-              className="w-full text-sm rounded-lg border border-border bg-card px-3 py-2 focus:outline-none focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200"
+              className="w-full text-sm rounded-lg border border-border bg-card px-3 py-2 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30"
             />
           </div>
           <div className="flex gap-2 pt-1">
             <button
               type="submit"
               disabled={submitting}
-              className="flex-1 text-sm bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 text-sm bg-foreground text-background hover:opacity-90 px-4 py-2 rounded-lg transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {t('submitClaim')}
             </button>

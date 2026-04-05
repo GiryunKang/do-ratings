@@ -82,7 +82,7 @@ export default function CollectionCard({
       )}
 
       <div className="flex items-center gap-2 mt-auto">
-        <span className="inline-flex items-center gap-1 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 text-xs font-medium px-2 py-0.5 rounded-full">
+        <span className="inline-flex items-center gap-1 bg-primary/10 text-primary text-xs font-medium px-2 py-0.5 rounded-full">
           <svg
             className="w-3 h-3"
             fill="none"

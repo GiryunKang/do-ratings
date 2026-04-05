@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { Star } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 interface ReviewItem {
@@ -18,6 +19,7 @@ interface ReviewItem {
 
 interface PopularReviewsSectionProps {
   locale: string
+  initialReviews?: ReviewItem[]
 }
 
 type Period = 'daily' | 'weekly' | 'monthly'
@@ -34,18 +36,18 @@ const periodDays: Record<Period, number> = {
   monthly: 30,
 }
 
-const periodColors: Record<Period, string> = {
-  daily: 'bg-indigo-500 text-white',
-  weekly: 'bg-violet-500 text-white',
-  monthly: 'bg-purple-500 text-white',
-}
-
-export default function PopularReviewsSection({ locale }: PopularReviewsSectionProps) {
+export default function PopularReviewsSection({ locale, initialReviews }: PopularReviewsSectionProps) {
   const [period, setPeriod] = useState<Period>('daily')
-  const [reviews, setReviews] = useState<ReviewItem[]>([])
-  const [loading, setLoading] = useState(true)
+  const [reviews, setReviews] = useState<ReviewItem[]>(initialReviews ?? [])
+  const [loading, setLoading] = useState(!initialReviews || initialReviews.length === 0)
+  const initialLoadDone = useRef(!!initialReviews && initialReviews.length > 0)
 
   useEffect(() => {
+    if (initialLoadDone.current && period === 'daily') {
+      initialLoadDone.current = false
+      return
+    }
+
     async function fetchPopular() {
       setLoading(true)
       const supabase = createClient()
@@ -85,7 +87,7 @@ export default function PopularReviewsSection({ locale }: PopularReviewsSectionP
     <section>
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5">
-          <span>⭐</span>
+          <Star className="w-5 h-5 text-primary" />
           {locale === 'ko' ? '인기 리뷰' : 'Popular Reviews'}
         </h2>
         <div className="flex gap-1">
@@ -93,10 +95,10 @@ export default function PopularReviewsSection({ locale }: PopularReviewsSectionP
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`px-2.5 py-1 text-[11px] font-bold rounded-full transition-all ${
+              className={`px-2.5 py-1 text-[11px] font-bold rounded-full border transition-all ${
                 period === p
-                  ? periodColors[p]
-                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                  ? 'border-primary text-primary bg-transparent'
+                  : 'border-border text-muted-foreground hover:border-foreground/30'
               }`}
             >
               {locale === 'ko' ? periodLabels[p].ko : periodLabels[p].en}
@@ -117,7 +119,7 @@ export default function PopularReviewsSection({ locale }: PopularReviewsSectionP
             const subjectName = review.subject_name[locale] ?? review.subject_name['ko'] ?? ''
             return (
               <Link key={review.id} href={`/${locale}/subject/${review.subject_id}`}
-                className="block bg-card rounded-xl shadow-sm ring-1 ring-foreground/[0.06] p-4 hover:shadow-md hover:ring-primary/30 transition-all">
+                className="block bg-card rounded-xl shadow-sm ring-1 ring-foreground/[0.06] p-4 hover:shadow-md hover:ring-border transition-all">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
@@ -131,10 +133,10 @@ export default function PopularReviewsSection({ locale }: PopularReviewsSectionP
                   <div className="shrink-0 flex flex-col items-center">
                     <div className="flex gap-0.5">
                       {Array.from({ length: 5 }).map((_, i) => (
-                        <span key={i} className={`text-xs ${i < Math.round(review.overall_rating) ? 'text-yellow-400' : 'text-muted-foreground/30'}`}>★</span>
+                        <span key={i} className={`text-xs ${i < Math.round(review.overall_rating) ? 'text-primary' : 'text-muted-foreground/30'}`}>★</span>
                       ))}
                     </div>
-                    <span className="text-xs text-muted-foreground mt-1">👍 {review.helpful_count}</span>
+                    <span className="text-xs text-muted-foreground mt-1">+{review.helpful_count}</span>
                   </div>
                 </div>
               </Link>
@@ -143,7 +145,7 @@ export default function PopularReviewsSection({ locale }: PopularReviewsSectionP
         </div>
       ) : (
         <div className="bg-card rounded-xl shadow-sm ring-1 ring-foreground/[0.06] p-6 text-center">
-          <p className="text-3xl mb-2">⭐</p>
+          <Star className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
           <p className="text-sm font-medium text-foreground mb-1">
             {locale === 'ko' ? '아직 이 기간의 인기 리뷰가 없습니다' : 'No popular reviews for this period'}
           </p>

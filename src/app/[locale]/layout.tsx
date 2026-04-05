@@ -12,9 +12,7 @@ import AdBanner from '@/components/layout/AdBanner'
 import { ThemeProvider } from '@/components/ui/ThemeProvider'
 import OnboardingTrigger from '@/components/onboarding/OnboardingTrigger'
 import SignupFloatingBar from '@/components/layout/SignupFloatingBar'
-import SplashScreen from '@/components/ui/SplashScreen'
 import ActivitySummary from '@/components/ui/ActivitySummary'
-import PossessionMode from '@/components/ui/PossessionMode'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
@@ -48,7 +46,6 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider messages={messages}>
       <ThemeProvider>
-        <SplashScreen locale={locale} />
         <ActivitySummary locale={locale} />
         <ScrollProgressBar />
         <Header />
@@ -56,7 +53,7 @@ export default async function LocaleLayout({
           <div className="hidden md:block w-64 shrink-0">
             <Sidebar locale={locale} />
           </div>
-          <main className="flex-1 min-w-0 min-h-screen pb-20 md:pb-0 lg:mr-72 bg-gradient-to-b from-muted/50 to-background">
+          <main className="flex-1 min-w-0 min-h-screen pb-20 md:pb-0 lg:mr-72 bg-background">
             {children}
           </main>
           <RightSidebar locale={locale} />
@@ -65,7 +62,6 @@ export default async function LocaleLayout({
         <BottomNav />
         <SignupFloatingBar />
         <OnboardingTrigger />
-        <PossessionMode locale={locale} />
       </ThemeProvider>
     </NextIntlClientProvider>
   )

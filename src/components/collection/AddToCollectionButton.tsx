@@ -109,7 +109,7 @@ export default function AddToCollectionButton({
             ? 'bg-red-50 dark:bg-red-950/30 text-red-600 border-red-200'
             : feedback === 'already'
             ? 'bg-yellow-50 dark:bg-yellow-950/30 text-yellow-700 border-yellow-200'
-            : 'bg-card text-foreground/80 border-border hover:bg-indigo-50 dark:bg-indigo-950/30 hover:text-indigo-700 hover:border-indigo-200'
+            : 'bg-card text-foreground/80 border-border hover:bg-primary/10 hover:text-primary hover:border-primary/30'
         }`}
       >
         <svg
@@ -138,7 +138,7 @@ export default function AddToCollectionButton({
         <div className="absolute z-50 mt-1 right-0 w-56 bg-card rounded-xl border border-border shadow-lg overflow-hidden">
           {loadingCollections ? (
             <div className="p-3 text-center text-xs text-muted-foreground">
-              <div className="inline-block w-4 h-4 border-2 border-indigo-300 border-t-indigo-600 rounded-full animate-spin" />
+              <div className="inline-block w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
             </div>
           ) : collections.length === 0 ? (
             <div className="p-3 text-center text-xs text-muted-foreground">
@@ -154,11 +154,11 @@ export default function AddToCollectionButton({
                     <button
                       onClick={() => void handleAddToCollection(col.id)}
                       disabled={adding === col.id}
-                      className="w-full text-left px-3 py-2 text-sm text-foreground/80 hover:bg-indigo-50 dark:bg-indigo-950/30 hover:text-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full text-left px-3 py-2 text-sm text-foreground/80 hover:bg-primary/10 hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {adding === col.id ? (
                         <span className="flex items-center gap-2">
-                          <span className="inline-block w-3 h-3 border border-indigo-300 border-t-indigo-600 rounded-full animate-spin" />
+                          <span className="inline-block w-3 h-3 border border-primary/30 border-t-primary rounded-full animate-spin" />
                           {title}
                         </span>
                       ) : (

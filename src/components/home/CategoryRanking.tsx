@@ -56,12 +56,12 @@ export default async function CategoryRanking({ locale }: CategoryRankingProps) 
         <div key={category.id}>
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-base font-bold text-foreground flex items-center gap-2">
-              <CategoryIcon name={category.slug} className="w-5 h-5 text-indigo-500" />
+              <CategoryIcon name={category.slug} className="w-5 h-5 text-primary" />
               {category.name}
             </h2>
             <Link
               href={`/${locale}/category/${category.slug}`}
-              className="flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800 transition-colors font-medium"
+              className="flex items-center gap-1 text-sm text-primary hover:text-primary/70 transition-colors font-medium"
             >
               {seeAllLabel}
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -95,7 +95,7 @@ export default async function CategoryRanking({ locale }: CategoryRankingProps) 
                       href={`/${locale}/subject/${subject.id}`}
                       className={`flex items-center gap-3 p-2 rounded-lg hover:bg-muted transition-colors ${rowStyle}`}
                     >
-                      <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold flex items-center justify-center shrink-0">
+                      <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center shrink-0">
                         {index + 1}
                       </span>
                       <span className="flex-1 text-sm font-medium text-foreground truncate">
