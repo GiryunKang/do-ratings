@@ -18,6 +18,7 @@ import EmbedWidget from '@/components/embed/EmbedWidget'
 import SentimentRiver from '@/components/subject/SentimentRiver'
 import FaultlineFeed from '@/components/subject/FaultlineFeed'
 import SevenSecondCollapse from '@/components/subject/SevenSecondCollapse'
+import GhostReviews from '@/components/home/GhostReviews'
 
 interface PageProps {
   params: Promise<{ locale: string; id: string }>
@@ -311,6 +312,11 @@ export default async function SubjectPage({ params }: PageProps) {
           </div>
         </div>
       </div>
+
+      {/* Ghost Reviews — show when no reviews exist */}
+      {subject.review_count === 0 && (
+        <GhostReviews locale={locale} writeHref={writeHref} />
+      )}
 
       {/* Tabbed content: Reviews, Photos, Trend, AI Summary, Embed */}
       <SubjectTabs
