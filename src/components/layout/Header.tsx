@@ -41,7 +41,7 @@ export default function Header() {
         {/* Logo */}
         <Link
           href={`/${locale}`}
-          className="shrink-0 text-lg font-display tracking-tight"
+          className="shrink-0 text-lg font-display tracking-tight underline decoration-2 underline-offset-4"
         >
           <span className="text-foreground">DO</span>
           <span className="text-primary">!</span>
@@ -58,6 +58,11 @@ export default function Header() {
         <button onClick={() => setSearchOpen(!searchOpen)} className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors duration-150 ml-auto">
           <Search className="w-5 h-5" />
         </button>
+
+        <div className="hidden md:flex items-center gap-1.5 text-secondary">
+          <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
+          <span className="text-xs font-semibold tracking-wide">LIVE</span>
+        </div>
 
         <div className="flex items-center gap-1 md:gap-2 shrink-0">
           {/* Theme toggle — hidden on small mobile */}
@@ -118,7 +123,7 @@ export default function Header() {
                   </span>
                 </Link>
               ) : (
-                <Button size="sm" render={<Link href={`/${locale}/auth/login`} />}>
+                <Button size="sm" className="rounded-full bg-primary text-white hover:bg-primary/90" render={<Link href={`/${locale}/auth/login`} />}>
                   {t('login')}
                 </Button>
               )}
