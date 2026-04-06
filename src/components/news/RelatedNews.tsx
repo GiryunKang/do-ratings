@@ -58,7 +58,7 @@ export default function RelatedNews({ query, locale }: RelatedNewsProps) {
   return (
     <div className="mt-8">
       <h3 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
-        <svg className="w-5 h-5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8a2 2 0 00-2 2v16a2 2 0 01-2 2zm0 0a2 2 0 01-2-2v-9c0-1.1.9-2 2-2h2"/>
           <path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6z"/>
         </svg>
@@ -82,9 +82,9 @@ export default function RelatedNews({ query, locale }: RelatedNewsProps) {
               href={article.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="block bg-card rounded-xl border border-border p-4 hover:border-indigo-300 hover:shadow-sm transition-all group"
+              className="block bg-card rounded-xl border border-border p-4 hover:border-primary/30 hover:shadow-sm transition-all group"
             >
-              <h4 className="text-sm font-medium text-foreground group-hover:text-indigo-600 transition-colors line-clamp-2">
+              <h4 className="text-sm font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2">
                 {article.title}
               </h4>
               <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
@@ -93,7 +93,7 @@ export default function RelatedNews({ query, locale }: RelatedNewsProps) {
                 {article.pubDate && (
                   <span>{new Date(article.pubDate).toLocaleDateString(locale === 'ko' ? 'ko-KR' : 'en-US', { month: 'short', day: 'numeric' })}</span>
                 )}
-                <span className="ml-auto text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
+                <span className="ml-auto text-primary opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
               </div>
             </a>
           ))}

@@ -281,13 +281,13 @@ export default function RankingsPage() {
             onClick={() => handleTabChange(tab.key)}
             className={`flex-1 py-2.5 text-sm font-medium transition-colors relative ${
               activeTab === tab.key
-                ? 'text-indigo-600'
+                ? 'text-primary'
                 : 'text-muted-foreground hover:text-foreground/80'
             }`}
           >
             {tab.label}
             {activeTab === tab.key && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 rounded-t" />
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t" />
             )}
           </button>
         ))}
@@ -301,7 +301,7 @@ export default function RankingsPage() {
             <select
               value={selectedCategoryId}
               onChange={(e) => handleCategoryChange(e.target.value)}
-              className="text-sm border border-border rounded-lg px-3 py-2 bg-background text-foreground/80 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="text-sm border border-border rounded-lg px-3 py-2 bg-background text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/30"
             >
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
@@ -320,7 +320,7 @@ export default function RankingsPage() {
               {topSubjects.map((subject, index) => {
                 const name = subject.name[locale as 'ko' | 'en'] ?? subject.name.en
                 const podiumStyle = index < 3 ? podiumStyles[index] : ''
-                const badgeStyle = index < 3 ? badgeStyles[index] : 'bg-indigo-100 text-indigo-700'
+                const badgeStyle = index < 3 ? badgeStyles[index] : 'bg-primary/10 text-primary'
                 return (
                   <li key={subject.id} className={podiumStyle}>
                     <Link
@@ -333,7 +333,7 @@ export default function RankingsPage() {
                       <span className="flex-1 text-sm font-medium text-foreground truncate">{name}</span>
                       <div className="flex items-center gap-2 shrink-0">
                         <StarRating value={subject.avg_rating ?? 0} readonly size="sm" />
-                        <span className="text-sm font-semibold text-yellow-500">
+                        <span className="text-sm font-semibold text-primary">
                           {formatRating(subject.avg_rating)}
                         </span>
                       </div>
@@ -372,7 +372,7 @@ export default function RankingsPage() {
                       <div className="flex-1 min-w-0">
                         <Link
                           href={`/${locale}/subject/${review.subject_id}`}
-                          className="block font-semibold text-sm text-foreground hover:text-indigo-600 transition-colors mb-1 truncate"
+                          className="block font-semibold text-sm text-foreground hover:text-primary transition-colors mb-1 truncate"
                         >
                           {review.title}
                         </Link>
@@ -412,7 +412,7 @@ export default function RankingsPage() {
             <ol className="space-y-2 bg-card rounded-xl border border-border divide-y divide-border overflow-hidden">
               {topReviewers.map((reviewer, index) => {
                 const podiumStyle = index < 3 ? podiumStyles[index] : ''
-                const badgeStyle = index < 3 ? badgeStyles[index] : 'bg-indigo-100 text-indigo-700'
+                const badgeStyle = index < 3 ? badgeStyles[index] : 'bg-primary/10 text-primary'
                 return (
                   <li key={reviewer.id} className={podiumStyle}>
                     <Link

@@ -81,11 +81,11 @@ export default function ReviewWorldMap({ locale, initialReviews }: ReviewWorldMa
   return (
     <section>
       <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
-        <Globe className="w-5 h-5 text-indigo-500" />
+        <Globe className="w-5 h-5 text-primary" />
         {locale === 'ko' ? '세계 리뷰 지도' : 'World Review Map'}
       </h2>
 
-      <div className="relative bg-gradient-to-b from-indigo-50/50 to-blue-50/30 dark:from-indigo-950/20 dark:to-blue-950/10 rounded-2xl ring-1 ring-foreground/[0.06] overflow-hidden">
+      <div className="relative bg-primary/5 dark:bg-primary/5 rounded-2xl ring-1 ring-foreground/[0.06] overflow-hidden">
         <svg viewBox="0 0 400 260" className="w-full h-auto">
           {/* Simplified world map outline */}
           <path

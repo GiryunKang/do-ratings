@@ -104,11 +104,11 @@ export default function AdminPage() {
       const supabase = createClient()
 
       const [
-        { count: usersCount },
-        { count: reviewsCount },
-        { count: subjectsCount },
-        { data: pendingReportsData },
-        { data: pendingClaimsData },
+        { count: usersCount, error: usersError },
+        { count: reviewsCount, error: reviewsError },
+        { count: subjectsCount, error: subjectsError },
+        { data: pendingReportsData, error: reportsError },
+        { data: pendingClaimsData, error: claimsError },
       ] = await Promise.all([
         supabase.from('users').select('id', { count: 'exact', head: true }),
         supabase.from('reviews').select('id', { count: 'exact', head: true }),
@@ -124,6 +124,10 @@ export default function AdminPage() {
           .eq('verification_status', 'pending')
           .order('created_at', { ascending: false }),
       ])
+      const queryErrors = [usersError, reviewsError, subjectsError, reportsError, claimsError].filter(Boolean)
+      if (queryErrors.length > 0) {
+        console.error('[AdminPage] query errors:', queryErrors.map(e => e!.message))
+      }
 
       setStats({
         totalUsers: usersCount ?? 0,
@@ -167,7 +171,7 @@ export default function AdminPage() {
   if (loading || isAdmin === null) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-primary/40 border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -186,7 +190,7 @@ export default function AdminPage() {
   if (dataLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-primary/40 border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -209,7 +213,7 @@ export default function AdminPage() {
             onClick={() => setTab(key)}
             className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               tab === key
-                ? 'bg-card text-indigo-600 shadow-sm'
+                ? 'bg-card text-primary shadow-sm'
                 : 'text-muted-foreground hover:text-foreground/80'
             }`}
           >
@@ -221,8 +225,8 @@ export default function AdminPage() {
       {/* ── Stats ── */}
       {tab === 'stats' && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <StatCard label={t('totalUsers')} value={stats.totalUsers} color="text-indigo-600" />
-          <StatCard label={t('totalReviews')} value={stats.totalReviews} color="text-purple-600" />
+          <StatCard label={t('totalUsers')} value={stats.totalUsers} color="text-primary" />
+          <StatCard label={t('totalReviews')} value={stats.totalReviews} color="text-primary" />
           <StatCard
             label={t('totalSubjects')}
             value={stats.totalSubjects}
@@ -327,7 +331,7 @@ export default function AdminPage() {
                   <button
                     onClick={() => handleClaimAction(claim.id, 'approved')}
                     disabled={actionLoading === claim.id}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 disabled:opacity-50 transition-colors"
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-primary/5 dark:bg-primary/10 text-primary hover:bg-primary/10 dark:hover:bg-primary/20 disabled:opacity-50 transition-colors"
                   >
                     {t('approve')}
                   </button>

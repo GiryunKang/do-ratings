@@ -23,13 +23,14 @@ export default function SentimentRiver({ subjectId, locale }: SentimentRiverProp
     async function fetchSentiment() {
       const supabase = createClient()
 
-      const { data: reviews } = await supabase
+      const { data: reviews, error: reviewsError } = await supabase
         .from('reviews')
         .select('overall_rating, created_at')
         .eq('subject_id', subjectId)
         .eq('is_deleted', false)
         .order('created_at', { ascending: true })
         .limit(200)
+      if (reviewsError) console.error('[SentimentRiver] reviews query error:', reviewsError.message)
 
       if (!reviews || reviews.length === 0) return
 

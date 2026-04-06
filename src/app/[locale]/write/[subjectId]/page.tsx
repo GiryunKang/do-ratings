@@ -76,13 +76,13 @@ export default async function WriteReviewPage({ params }: PageProps) {
       </div>
 
       {!isLoggedIn && (
-        <div className="mb-4 p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 dark:border-indigo-800">
-          <p className="text-sm font-medium text-indigo-900 dark:text-indigo-200 mb-2">
+        <div className="mb-4 p-4 rounded-xl bg-primary/5 dark:bg-primary/10 border border-primary/20 dark:border-primary/20 dark:border-primary/20">
+          <p className="text-sm font-medium text-foreground dark:text-primary/30 mb-2">
             {locale === 'ko' ? '로그인하면 리뷰를 저장할 수 있습니다' : 'Sign in to save your review'}
           </p>
           <Link
             href={`/${locale}/auth/login?redirect=/${locale}/write/${subjectId}`}
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90 transition-colors"
           >
             {locale === 'ko' ? '로그인 / 회원가입' : 'Sign in / Sign up'}
           </Link>

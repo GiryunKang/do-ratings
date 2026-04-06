@@ -28,11 +28,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { locale, id } = await params
   const supabase = await createClient()
 
-  const { data: subject } = await supabase
+  const { data: subject, error: subjectMetaError } = await supabase
     .from('subjects')
     .select('name, avg_rating')
     .eq('id', id)
     .single()
+  if (subjectMetaError) console.error('[SubjectPage] subject metadata query error:', subjectMetaError.message)
 
   if (!subject) return {}
 
@@ -73,7 +74,7 @@ export default async function SubjectPage({ params }: PageProps) {
   const { locale, id } = await params
   const supabase = await createClient()
 
-  const { data: subject } = await supabase
+  const { data: subject, error: subjectError } = await supabase
     .from('subjects')
     .select(`
       id,
@@ -88,6 +89,7 @@ export default async function SubjectPage({ params }: PageProps) {
     `)
     .eq('id', id)
     .single()
+  if (subjectError) console.error('[SubjectPage] subject query error:', subjectError.message)
 
   if (!subject) notFound()
 
@@ -118,10 +120,11 @@ export default async function SubjectPage({ params }: PageProps) {
   // Compute average sub_ratings server-side
   const avgSubRatings: Record<string, number> = {}
   if (criteria.length > 0) {
-    const { data: reviews } = await supabase
+    const { data: reviews, error: subRatingsError } = await supabase
       .from('reviews')
       .select('sub_ratings')
       .eq('subject_id', id)
+    if (subRatingsError) console.error('[SubjectPage] sub_ratings query error:', subRatingsError.message)
 
     if (reviews && reviews.length > 0) {
       const sums: Record<string, number> = {}
@@ -141,11 +144,12 @@ export default async function SubjectPage({ params }: PageProps) {
   }
 
   // Fetch review photos for gallery
-  const { data: reviewsWithImages } = await supabase
+  const { data: reviewsWithImages, error: reviewImagesError } = await supabase
     .from('reviews')
     .select('review_images(id, storage_path, display_order)')
     .eq('subject_id', id)
     .limit(20)
+  if (reviewImagesError) console.error('[SubjectPage] review_images query error:', reviewImagesError.message)
 
   type ReviewImageRow = { id: string; storage_path: string; display_order: number }
   const storageBase = process.env.NEXT_PUBLIC_SUPABASE_URL + '/storage/v1/object/public/review-images/'
@@ -155,17 +159,19 @@ export default async function SubjectPage({ params }: PageProps) {
     .map((img) => ({ id: img.id, url: storageBase + img.storage_path }))
 
   // Calculate rank/percentile within category
-  const { count: higherCount } = await supabase
+  const { count: higherCount, error: higherCountError } = await supabase
     .from('subjects')
     .select('id', { count: 'exact', head: true })
     .eq('category_id', subject.category_id)
     .gt('avg_rating', subject.avg_rating ?? 0)
+  if (higherCountError) console.error('[SubjectPage] higher count query error:', higherCountError.message)
 
-  const { count: totalInCategory } = await supabase
+  const { count: totalInCategory, error: totalCountError } = await supabase
     .from('subjects')
     .select('id', { count: 'exact', head: true })
     .eq('category_id', subject.category_id)
     .not('avg_rating', 'is', null)
+  if (totalCountError) console.error('[SubjectPage] total count query error:', totalCountError.message)
 
   const rank = (higherCount ?? 0) + 1
   const total = totalInCategory ?? 1
@@ -175,12 +181,15 @@ export default async function SubjectPage({ params }: PageProps) {
   const { data: { user } } = await supabase.auth.getUser()
   let existingReviewId: string | null = null
   if (user) {
-    const { data: existingReview } = await supabase
+    const { data: existingReview, error: existingReviewError } = await supabase
       .from('reviews')
       .select('id')
       .eq('subject_id', id)
       .eq('user_id', user.id)
       .single()
+    if (existingReviewError && existingReviewError.code !== 'PGRST116') {
+      console.error('[SubjectPage] existing review query error:', existingReviewError.message)
+    }
     existingReviewId = existingReview?.id ?? null
   }
 
@@ -227,7 +236,7 @@ export default async function SubjectPage({ params }: PageProps) {
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
+                <div className="w-20 h-20 rounded-lg bg-primary flex items-center justify-center">
                   <span className="text-3xl font-bold text-white">{firstLetter}</span>
                 </div>
               )}
@@ -291,7 +300,7 @@ export default async function SubjectPage({ params }: PageProps) {
             <Link href={writeHref} className={`inline-flex items-center gap-1.5 h-9 px-5 text-sm font-semibold rounded-lg transition-all ${
               existingReviewId
                 ? 'bg-primary text-primary-foreground hover:bg-primary/80'
-                : 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-md hover:shadow-lg hover:scale-105'
+                : 'bg-primary text-white shadow-md hover:shadow-lg hover:scale-105'
             }`}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />

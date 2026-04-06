@@ -56,12 +56,13 @@ export default function BattlesPage() {
     setLoading(true)
     const supabase = createClient()
 
-    const { data: battleRows } = await supabase
+    const { data: battleRows, error: battleRowsError } = await supabase
       .from('battles')
       .select('id, votes_a, votes_b, status, ends_at, created_at, review_a_id, review_b_id, subject_id')
       .eq('status', status)
       .order('created_at', { ascending: false })
       .limit(20)
+    if (battleRowsError) console.error('[BattlesPage] battles query error:', battleRowsError.message)
 
     if (!battleRows || battleRows.length === 0) {
       setBattles([])
@@ -78,10 +79,11 @@ export default function BattlesPage() {
     )
 
     // Fetch all reviews at once with user nickname
-    const { data: reviewRows } = await supabase
+    const { data: reviewRows, error: reviewRowsError } = await supabase
       .from('reviews')
       .select('id, title, content, overall_rating, user_id, public_profiles(nickname)')
       .in('id', reviewIds)
+    if (reviewRowsError) console.error('[BattlesPage] reviews query error:', reviewRowsError.message)
 
     type ReviewRow = {
       id: string
@@ -90,7 +92,7 @@ export default function BattlesPage() {
       overall_rating: number
       user_id: string
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      public_profiles: any
+      public_profiles: { id: string; nickname: string; avatar_url: string | null; level: string } | { id: string; nickname: string; avatar_url: string | null; level: string }[] | null
     }
 
     const reviewMap: Record<string, ReviewInfo> = {}
@@ -238,9 +240,9 @@ export default function BattlesPage() {
         <BattleSkeleton />
       ) : battles.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
-          <div className="w-20 h-20 rounded-full bg-indigo-50 dark:bg-indigo-950/30 flex items-center justify-center">
+          <div className="w-20 h-20 rounded-full bg-primary/5 dark:bg-primary/10 flex items-center justify-center">
             <svg
-              className="w-10 h-10 text-indigo-300"
+              className="w-10 h-10 text-primary/50"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

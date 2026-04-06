@@ -28,13 +28,14 @@ export default function FaultlineFeed({ subjectId, locale }: FaultlineFeedProps)
     async function analyze() {
       const supabase = createClient()
 
-      const { data: reviews } = await supabase
+      const { data: reviews, error: reviewsError } = await supabase
         .from('reviews')
         .select('id, title, overall_rating, public_profiles(nickname)')
         .eq('subject_id', subjectId)
         .eq('is_deleted', false)
         .order('overall_rating', { ascending: true })
         .limit(50)
+      if (reviewsError) console.error('[FaultlineFeed] reviews query error:', reviewsError.message)
 
       if (!reviews || reviews.length < 4) return
 

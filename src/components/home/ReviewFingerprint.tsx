@@ -28,11 +28,12 @@ export default function ReviewFingerprint({ locale }: ReviewFingerprintProps) {
     async function fetchProfile() {
       const supabase = createClient()
 
-      const { data: reviews } = await supabase
+      const { data: reviews, error: reviewsError } = await supabase
         .from('reviews')
         .select('overall_rating, subject_id, subjects(category_id)')
         .eq('user_id', user!.id)
         .limit(100)
+      if (reviewsError) console.error('[ReviewFingerprint] reviews query error:', reviewsError.message)
 
       if (!reviews || reviews.length === 0) return
 

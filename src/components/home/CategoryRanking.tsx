@@ -16,21 +16,23 @@ const medalRowConfig = [
 export default async function CategoryRanking({ locale }: CategoryRankingProps) {
   const supabase = await createClient()
 
-  const { data: categories } = await supabase
+  const { data: categories, error: categoriesError } = await supabase
     .from('categories')
     .select('id, name, slug')
     .order('name', { ascending: true })
+  if (categoriesError) console.error('[CategoryRanking] categories query error:', categoriesError.message)
 
   if (!categories || categories.length === 0) return null
 
   const categoryData = await Promise.all(
     categories.map(async (category) => {
-      const { data: topSubjects } = await supabase
+      const { data: topSubjects, error: topSubjectsError } = await supabase
         .from('subjects')
         .select('id, name, avg_rating, review_count')
         .eq('category_id', category.id)
         .order('avg_rating', { ascending: false })
         .limit(5)
+      if (topSubjectsError) console.error('[CategoryRanking] top subjects query error:', topSubjectsError.message)
 
       const catName =
         typeof category.name === 'object' && category.name !== null

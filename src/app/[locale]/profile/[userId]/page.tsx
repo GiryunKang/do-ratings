@@ -17,11 +17,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { userId } = await params
   const supabase = await createClient()
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileMetaError } = await supabase
     .from('public_profiles')
     .select('nickname')
     .eq('id', userId)
     .single()
+  if (profileMetaError) console.error('[ProfilePage] profile metadata query error:', profileMetaError.message)
 
   if (!profile) return {}
 
@@ -47,16 +48,20 @@ export default async function ProfilePage({ params }: PageProps) {
   const supabase = await createClient()
 
   // Fetch public profile
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('public_profiles')
     .select('id, nickname, avatar_url, level, review_count, trust_score')
     .eq('id', userId)
     .single()
+  if (profileError) console.error('[ProfilePage] profile query error:', profileError.message)
 
   if (!profile) notFound()
 
   // Fetch follower/following counts
-  const [{ count: followerCount }, { count: followingCount }] = await Promise.all([
+  const [
+    { count: followerCount, error: followerError },
+    { count: followingCount, error: followingError },
+  ] = await Promise.all([
     supabase
       .from('follows')
       .select('*', { count: 'exact', head: true })
@@ -66,17 +71,24 @@ export default async function ProfilePage({ params }: PageProps) {
       .select('*', { count: 'exact', head: true })
       .eq('follower_id', userId),
   ])
+  const countErrors = [followerError, followingError].filter(Boolean)
+  if (countErrors.length > 0) {
+    console.error('[ProfilePage] follow count query errors:', countErrors.map(e => e!.message))
+  }
 
   // Check if current user follows this user
   const { data: { user: currentUser } } = await supabase.auth.getUser()
   let isFollowing = false
   if (currentUser && currentUser.id !== userId) {
-    const { data: follow } = await supabase
+    const { data: follow, error: followError } = await supabase
       .from('follows')
       .select('follower_id')
       .eq('follower_id', currentUser.id)
       .eq('following_id', userId)
       .single()
+    if (followError && followError.code !== 'PGRST116') {
+      console.error('[ProfilePage] follow check query error:', followError.message)
+    }
     isFollowing = !!follow
   }
 

@@ -49,7 +49,7 @@ export default function QuickFaceoff({ subjects, locale }: QuickFaceoffProps) {
     <section>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-base font-bold text-foreground flex items-center gap-2">
-          <Swords className="w-5 h-5 text-indigo-500" />
+          <Swords className="w-5 h-5 text-primary" />
           {locale === 'ko' ? '퀵 대결' : 'Quick Face-off'}
         </h2>
         <span className="text-xs text-muted-foreground font-medium">
@@ -140,7 +140,7 @@ export default function QuickFaceoff({ subjects, locale }: QuickFaceoffProps) {
         <motion.span
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="w-10 h-10 rounded-full bg-card shadow-lg ring-2 ring-indigo-300 flex items-center justify-center text-xs font-black text-indigo-600"
+          className="w-10 h-10 rounded-full bg-card shadow-lg ring-2 ring-primary/30 flex items-center justify-center text-xs font-black text-primary"
         >
           VS
         </motion.span>

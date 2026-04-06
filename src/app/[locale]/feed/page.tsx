@@ -59,10 +59,11 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
       const supabase = createClient()
 
       // Get following IDs
-      const { data: follows } = await supabase
+      const { data: follows, error: followsError } = await supabase
         .from('follows')
         .select('following_id')
         .eq('follower_id', userId)
+      if (followsError) console.error('[FeedPage] follows query error:', followsError.message)
 
       if (!follows || follows.length === 0) {
         return { data: [], nextCursor: null }
@@ -94,17 +95,19 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
         }
       }
 
-      const { data: reviews } = await query
+      const { data: reviews, error: reviewsError } = await query
+      if (reviewsError) console.error('[FeedPage] reviews query error:', reviewsError.message)
 
       if (!reviews || reviews.length === 0) return { data: [], nextCursor: null }
 
       // Check helpful votes
       const reviewIds = reviews.map((r) => r.id)
-      const { data: votes } = await supabase
+      const { data: votes, error: votesError } = await supabase
         .from('helpful_votes')
         .select('review_id')
         .eq('user_id', userId)
         .in('review_id', reviewIds)
+      if (votesError) console.error('[FeedPage] helpful_votes query error:', votesError.message)
 
       const helpfulSet = new Set((votes ?? []).map((v) => v.review_id))
 
@@ -118,7 +121,7 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
         subject_id: string
         user_id: string
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        public_profiles: any
+        public_profiles: { id: string; nickname: string; avatar_url: string | null; level: string } | { id: string; nickname: string; avatar_url: string | null; level: string }[] | null
       }
 
       const mapped: FeedReview[] = (reviews as ReviewRow[]).map((r) => {
@@ -158,7 +161,10 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
     if (loading || items.length > 0) return
     async function loadTopReviewers() {
       const supabase = createClient()
-      const [{ data: reviewers }, { data: follows }] = await Promise.all([
+      const [
+        { data: reviewers, error: reviewersError },
+        { data: follows, error: followsError },
+      ] = await Promise.all([
         supabase
           .from('public_profiles')
           .select('id, nickname, review_count, level, avatar_url')
@@ -169,6 +175,10 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
           .select('following_id')
           .eq('follower_id', userId),
       ])
+      const queryErrors = [reviewersError, followsError].filter(Boolean)
+      if (queryErrors.length > 0) {
+        console.error('[FeedPage] top reviewers query errors:', queryErrors.map(e => e!.message))
+      }
       if (reviewers) setTopReviewers(reviewers as TopReviewer[])
       if (follows) setFollowingIds(new Set(follows.map((f) => f.following_id)))
     }
@@ -194,8 +204,8 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
   if (!loading && items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 gap-6 text-center px-6">
-        <div className="w-20 h-20 rounded-full bg-indigo-50 dark:bg-indigo-950/30 flex items-center justify-center">
-          <svg className="w-10 h-10 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="w-20 h-20 rounded-full bg-primary/5 dark:bg-primary/10 flex items-center justify-center">
+          <svg className="w-10 h-10 text-primary/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
         </div>
@@ -220,7 +230,7 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
                     {reviewer.avatar_url ? (
                       <img src={reviewer.avatar_url} alt={reviewer.nickname} className="w-10 h-10 rounded-full object-cover" referrerPolicy="no-referrer" />
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-sm">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
                         {reviewer.nickname.charAt(0).toUpperCase()}
                       </div>
                     )}
@@ -239,7 +249,7 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
                     className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
                       followingIds.has(reviewer.id)
                         ? 'bg-muted text-muted-foreground hover:bg-muted'
-                        : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                        : 'bg-primary text-white hover:bg-primary/90'
                     }`}
                   >
                     {followLoading.has(reviewer.id)
@@ -256,7 +266,7 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
 
         <Link
           href={`/${locale}/rankings`}
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full px-5 py-2.5 text-sm font-semibold hover:shadow-lg transition-all"
+          className="inline-flex items-center gap-2 bg-primary text-white rounded-full px-5 py-2.5 text-sm font-semibold hover:shadow-lg transition-all"
         >
           {locale === 'ko' ? '더 많은 리뷰어 탐색' : 'Discover More Reviewers'}
         </Link>

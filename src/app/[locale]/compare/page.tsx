@@ -176,7 +176,7 @@ function ComparePageInner() {
       {loading && subjectsData.length === 0 ? (
         <div className="flex items-center justify-center py-16">
           <svg
-            className="animate-spin h-6 w-6 text-indigo-400"
+            className="animate-spin h-6 w-6 text-primary"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -216,7 +216,7 @@ function ComparePageInner() {
       {subjectsData.length < 3 && (
         <button
           onClick={() => setPickerOpen(true)}
-          className="mt-4 w-full py-3 border-2 border-dashed border-border rounded-xl text-sm font-medium text-muted-foreground hover:border-indigo-300 hover:text-indigo-500 transition-colors"
+          className="mt-4 w-full py-3 border-2 border-dashed border-border rounded-xl text-sm font-medium text-muted-foreground hover:border-primary/30 hover:text-primary transition-colors"
         >
           + {t('addSubject')}
         </button>
@@ -242,7 +242,7 @@ export default function ComparePage() {
         <div className="max-w-4xl mx-auto px-4 py-6">
           <div className="flex items-center justify-center py-16">
             <svg
-              className="animate-spin h-6 w-6 text-indigo-400"
+              className="animate-spin h-6 w-6 text-primary"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"

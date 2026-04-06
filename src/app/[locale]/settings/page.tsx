@@ -84,7 +84,7 @@ export default function SettingsPage() {
   if (loading || !user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-primary/40 border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -120,7 +120,7 @@ export default function SettingsPage() {
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
             maxLength={30}
-            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400"
+            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/40"
             placeholder={t('nicknamePlaceholder') ?? 'Enter nickname'}
           />
         </div>
@@ -134,7 +134,7 @@ export default function SettingsPage() {
             type="url"
             value={avatarUrl}
             onChange={(e) => setAvatarUrl(e.target.value)}
-            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400"
+            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/40"
             placeholder="https://example.com/avatar.png"
           />
           <p className="mt-1.5 text-xs text-muted-foreground">
@@ -167,8 +167,8 @@ export default function SettingsPage() {
                 onClick={() => setLanguage(lang)}
                 className={`flex-1 py-2.5 rounded-xl border text-sm font-medium transition-colors ${
                   language === lang
-                    ? 'bg-indigo-600 text-white border-indigo-600'
-                    : 'bg-card text-foreground/80 border-border hover:border-indigo-400'
+                    ? 'bg-primary text-white border-primary'
+                    : 'bg-card text-foreground/80 border-border hover:border-primary/40'
                 }`}
               >
                 {lang === 'ko' ? '한국어' : 'English'}
@@ -194,7 +194,7 @@ export default function SettingsPage() {
         <button
           type="submit"
           disabled={saving}
-          className="w-full py-3 rounded-xl bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full py-3 rounded-xl bg-primary text-white font-semibold text-sm hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {saving && (
             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

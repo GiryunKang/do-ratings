@@ -39,11 +39,11 @@ const categoryAccents: Record<string, string> = {
   shopping: 'border-purple-400',
   entertainment: 'border-yellow-400',
   health: 'border-red-400',
-  education: 'border-indigo-400',
+  education: 'border-primary/40',
 }
 
 const accentFallbacks = [
-  'border-indigo-400',
+  'border-primary/40',
   'border-purple-400',
   'border-pink-400',
   'border-orange-400',
@@ -152,7 +152,7 @@ export default function ExplorePage() {
           {isLoggedIn && (
             <button
               onClick={() => setShowAddModal(true)}
-              className="hidden md:flex items-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 active:bg-indigo-800 transition-colors"
+              className="hidden md:flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary/90 active:bg-primary/80 transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -166,14 +166,14 @@ export default function ExplorePage() {
         {/* Mobile filter toggle */}
         <button
           onClick={() => setShowFilters((v) => !v)}
-          className="md:hidden flex items-center gap-1.5 text-sm text-indigo-600 font-medium"
+          className="md:hidden flex items-center gap-1.5 text-sm text-primary font-medium"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
           </svg>
           {t('filter') ?? 'Filters'}
           {(filters.category || filters.ratingMin) && (
-            <span className="ml-1 bg-indigo-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+            <span className="ml-1 bg-primary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
               {[filters.category, filters.ratingMin].filter(Boolean).length}
             </span>
           )}
@@ -300,7 +300,7 @@ export default function ExplorePage() {
       {isLoggedIn && (
         <button
           onClick={() => setShowAddModal(true)}
-          className="md:hidden fixed bottom-20 right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-600 shadow-lg text-white hover:bg-indigo-700 active:bg-indigo-800 transition-colors"
+          className="md:hidden fixed bottom-20 right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg text-white hover:bg-primary/90 active:bg-primary/80 transition-colors"
           aria-label={currentLocale === 'ko' ? '항목 추가' : 'Add Subject'}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

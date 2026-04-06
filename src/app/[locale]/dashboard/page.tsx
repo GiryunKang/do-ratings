@@ -128,7 +128,7 @@ export default function DashboardPage() {
   if (loading || !user || dataLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-primary/40 border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -182,12 +182,12 @@ export default function DashboardPage() {
         <StatCard
           label={t('totalReviews')}
           value={profile?.review_count ?? reviews.length}
-          color="text-indigo-600"
+          color="text-primary"
         />
         <StatCard
           label={t('totalHelpful')}
           value={profile?.total_helpful_count ?? 0}
-          color="text-purple-600"
+          color="text-primary"
         />
         <StatCard label={t('avgRating')} value={avgRating} color="text-amber-600" />
       </div>
@@ -281,13 +281,13 @@ export default function DashboardPage() {
             {recentReviews.map((review) => (
               <li key={review.id} className="py-3 flex items-start gap-3">
                 {/* Rating badge */}
-                <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-full bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 font-bold text-sm">
+                <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-full bg-primary/5 dark:bg-primary/10 text-primary font-bold text-sm">
                   {review.overall_rating}
                 </span>
                 <div className="flex-1 min-w-0">
                   <Link
                     href={`/${currentLocale}/subject/${review.subject_id}`}
-                    className="block text-sm font-medium text-foreground hover:text-indigo-600 truncate transition-colors"
+                    className="block text-sm font-medium text-foreground hover:text-primary truncate transition-colors"
                   >
                     {review.title || review.subjects?.name || 'Review'}
                   </Link>

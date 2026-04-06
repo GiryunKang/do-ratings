@@ -16,15 +16,17 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
 
   const categoryOrder = ['people', 'places', 'companies', 'restaurants', 'airlines', 'hotels']
 
-  const { data: categoriesRaw } = await supabase
+  const { data: categoriesRaw, error: categoriesError } = await supabase
     .from('categories')
     .select('*')
+  if (categoriesError) console.error('[RightSidebar] categories query error:', categoriesError.message)
 
-  const { data: reviewersRaw } = await supabase
+  const { data: reviewersRaw, error: reviewersError } = await supabase
     .from('public_profiles')
     .select('*')
     .order('review_count', { ascending: false })
     .limit(5)
+  if (reviewersError) console.error('[RightSidebar] reviewers query error:', reviewersError.message)
 
   const categories = (categoriesRaw ?? []).sort((a, b) => {
     const ai = categoryOrder.indexOf(a.slug as string)

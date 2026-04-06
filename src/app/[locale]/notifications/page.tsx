@@ -158,7 +158,7 @@ export default function NotificationsPage() {
         {unreadCount > 0 && (
           <button
             onClick={markAllRead}
-            className="text-sm text-indigo-600 hover:text-indigo-800 font-medium transition-colors"
+            className="text-sm text-primary hover:text-primary font-medium transition-colors"
           >
             {t('markAllRead')}
           </button>
@@ -199,7 +199,7 @@ export default function NotificationsPage() {
                 key={notif.id}
                 onClick={() => handleNotificationClick(notif)}
                 className={`w-full text-left flex items-start gap-3 px-4 py-4 border-b border-border/50 last:border-0 hover:bg-muted/50 transition-colors ${
-                  !notif.is_read ? 'bg-indigo-50/40 dark:bg-indigo-950/20' : ''
+                  !notif.is_read ? 'bg-primary/5/40 dark:bg-primary/10' : ''
                 }`}
               >
                 {/* Type icon */}
@@ -231,7 +231,7 @@ export default function NotificationsPage() {
 
                 {/* Unread indicator */}
                 {!notif.is_read && (
-                  <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 shrink-0 mt-2" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-primary shrink-0 mt-2" />
                 )}
               </button>
             ))}

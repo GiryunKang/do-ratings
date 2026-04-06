@@ -30,22 +30,24 @@ export default function RatingPrediction({ locale }: RatingPredictionProps) {
     async function generatePrediction() {
       const supabase = createClient()
 
-      const { data: userReviews } = await supabase
+      const { data: userReviews, error: userReviewsError } = await supabase
         .from('reviews')
         .select('overall_rating, subject_id')
         .eq('user_id', user!.id)
         .limit(50)
+      if (userReviewsError) console.error('[RatingPrediction] user reviews query error:', userReviewsError.message)
 
       if (!userReviews || userReviews.length < 2) return
 
       const userAvg = userReviews.reduce((sum, r) => sum + Number(r.overall_rating), 0) / userReviews.length
       const reviewedIds = new Set(userReviews.map(r => r.subject_id))
 
-      const { data: subjects } = await supabase
+      const { data: subjects, error: subjectsError } = await supabase
         .from('subjects')
         .select('id, name, avg_rating, categories(slug)')
         .not('avg_rating', 'is', null)
         .limit(100)
+      if (subjectsError) console.error('[RatingPrediction] subjects query error:', subjectsError.message)
 
       const unreviewed = (subjects ?? []).filter(s => !reviewedIds.has(s.id))
       if (unreviewed.length === 0) return

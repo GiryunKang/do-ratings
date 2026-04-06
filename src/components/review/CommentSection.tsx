@@ -35,12 +35,13 @@ export default function CommentSection({
   const fetchComments = useCallback(async () => {
     setLoading(true)
     const supabase = createClient()
-    const { data } = await supabase
+    const { data, error: commentsError } = await supabase
       .from('review_comments')
       .select('id, content, created_at, user_id')
       .eq('review_id', reviewId)
       .order('created_at', { ascending: true })
       .limit(50)
+    if (commentsError) console.error('[CommentSection] comments query error:', commentsError.message)
 
     if (data) {
       // Batch fetch profiles for unique user_ids
@@ -48,10 +49,11 @@ export default function CommentSection({
       let profileMap: Record<string, string> = {}
 
       if (uniqueUserIds.length > 0) {
-        const { data: profiles } = await supabase
+        const { data: profiles, error: profilesError } = await supabase
           .from('public_profiles')
           .select('id, nickname')
           .in('id', uniqueUserIds)
+        if (profilesError) console.error('[CommentSection] profiles query error:', profilesError.message)
 
         if (profiles) {
           profileMap = Object.fromEntries(

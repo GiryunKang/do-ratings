@@ -31,7 +31,7 @@ interface ReviewRow {
   user_id: string
   country_code: string | null
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public_profiles: any
+  public_profiles: { id: string; nickname: string; avatar_url: string | null; level: string } | { id: string; nickname: string; avatar_url: string | null; level: string }[] | null
   helpful_votes?: { user_id: string }[]
 }
 
