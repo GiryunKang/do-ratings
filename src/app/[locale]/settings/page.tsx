@@ -109,7 +109,7 @@ export default function SettingsPage() {
         {t('settings') ?? 'Settings'}
       </h1>
 
-      <form onSubmit={handleSave} className="space-y-6 bg-card rounded-2xl border border-border p-6">
+      <form onSubmit={handleSave} className="space-y-6 bg-card rounded-xl border border-border p-6">
         {/* Nickname */}
         <div>
           <label className="block text-sm font-medium text-foreground/80 mb-1.5">

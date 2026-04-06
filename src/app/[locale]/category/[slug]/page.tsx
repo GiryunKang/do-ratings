@@ -69,7 +69,7 @@ export default async function CategoryPage({ params }: PageProps) {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
       {/* Category Header Banner */}
-      <div className="bg-primary/5 rounded-2xl p-8 mb-6 flex flex-col items-center text-center border border-primary/20">
+      <div className="bg-primary/5 rounded-xl p-8 mb-6 flex flex-col items-center text-center border border-primary/20">
         <div className="mb-4 text-primary">
           <CategoryIcon name={category.icon as string ?? ''} className="w-12 h-12" />
         </div>

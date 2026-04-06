@@ -21,7 +21,7 @@ function InlineStars({ rating }: { rating: number }) {
   const stars = []
   for (let i = 1; i <= 5; i++) {
     stars.push(
-      <span key={i} className={i <= Math.round(rating) ? 'text-yellow-400' : 'text-muted-foreground/60'}>
+      <span key={i} className={i <= Math.round(rating) ? 'text-primary' : 'text-muted-foreground/60'}>
         ★
       </span>
     )

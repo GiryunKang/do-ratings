@@ -57,16 +57,18 @@ export default function ReactionBar({
     setPending(true)
     try {
       if (isRemoving) {
-        await supabase
+        const { error } = await supabase
           .from('review_reactions')
           .delete()
           .eq('user_id', currentUserId)
           .eq('review_id', reviewId)
+        if (error) console.error('[ReactionBar] delete error:', error.message)
       } else {
-        await supabase.from('review_reactions').upsert(
+        const { error } = await supabase.from('review_reactions').upsert(
           { user_id: currentUserId, review_id: reviewId, reaction: key },
           { onConflict: 'user_id,review_id' }
         )
+        if (error) console.error('[ReactionBar] upsert error:', error.message)
       }
     } catch {
       // Revert on error

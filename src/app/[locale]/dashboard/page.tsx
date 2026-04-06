@@ -20,8 +20,8 @@ import {
 } from 'recharts'
 
 const COLORS = [
-  '#6366f1', // indigo-500
-  '#a855f7', // purple-500
+  '#FF6B35', // primary orange
+  '#4ECDC4', // teal
   '#f59e0b', // amber-500
   '#22c55e', // green-500
   '#3b82f6', // blue-500
@@ -69,7 +69,7 @@ function StatCard({
   color: string
 }) {
   return (
-    <div className={`bg-card rounded-2xl border border-border shadow-sm p-5`}>
+    <div className={`bg-card rounded-xl border border-border shadow-sm p-5`}>
       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">{label}</p>
       <p className={`text-3xl font-bold ${color}`}>{value}</p>
     </div>
@@ -195,7 +195,7 @@ export default function DashboardPage() {
       {/* Charts row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Category breakdown */}
-        <div className="bg-card rounded-2xl border border-border shadow-sm p-5">
+        <div className="bg-card rounded-xl border border-border shadow-sm p-5">
           <h2 className="text-sm font-semibold text-foreground/80 mb-4">{t('categoryBreakdown')}</h2>
           {categoryData.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-8">No data yet</p>
@@ -240,7 +240,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Monthly activity */}
-        <div className="bg-card rounded-2xl border border-border shadow-sm p-5">
+        <div className="bg-card rounded-xl border border-border shadow-sm p-5">
           <h2 className="text-sm font-semibold text-foreground/80 mb-4">{t('monthlyActivity')}</h2>
           {reviews.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-8">No data yet</p>
@@ -264,7 +264,7 @@ export default function DashboardPage() {
                   contentStyle={{ fontSize: 12, borderRadius: 8 }}
                   cursor={{ fill: '#f5f3ff' }}
                 />
-                <Bar dataKey="count" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="count" fill="#FF6B35" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -272,7 +272,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent activity */}
-      <div className="bg-card rounded-2xl border border-border shadow-sm p-5">
+      <div className="bg-card rounded-xl border border-border shadow-sm p-5">
         <h2 className="text-sm font-semibold text-foreground/80 mb-4">{t('recentActivity')}</h2>
         {recentReviews.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-6">{currentLocale === 'ko' ? '아직 리뷰가 없습니다' : 'No reviews yet'}</p>

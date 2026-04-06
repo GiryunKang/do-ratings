@@ -162,7 +162,7 @@ export default function AISummary({ subjectId, locale }: AISummaryProps) {
               </span>
             </div>
             <div className="text-right">
-              <div className="text-lg font-bold text-foreground">{summary.avgRating} <span className="text-yellow-400">★</span></div>
+              <div className="text-lg font-bold text-foreground">{summary.avgRating} <span className="text-primary">★</span></div>
               <div className="text-xs text-muted-foreground">{summary.totalReviews} {t('basedOn')}</div>
             </div>
           </div>

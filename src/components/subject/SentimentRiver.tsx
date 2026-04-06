@@ -18,7 +18,6 @@ interface DataPoint {
 export default function SentimentRiver({ subjectId, locale }: SentimentRiverProps) {
   const [data, setData] = useState<DataPoint[]>([])
 
-  /* eslint-disable react-hooks/set-state-in-effect -- data fetching on mount */
   useEffect(() => {
     async function fetchSentiment() {
       const supabase = createClient()

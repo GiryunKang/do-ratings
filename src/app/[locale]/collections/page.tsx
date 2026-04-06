@@ -272,7 +272,7 @@ export default function CollectionsPage() {
           />
 
           {/* Modal */}
-          <div className="relative bg-card rounded-2xl shadow-xl w-full max-w-md p-6 z-10">
+          <div className="relative bg-card rounded-xl shadow-xl w-full max-w-md p-6 z-10">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-lg font-bold text-foreground">
                 {t('createCollection')}

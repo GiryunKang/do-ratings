@@ -236,7 +236,7 @@ export default function ExplorePage() {
                         <div className="flex items-center gap-1.5 mt-auto">
                           {subject.avg_rating != null ? (
                             <>
-                              <span className="text-yellow-400 text-sm">★</span>
+                              <span className="text-primary text-sm">★</span>
                               <span className="text-sm font-bold text-foreground">{subject.avg_rating.toFixed(1)}</span>
                               <span className="text-xs text-muted-foreground">({subject.review_count})</span>
                             </>
@@ -255,7 +255,7 @@ export default function ExplorePage() {
               <svg className="w-16 h-16 mx-auto mb-4" viewBox="0 0 64 64" fill="none">
                 <circle cx="28" cy="28" r="18" stroke="#c7d2fe" strokeWidth="3" />
                 <circle cx="28" cy="28" r="10" fill="#e0e7ff" />
-                <path d="M41 41l10 10" stroke="#6366f1" strokeWidth="3" strokeLinecap="round" />
+                <path d="M41 41l10 10" stroke="#FF6B35" strokeWidth="3" strokeLinecap="round" />
                 <path d="M24 24h8M24 30h5" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" />
               </svg>
               <p className="text-sm font-medium text-muted-foreground mb-1">{t('noResults') ?? 'No results found'}</p>
@@ -280,7 +280,7 @@ export default function ExplorePage() {
                     <div className="flex items-center gap-1.5 mt-auto">
                       {subject.avg_rating != null ? (
                         <>
-                          <span className="text-yellow-400 text-sm">★</span>
+                          <span className="text-primary text-sm">★</span>
                           <span className="text-sm font-bold text-foreground">{subject.avg_rating.toFixed(1)}</span>
                           <span className="text-xs text-muted-foreground">({subject.review_count})</span>
                         </>

@@ -43,7 +43,7 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       width: '100%', height: '100%', backgroundColor: 'white', padding: 60,
     }}>
-      <div style={{ display: 'flex', fontSize: 24, color: '#6366f1', marginBottom: 16, fontWeight: 600 }}>
+      <div style={{ display: 'flex', fontSize: 24, color: '#FF6B35', marginBottom: 16, fontWeight: 600 }}>
         {categoryName}
       </div>
       <div style={{ display: 'flex', fontSize: 56, fontWeight: 700, color: '#111827', textAlign: 'center', marginBottom: 24 }}>

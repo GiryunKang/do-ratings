@@ -53,7 +53,7 @@ function Star({
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          className={`absolute inset-0 ${cls} text-yellow-400 golden-glow`}
+          className={`absolute inset-0 ${cls} text-primary golden-glow`}
           fill="currentColor"
           style={fill === 'half' ? { clipPath: 'inset(0 50% 0 0)' } : undefined}
         >

@@ -86,7 +86,7 @@ export default function SubjectShuffle({ subjects, locale }: SubjectShuffleProps
               >
                 <Link
                   href={`/${locale}/subject/${subject.id}`}
-                  className="group block relative bg-card rounded-2xl shadow-sm ring-1 ring-foreground/[0.06] overflow-hidden hover:shadow-lg hover:ring-primary/30 hover:-translate-y-1 transition-all duration-300"
+                  className="group block relative bg-card rounded-xl shadow-sm ring-1 ring-foreground/[0.06] overflow-hidden hover:shadow-lg hover:ring-primary/30 hover:-translate-y-1 transition-all duration-300"
                 >
                   {/* Top accent bar */}
                   <div className={`h-1.5 ${color}`} />
@@ -109,7 +109,7 @@ export default function SubjectShuffle({ subjects, locale }: SubjectShuffleProps
 
                       {/* Floating rating badge */}
                       {subject.avg_rating != null && (
-                        <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-yellow-400 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                        <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-primary text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
                           ★ {subject.avg_rating.toFixed(1)}
                         </div>
                       )}
@@ -118,7 +118,7 @@ export default function SubjectShuffle({ subjects, locale }: SubjectShuffleProps
                     <div className={`h-24 ${color} flex items-center justify-center relative`}>
                       <CategoryIcon name={subject.category_icon} className="w-10 h-10 text-white/40" />
                       {subject.avg_rating != null && (
-                        <div className="absolute bottom-2 right-2 bg-black/40 text-yellow-300 text-xs font-bold px-2 py-1 rounded-full">
+                        <div className="absolute bottom-2 right-2 bg-black/40 text-primary text-xs font-bold px-2 py-1 rounded-full">
                           ★ {subject.avg_rating.toFixed(1)}
                         </div>
                       )}

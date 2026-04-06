@@ -154,7 +154,7 @@ export default function BattleCard({
   const canVote = !isEnded && !!currentUserId && !userVote
 
   return (
-    <div className="bg-card rounded-2xl border border-border p-4 shadow-sm hover:shadow-md transition-shadow animate-fadeIn">
+    <div className="bg-card rounded-xl border border-border p-4 shadow-sm hover:shadow-md transition-shadow animate-fadeIn">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">

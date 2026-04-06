@@ -32,7 +32,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           <span className="text-xl">🎯</span>
           {ko ? '왜 이 서비스를 만들었나요?' : 'Why We Built This'}
         </h2>
-        <div className="bg-card rounded-2xl border border-border p-6 md:p-8 space-y-4 [word-break:keep-all]">
+        <div className="bg-card rounded-xl border border-border p-6 md:p-8 space-y-4 [word-break:keep-all]">
           {ko ? (
             <>
               <p className="text-muted-foreground leading-loose">
@@ -96,7 +96,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           {ko ? '우리의 철학' : 'Our Philosophy'}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div className="bg-card rounded-2xl border border-border p-6 space-y-3">
+          <div className="bg-card rounded-xl border border-border p-6 space-y-3">
             <div className="w-12 h-12 rounded-xl bg-yellow-400/10 flex items-center justify-center text-2xl">⭐</div>
             <h3 className="font-bold text-lg">{ko ? '솔직한 평가' : 'Honest Ratings'}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed [word-break:keep-all]">
@@ -105,7 +105,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                 : 'Good is good, bad is bad. Honest, unfiltered ratings make the world better.'}
             </p>
           </div>
-          <div className="bg-card rounded-2xl border border-border p-6 space-y-3">
+          <div className="bg-card rounded-xl border border-border p-6 space-y-3">
             <div className="w-12 h-12 rounded-xl bg-blue-400/10 flex items-center justify-center text-2xl">🌍</div>
             <h3 className="font-bold text-lg">{ko ? '모든 것을 평가' : 'Rate Everything'}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed [word-break:keep-all]">
@@ -114,7 +114,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                 : 'People, companies, places, airlines, hotels, restaurants. Nothing is off-limits.'}
             </p>
           </div>
-          <div className="bg-card rounded-2xl border border-border p-6 space-y-3">
+          <div className="bg-card rounded-xl border border-border p-6 space-y-3">
             <div className="w-12 h-12 rounded-xl bg-green-400/10 flex items-center justify-center text-2xl">🗳️</div>
             <h3 className="font-bold text-lg">{ko ? '누구나 참여하는 평가' : 'Ratings by Everyone'}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed [word-break:keep-all]">

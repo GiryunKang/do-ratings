@@ -158,7 +158,7 @@ export default function SevenSecondCollapse({ subjectId, previousAvg, locale }: 
               transition={{ duration: 0.6, delay: 0.3 }}
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center"
             >
-              <div className="bg-red-500/90 backdrop-blur-md text-white rounded-2xl px-6 py-4 shadow-2xl">
+              <div className="bg-red-500/90 backdrop-blur-md text-white rounded-xl px-6 py-4 shadow-2xl">
                 <motion.p
                   animate={{ scale: [1, 1.1, 1] }}
                   transition={{ duration: 1, repeat: Infinity }}

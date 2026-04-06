@@ -78,7 +78,7 @@ export default function QuickFaceoff({ subjects, locale }: QuickFaceoffProps) {
                 scale: isWinner ? 1.03 : isLoser ? 0.97 : 1,
               }}
               transition={{ type: 'spring', stiffness: 300 }}
-              className={`relative bg-card rounded-2xl ring-1 overflow-hidden text-left transition-all ${
+              className={`relative bg-card rounded-xl ring-1 overflow-hidden text-left transition-all ${
                 isWinner
                   ? 'ring-green-400 shadow-lg shadow-green-500/10'
                   : isLoser
@@ -114,7 +114,7 @@ export default function QuickFaceoff({ subjects, locale }: QuickFaceoffProps) {
                 </div>
                 <p className="text-sm font-bold text-foreground line-clamp-1">{name}</p>
                 {subject.avg_rating != null && (
-                  <p className="text-xs text-yellow-500 font-medium mt-1">★ {subject.avg_rating.toFixed(1)}</p>
+                  <p className="text-xs text-primary font-medium mt-1">★ {subject.avg_rating.toFixed(1)}</p>
                 )}
               </div>
 

@@ -50,8 +50,6 @@ export default function ReviewWorldMap({ locale, initialReviews }: ReviewWorldMa
   const reviews = initialReviews ?? []
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
 
-  if (reviews.length === 0) return null
-
   const countryData = useMemo(() => {
     const grouped = new Map<string, MapReview[]>()
     for (const r of reviews) {
@@ -75,6 +73,8 @@ export default function ReviewWorldMap({ locale, initialReviews }: ReviewWorldMa
     return result
   }, [reviews, locale])
 
+  if (reviews.length === 0) return null
+
   const selectedData = countryData.find(c => c.code === selectedCountry)
   const maxReviews = Math.max(...countryData.map(c => c.reviews.length), 1)
 
@@ -85,7 +85,7 @@ export default function ReviewWorldMap({ locale, initialReviews }: ReviewWorldMa
         {locale === 'ko' ? '세계 리뷰 지도' : 'World Review Map'}
       </h2>
 
-      <div className="relative bg-primary/5 dark:bg-primary/5 rounded-2xl ring-1 ring-foreground/[0.06] overflow-hidden">
+      <div className="relative bg-primary/5 dark:bg-primary/5 rounded-xl ring-1 ring-foreground/[0.06] overflow-hidden">
         <svg viewBox="0 0 400 260" className="w-full h-auto">
           {/* Simplified world map outline */}
           <path
@@ -108,7 +108,7 @@ export default function ReviewWorldMap({ locale, initialReviews }: ReviewWorldMa
                   cx={country.cx}
                   cy={country.cy}
                   r={radius * 2.5}
-                  fill={`rgba(99, 102, 241, ${0.05 + intensity * 0.15})`}
+                  fill={`rgba(255, 107, 53,${0.05 + intensity * 0.15})`}
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 3, repeat: Infinity, delay: (country.cx % 7) * 0.3 }}
                 />
@@ -118,7 +118,7 @@ export default function ReviewWorldMap({ locale, initialReviews }: ReviewWorldMa
                   cx={country.cx}
                   cy={country.cy}
                   r={radius}
-                  fill={`rgba(99, 102, 241, ${0.4 + intensity * 0.5})`}
+                  fill={`rgba(255, 107, 53,${0.4 + intensity * 0.5})`}
                   stroke="white"
                   strokeWidth={1.5}
                   className="cursor-pointer"
@@ -174,7 +174,7 @@ export default function ReviewWorldMap({ locale, initialReviews }: ReviewWorldMa
               <div className="space-y-1.5">
                 {selectedData.reviews.slice(0, 5).map(review => (
                   <div key={review.id} className="flex items-center gap-2 text-xs">
-                    <span className="text-yellow-500 font-medium shrink-0">{'★'.repeat(Math.round(review.overall_rating))}</span>
+                    <span className="text-primary font-medium shrink-0">{'★'.repeat(Math.round(review.overall_rating))}</span>
                     <span className="text-foreground truncate">{review.title}</span>
                     <span className="text-muted-foreground shrink-0">— {review.nickname}</span>
                   </div>

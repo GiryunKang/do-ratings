@@ -26,7 +26,7 @@ export default async function Image({ params }: { params: Promise<{ userId: stri
   const level = (profile?.level as string) ?? 'bronze'
   const reviewCount = profile?.review_count ?? 0
   const initial = nickname.charAt(0).toUpperCase()
-  const color = levelColors[level] ?? '#6366f1'
+  const color = levelColors[level] ?? '#FF6B35'
 
   return new ImageResponse(
     <div style={{

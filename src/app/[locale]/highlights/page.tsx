@@ -18,6 +18,7 @@ export default async function HighlightsPage({ params }: { params: Promise<{ loc
   const { locale } = await params
   const supabase = await createClient()
 
+  // Server component: Date.now() executes once during SSR, not during client render
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
 
   const [

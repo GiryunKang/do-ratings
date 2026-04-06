@@ -96,7 +96,7 @@ export default function ReportButton({ reviewId }: ReportButtonProps) {
                         value={r}
                         checked={reason === r}
                         onChange={() => setReason(r)}
-                        className="accent-indigo-600"
+                        className="accent-primary"
                       />
                       <span className="text-sm text-foreground/80">
                         {t(r)}
@@ -110,7 +110,7 @@ export default function ReportButton({ reviewId }: ReportButtonProps) {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder={t('description')}
                   rows={3}
-                  className="w-full text-sm border border-border rounded-lg px-3 py-2 resize-none focus:outline-none focus:border-indigo-400 mb-3"
+                  className="w-full text-sm border border-border rounded-lg px-3 py-2 resize-none focus:outline-none focus:border-primary mb-3"
                 />
 
                 <div className="flex gap-2 justify-end">

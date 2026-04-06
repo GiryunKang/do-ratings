@@ -83,7 +83,7 @@ export default function ReviewTheater({ locale, initialReviews }: ReviewTheaterP
         {locale === 'ko' ? '리뷰 극장' : 'Review Theater'}
       </h2>
 
-      <div className="relative bg-gradient-to-b from-gray-950 to-gray-900 rounded-2xl overflow-hidden min-h-[200px]">
+      <div className="relative bg-gradient-to-b from-gray-950 to-gray-900 rounded-xl overflow-hidden min-h-[200px]">
         {/* Stage curtain effect */}
         <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-red-800 via-red-600 to-red-800" />
 

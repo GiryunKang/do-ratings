@@ -69,6 +69,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   const ONE_DAY_MS = 24 * 60 * 60 * 1000
   const SEVEN_DAYS_MS = 7 * ONE_DAY_MS
+  // Server component: Date.now() executes once during SSR, not during client render
   const oneDayAgo = new Date(Date.now() - ONE_DAY_MS).toISOString()
   const sevenDaysAgo = new Date(Date.now() - SEVEN_DAYS_MS).toISOString()
 

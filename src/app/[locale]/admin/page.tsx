@@ -49,7 +49,7 @@ type Tab = 'stats' | 'reports' | 'claims'
 
 function StatCard({ label, value, color }: { label: string; value: number; color: string }) {
   return (
-    <div className="bg-card rounded-2xl border border-border shadow-sm p-5">
+    <div className="bg-card rounded-xl border border-border shadow-sm p-5">
       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">{label}</p>
       <p className={`text-3xl font-bold ${color}`}>{value}</p>
     </div>
@@ -244,14 +244,14 @@ export default function AdminPage() {
       {tab === 'reports' && (
         <div className="space-y-3">
           {reports.length === 0 ? (
-            <div className="bg-card rounded-2xl border border-border shadow-sm p-8 text-center">
+            <div className="bg-card rounded-xl border border-border shadow-sm p-8 text-center">
               <p className="text-sm text-muted-foreground">No pending reports</p>
             </div>
           ) : (
             reports.map((report) => (
               <div
                 key={report.id}
-                className="bg-card rounded-2xl border border-border shadow-sm p-4 flex flex-col sm:flex-row sm:items-start gap-3"
+                className="bg-card rounded-xl border border-border shadow-sm p-4 flex flex-col sm:flex-row sm:items-start gap-3"
               >
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -303,14 +303,14 @@ export default function AdminPage() {
       {tab === 'claims' && (
         <div className="space-y-3">
           {claims.length === 0 ? (
-            <div className="bg-card rounded-2xl border border-border shadow-sm p-8 text-center">
+            <div className="bg-card rounded-xl border border-border shadow-sm p-8 text-center">
               <p className="text-sm text-muted-foreground">No pending claims</p>
             </div>
           ) : (
             claims.map((claim) => (
               <div
                 key={claim.id}
-                className="bg-card rounded-2xl border border-border shadow-sm p-4 flex flex-col sm:flex-row sm:items-start gap-3"
+                className="bg-card rounded-xl border border-border shadow-sm p-4 flex flex-col sm:flex-row sm:items-start gap-3"
               >
                 <div className="flex-1 min-w-0 space-y-1">
                   <p className="text-sm font-semibold text-foreground truncate">

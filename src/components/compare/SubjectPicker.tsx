@@ -195,7 +195,7 @@ export default function SubjectPicker({
                           {displayName}
                         </span>
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
-                          <span className="text-yellow-400">★</span>
+                          <span className="text-primary">★</span>
                           {subject.avg_rating !== null
                             ? subject.avg_rating.toFixed(1)
                             : '—'}

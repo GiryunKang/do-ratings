@@ -21,7 +21,6 @@ export default function ReviewFingerprint({ locale }: ReviewFingerprintProps) {
   const { user } = useAuth()
   const [profile, setProfile] = useState<RatingProfile | null>(null)
 
-  /* eslint-disable react-hooks/set-state-in-effect -- data fetching on mount */
   useEffect(() => {
     if (!user) return
 

@@ -36,7 +36,7 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
         justifyContent: 'center',
         width: '100%',
         height: '100%',
-        background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 35%, #4f46e5 60%, #7c3aed 80%, #db2777 100%)',
+        background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 35%, #FF6B35 60%, #FF8B5E 80%, #db2777 100%)',
         padding: 50,
         fontFamily: 'Noto Sans KR',
       }}

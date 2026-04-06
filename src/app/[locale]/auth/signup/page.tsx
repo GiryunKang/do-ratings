@@ -1,6 +1,5 @@
 'use client'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
@@ -8,7 +7,6 @@ import Link from 'next/link'
 export default function SignupPage() {
   const t = useTranslations('auth')
   const tc = useTranslations('common')
-  const router = useRouter()
   const supabase = createClient()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -39,7 +37,7 @@ export default function SignupPage() {
   }
 
   const glassWrapperStyle = {
-    background: 'linear-gradient(-45deg, #0f0c29, #302b63, #6366f1, #8b5cf6, #db2777)',
+    background: 'linear-gradient(-45deg, #0f0c29, #302b63, #FF6B35, #4ECDC4, #db2777)',
     backgroundSize: '400% 400%',
     animation: 'heroGradientShift 10s ease infinite',
   } as React.CSSProperties

@@ -1,6 +1,6 @@
 const categoryColors: Record<string, string> = {
   airlines: 'bg-blue-500',
-  hotels: 'bg-purple-500',
+  hotels: 'bg-violet-500',
   restaurants: 'bg-orange-500',
   companies: 'bg-emerald-500',
   places: 'bg-cyan-500',
@@ -8,9 +8,9 @@ const categoryColors: Record<string, string> = {
 }
 
 export function getCategoryColor(slug: string): string {
-  return categoryColors[slug] ?? 'bg-indigo-500'
+  return categoryColors[slug] ?? 'bg-primary'
 }
 
 export function getCategoryTextColor(slug: string): string {
-  return categoryColors[slug]?.replace('bg-', 'text-') ?? 'text-indigo-500'
+  return categoryColors[slug]?.replace('bg-', 'text-') ?? 'text-primary'
 }

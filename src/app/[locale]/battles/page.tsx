@@ -35,7 +35,7 @@ function BattleSkeleton() {
   return (
     <div className="space-y-4">
       {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="skeleton h-56 rounded-2xl" />
+        <div key={i} className="skeleton h-56 rounded-xl" />
       ))}
     </div>
   )
@@ -91,7 +91,6 @@ export default function BattlesPage() {
       content: string
       overall_rating: number
       user_id: string
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       public_profiles: { id: string; nickname: string; avatar_url: string | null; level: string } | { id: string; nickname: string; avatar_url: string | null; level: string }[] | null
     }
 

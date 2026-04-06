@@ -45,7 +45,7 @@ export default function WeeklyCrown({ locale, initialCrown }: WeeklyCrownProps) 
 
       <Link
         href={`/${locale}/subject/${crown.subject_id}`}
-        className="group block relative bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 dark:from-amber-950/30 dark:via-yellow-950/20 dark:to-orange-950/30 rounded-2xl ring-1 ring-amber-200/40 dark:ring-amber-800/30 overflow-hidden hover:shadow-xl hover:ring-amber-300 transition-all"
+        className="group block relative bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 dark:from-amber-950/30 dark:via-yellow-950/20 dark:to-orange-950/30 rounded-xl ring-1 ring-amber-200/40 dark:ring-amber-800/30 overflow-hidden hover:shadow-xl hover:ring-amber-300 transition-all"
       >
         {/* Gold shimmer */}
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
@@ -88,7 +88,7 @@ export default function WeeklyCrown({ locale, initialCrown }: WeeklyCrownProps) 
             <p className="text-xs text-muted-foreground line-clamp-2 mb-2 [word-break:keep-all]">{crown.content}...</p>
 
             <div className="flex items-center gap-3 text-xs">
-              <span className="text-yellow-500 font-medium">{'★'.repeat(Math.round(crown.overall_rating))}</span>
+              <span className="text-primary font-medium">{'★'.repeat(Math.round(crown.overall_rating))}</span>
               <span className="text-muted-foreground">👍 {crown.helpful_count}</span>
               <span className="text-muted-foreground">— {crown.nickname}</span>
               <span className="text-muted-foreground">· {crown.subject_name}</span>

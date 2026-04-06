@@ -99,7 +99,7 @@ export default function ActivitySummary({ locale }: { locale: string }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.4, type: 'spring', stiffness: 200 }}
-            className="bg-card rounded-2xl shadow-2xl border border-border p-6 mx-4 max-w-sm w-full"
+            className="bg-card rounded-xl shadow-2xl border border-border p-6 mx-4 max-w-sm w-full"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}

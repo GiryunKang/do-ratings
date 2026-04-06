@@ -23,7 +23,6 @@ export default function FaultlineFeed({ subjectId, locale }: FaultlineFeedProps)
   const [shakeIntensity, setShakeIntensity] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  /* eslint-disable react-hooks/set-state-in-effect -- data fetching */
   useEffect(() => {
     async function analyze() {
       const supabase = createClient()

@@ -120,7 +120,6 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
         created_at: string
         subject_id: string
         user_id: string
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         public_profiles: { id: string; nickname: string; avatar_url: string | null; level: string } | { id: string; nickname: string; avatar_url: string | null; level: string }[] | null
       }
 

@@ -28,16 +28,18 @@ export default function SubjectEditor({ subjectId, currentDescription, locale, c
     }
 
     // Save edit history
-    await supabase.from('subject_edits').insert({
+    const { error: insertError } = await supabase.from('subject_edits').insert({
       subject_id: subjectId,
       user_id: currentUserId,
       field: 'description',
       old_value: currentDescription,
       new_value: newDesc,
     })
+    if (insertError) console.error('[SubjectEditor] insert error:', insertError.message)
 
     // Update subject description
-    await supabase.from('subjects').update({ description: newDesc }).eq('id', subjectId)
+    const { error: updateError } = await supabase.from('subjects').update({ description: newDesc }).eq('id', subjectId)
+    if (updateError) console.error('[SubjectEditor] update error:', updateError.message)
 
     setEditing(false)
     setSaving(false)

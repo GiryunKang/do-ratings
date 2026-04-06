@@ -39,7 +39,7 @@ export default function LoginPage() {
     <div
       className="flex min-h-screen items-center justify-center p-4"
       style={{
-        background: 'linear-gradient(-45deg, #0f0c29, #302b63, #6366f1, #8b5cf6, #db2777)',
+        background: 'linear-gradient(-45deg, #0f0c29, #302b63, #FF6B35, #4ECDC4, #db2777)',
         backgroundSize: '400% 400%',
         animation: 'heroGradientShift 10s ease infinite',
       }}

@@ -16,7 +16,6 @@ export default function RatingStreak({ locale }: RatingStreakProps) {
   const [streak, setStreak] = useState(0)
   const [showFlame, setShowFlame] = useState(false)
 
-  /* eslint-disable react-hooks/set-state-in-effect -- data fetching on mount */
   useEffect(() => {
     if (!user) return
 

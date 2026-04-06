@@ -14,7 +14,7 @@ export default function SortSelect({ value, onChange }: SortSelectProps) {
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+      className="text-sm border border-border rounded-lg px-3 py-1.5 bg-card text-foreground/80 focus:outline-none focus:ring-2 focus:ring-primary/30"
     >
       <option value="latest">{t('sortLatest')}</option>
       <option value="helpful">{t('sortHelpful')}</option>

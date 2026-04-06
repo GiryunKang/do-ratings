@@ -107,7 +107,7 @@ export default function EmbedWidget({ subjectId, subjectName, avgRating, reviewC
                 className="flex items-center gap-1"
                 style={{ fontSize: size === 'sm' ? '12px' : size === 'lg' ? '18px' : '14px' }}
               >
-                <span className="text-amber-400">{'★'.repeat(filled)}{'☆'.repeat(empty)}</span>
+                <span className="text-primary">{'★'.repeat(filled)}{'☆'.repeat(empty)}</span>
                 <span className="text-foreground/80 font-medium">{ratingDisplay}</span>
               </div>
               <div

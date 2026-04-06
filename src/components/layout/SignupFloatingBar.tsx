@@ -36,7 +36,7 @@ export default function SignupFloatingBar() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 md:bottom-4 md:left-4 md:right-4 animate-slideUp">
-      <div className="mx-auto max-w-lg bg-card/95 backdrop-blur-lg border border-border rounded-t-2xl md:rounded-2xl shadow-2xl px-4 py-3 flex items-center justify-between gap-3">
+      <div className="mx-auto max-w-lg bg-card/95 backdrop-blur-lg border border-border rounded-t-2xl md:rounded-xl shadow-2xl px-4 py-3 flex items-center justify-between gap-3">
         <p className="text-sm font-medium text-foreground flex-1">
           {locale === 'ko'
             ? '가입하고 첫 리뷰를 남겨보세요'

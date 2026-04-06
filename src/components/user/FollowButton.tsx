@@ -30,15 +30,17 @@ export default function FollowButton({ targetUserId, isFollowing: initialIsFollo
 
     try {
       if (following) {
-        await supabase
+        const { error } = await supabase
           .from('follows')
           .delete()
           .eq('follower_id', user!.id)
           .eq('following_id', targetUserId)
+        if (error) console.error('[FollowButton] delete error:', error.message)
       } else {
-        await supabase
+        const { error } = await supabase
           .from('follows')
           .insert({ follower_id: user!.id, following_id: targetUserId })
+        if (error) console.error('[FollowButton] insert error:', error.message)
       }
     } catch {
       // Revert on error

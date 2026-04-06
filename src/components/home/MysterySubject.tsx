@@ -77,7 +77,7 @@ export default function MysterySubject({ locale, subjects: subjectsProp }: Myste
         {locale === 'ko' ? '오늘의 미스터리' : 'Mystery of the Day'}
       </h2>
 
-      <div className="relative bg-card rounded-2xl ring-1 ring-border overflow-hidden">
+      <div className="relative bg-card rounded-xl ring-1 ring-border overflow-hidden">
         <AnimatePresence mode="wait">
           {!isRevealTime && !revealed ? (
             <motion.div
@@ -150,7 +150,7 @@ export default function MysterySubject({ locale, subjects: subjectsProp }: Myste
                 <h3 className="text-xl font-black text-foreground mb-2">{name}</h3>
 
                 {subject.avg_rating != null ? (
-                  <p className="text-yellow-500 font-bold mb-3">★ {subject.avg_rating.toFixed(1)} · {subject.review_count} {locale === 'ko' ? '리뷰' : 'reviews'}</p>
+                  <p className="text-primary font-bold mb-3">★ {subject.avg_rating.toFixed(1)} · {subject.review_count} {locale === 'ko' ? '리뷰' : 'reviews'}</p>
                 ) : (
                   <p className="text-sm text-muted-foreground mb-3">
                     {locale === 'ko' ? '아직 리뷰가 없습니다 — 첫 번째가 되어보세요!' : 'No reviews yet — be the first!'}

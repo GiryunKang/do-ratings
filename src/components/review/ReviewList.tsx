@@ -30,7 +30,6 @@ interface ReviewRow {
   subject_id: string
   user_id: string
   country_code: string | null
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public_profiles: { id: string; nickname: string; avatar_url: string | null; level: string } | { id: string; nickname: string; avatar_url: string | null; level: string }[] | null
   helpful_votes?: { user_id: string }[]
 }
@@ -170,7 +169,7 @@ export default function ReviewList({ subjectId, userId }: ReviewListProps) {
       {items.length === 0 && loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-card rounded-2xl p-4 space-y-3">
+            <div key={i} className="bg-card rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-3">
                 <div className="skeleton w-10 h-10 rounded-full" />
                 <div className="skeleton w-24 h-4" />
@@ -183,7 +182,7 @@ export default function ReviewList({ subjectId, userId }: ReviewListProps) {
       ) : items.length === 0 && !loading ? (
         <div className="text-center py-10">
           <div className="flex justify-center mb-3">
-            <Star className="w-10 h-10 text-yellow-400 fill-yellow-300" />
+            <Star className="w-10 h-10 text-primary fill-primary/30" />
           </div>
           <p className="text-foreground font-bold text-base mb-1">
             {locale === 'ko' ? '아직 아무도 평가하지 않았습니다' : 'No one has rated this yet'}
