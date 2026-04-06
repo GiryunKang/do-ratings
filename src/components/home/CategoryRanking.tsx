@@ -51,11 +51,11 @@ export default async function CategoryRanking({ locale }: CategoryRankingProps) 
   const noSubjectsCta = locale === 'ko' ? '첫 번째로 리뷰를 남겨보세요!' : 'Be the first to add a review!'
 
   return (
-    <section className="px-4 py-2 space-y-8">
+    <section className="space-y-8">
       {categoryData.map((category) => (
         <div key={category.id}>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+            <h2 className="font-display text-lg font-bold tracking-tight text-foreground flex items-center gap-2">
               <CategoryIcon name={category.slug} className="w-5 h-5 text-primary" />
               {category.name}
             </h2>
@@ -101,10 +101,7 @@ export default async function CategoryRanking({ locale }: CategoryRankingProps) 
                       <span className="flex-1 text-sm font-medium text-foreground truncate">
                         {subjectName}
                       </span>
-                      <span className="flex items-center gap-0.5 text-sm font-semibold text-yellow-500 shrink-0">
-                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                        </svg>
+                      <span className="font-mono text-sm font-bold text-primary shrink-0">
                         {formatRating(subject.avg_rating)}
                       </span>
                     </Link>
