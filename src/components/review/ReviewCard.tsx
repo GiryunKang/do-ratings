@@ -18,7 +18,6 @@ import ShareMenu from '@/components/ui/ShareMenu'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 
 interface ReviewCardProps {
@@ -57,7 +56,6 @@ interface ReviewCardProps {
 
 export default function ReviewCard({ review, currentUserId, locale = 'ko' }: ReviewCardProps) {
   const { user } = review
-  const [copied, setCopied] = useState(false)
 
   const subjectHref = review.subject_slug
     ? `/subject/${review.subject_slug}`
@@ -74,14 +72,6 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
   const categoryColor = review.category_slug
     ? getCategoryColor(review.category_slug)
     : 'bg-primary'
-
-  const handleShare = () => {
-    const url = window.location.origin + '/' + locale + subjectHref
-    navigator.clipboard.writeText(url).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }
 
   return (
     <Card className="hover:shadow-md transition-shadow animate-fadeIn">

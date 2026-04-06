@@ -128,11 +128,12 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
   async function markAllRead() {
     if (!userId) return
     const supabase = createClient()
-    await supabase
+    const { error } = await supabase
       .from('notifications')
       .update({ is_read: true })
       .eq('user_id', userId)
       .eq('is_read', false)
+    if (error) console.error('[NotificationBell] markAllRead error:', error.message)
 
     setUnreadCount(0)
     setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })))
@@ -141,10 +142,11 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
   async function handleNotificationClick(notif: Notification) {
     if (!notif.is_read && userId) {
       const supabase = createClient()
-      await supabase
+      const { error } = await supabase
         .from('notifications')
         .update({ is_read: true })
         .eq('id', notif.id)
+      if (error) console.error('[NotificationBell] markRead error:', error.message)
 
       setUnreadCount((c) => Math.max(0, c - 1))
       setNotifications((prev) =>

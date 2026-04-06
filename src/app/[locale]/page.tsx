@@ -70,8 +70,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const ONE_DAY_MS = 24 * 60 * 60 * 1000
   const SEVEN_DAYS_MS = 7 * ONE_DAY_MS
   // Server component: Date.now() executes once during SSR, not during client render
-  const oneDayAgo = new Date(Date.now() - ONE_DAY_MS).toISOString()
-  const sevenDaysAgo = new Date(Date.now() - SEVEN_DAYS_MS).toISOString()
+  const now = new Date()
+  const oneDayAgo = new Date(now.getTime() - ONE_DAY_MS).toISOString()
+  const sevenDaysAgo = new Date(now.getTime() - SEVEN_DAYS_MS).toISOString()
 
   const [
     { data: categories, error: e0 },
@@ -397,7 +398,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <div className="space-y-3">
               {featured.slice(0, 5).map((s, idx) => {
                 const barWidth = ((s.avg_rating ?? 0) / 10) * 100
-                const barColors = ['bg-primary', 'bg-secondary', 'bg-blue-500', 'bg-purple-500', 'bg-rose-500']
+                const barColors = ['bg-primary', 'bg-secondary', 'bg-blue-500', 'bg-violet-500', 'bg-rose-500']
                 return (
                   <div key={s.id} className="flex items-center gap-3">
                     <span className={`font-display text-lg w-6 text-center ${idx < 3 ? 'text-primary font-bold' : 'text-muted-foreground'}`}>{idx + 1}</span>
@@ -549,7 +550,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <div className="space-y-2">
               {featured.slice(0, 5).map((s, idx) => {
                 const barWidth = ((s.avg_rating ?? 0) / 10) * 100
-                const barColors = ['bg-gradient-to-r from-primary to-orange-400', 'bg-gradient-to-r from-secondary to-teal-400', 'bg-gradient-to-r from-blue-500 to-blue-400', 'bg-gradient-to-r from-purple-500 to-purple-400', 'bg-gradient-to-r from-rose-500 to-rose-400']
+                const barColors = ['bg-gradient-to-r from-primary to-orange-400', 'bg-gradient-to-r from-secondary to-teal-400', 'bg-gradient-to-r from-blue-500 to-blue-400', 'bg-gradient-to-r from-violet-500 to-violet-400', 'bg-gradient-to-r from-rose-500 to-rose-400']
                 return (
                   <Link key={s.id} href={`/${locale}/subject/${s.id}`} className="flex items-center gap-3 group">
                     <span className={`font-display text-base w-5 text-center ${idx < 3 ? 'text-primary font-black' : 'text-muted-foreground font-medium'}`}>{idx + 1}</span>
@@ -619,7 +620,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 <p className="text-[11px] text-muted-foreground font-mono">
                   {locale === 'ko' ? '지난 24시간' : 'Last 24h'} +{[340, 287, 198][idx]}{locale === 'ko' ? '건' : ''}
                 </p>
-                <button className="mt-3 w-full text-center text-xs font-medium text-muted-foreground border border-border rounded-full py-1.5 hover:border-primary hover:text-primary transition-colors">
+                <button type="button" className="mt-3 w-full text-center text-xs font-medium text-muted-foreground border border-border rounded-full py-1.5 hover:border-primary hover:text-primary transition-colors">
                   {locale === 'ko' ? '평가 참여하기' : 'Join evaluation'}
                 </button>
               </Link>

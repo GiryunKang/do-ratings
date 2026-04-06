@@ -72,7 +72,6 @@ export default function FaultlineFeed({ subjectId, locale }: FaultlineFeedProps)
 
     analyze()
   }, [subjectId])
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {
     if (shakeIntensity <= 0 || !containerRef.current) return

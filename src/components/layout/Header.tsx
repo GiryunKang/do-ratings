@@ -55,7 +55,7 @@ export default function Header() {
         </div>
 
         {/* Mobile search icon */}
-        <button onClick={() => setSearchOpen(!searchOpen)} className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors duration-150 ml-auto">
+        <button type="button" onClick={() => setSearchOpen(!searchOpen)} className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors duration-150 ml-auto">
           <Search className="w-5 h-5" />
         </button>
 

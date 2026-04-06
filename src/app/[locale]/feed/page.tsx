@@ -189,10 +189,12 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
     try {
       const supabase = createClient()
       if (followingIds.has(targetId)) {
-        await supabase.from('follows').delete().eq('follower_id', userId).eq('following_id', targetId)
+        const { error } = await supabase.from('follows').delete().eq('follower_id', userId).eq('following_id', targetId)
+        if (error) console.error('[FeedPage] unfollow error:', error.message)
         setFollowingIds((prev) => { const next = new Set(prev); next.delete(targetId); return next })
       } else {
-        await supabase.from('follows').insert({ follower_id: userId, following_id: targetId })
+        const { error } = await supabase.from('follows').insert({ follower_id: userId, following_id: targetId })
+        if (error) console.error('[FeedPage] follow error:', error.message)
         setFollowingIds((prev) => new Set(prev).add(targetId))
       }
     } finally {

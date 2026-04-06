@@ -74,7 +74,6 @@ const sentimentConfig = {
 
 export default function AISummary({ subjectId, locale }: AISummaryProps) {
   const t = useTranslations('aiSummary')
-  const tAnalytics = useTranslations('analytics')
 
   const [reviews, setReviews] = useState<Review[]>([])
   const [loading, setLoading] = useState(true)

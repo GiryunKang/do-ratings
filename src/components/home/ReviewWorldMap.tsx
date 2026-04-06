@@ -169,7 +169,7 @@ export default function ReviewWorldMap({ locale, initialReviews }: ReviewWorldMa
                 <h3 className="font-bold text-sm text-foreground">
                   {selectedData.name} ({selectedData.reviews.length} {locale === 'ko' ? '리뷰' : 'reviews'})
                 </h3>
-                <button onClick={() => setSelectedCountry(null)} className="text-muted-foreground hover:text-foreground text-xs">✕</button>
+                <button type="button" onClick={() => setSelectedCountry(null)} className="text-muted-foreground hover:text-foreground text-xs">✕</button>
               </div>
               <div className="space-y-1.5">
                 {selectedData.reviews.slice(0, 5).map(review => (

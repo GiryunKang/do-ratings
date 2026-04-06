@@ -22,7 +22,6 @@ interface CommentSectionProps {
 export default function CommentSection({
   reviewId,
   currentUserId,
-  locale,
 }: CommentSectionProps) {
   const t = useTranslations('comment')
   const [expanded, setExpanded] = useState(false)
@@ -79,7 +78,6 @@ export default function CommentSection({
       fetchComments()
     }
   }, [expanded, fetchComments])
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleSubmit = async () => {
     if (!currentUserId || !inputValue.trim() || submitting) return
@@ -129,7 +127,8 @@ export default function CommentSection({
     setCommentCount((prev) => Math.max(0, prev - 1))
 
     const supabase = createClient()
-    await supabase.from('review_comments').delete().eq('id', commentId)
+    const { error } = await supabase.from('review_comments').delete().eq('id', commentId)
+    if (error) console.error('[CommentSection] delete comment error:', error.message)
   }
 
   const toggleExpanded = () => {

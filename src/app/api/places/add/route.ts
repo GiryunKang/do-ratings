@@ -147,7 +147,7 @@ export async function POST(request: NextRequest) {
                   imageUrl = googleImageUrl
                 }
               }
-            } catch (e) {
+            } catch {
               // Fallback to Google URL
               imageUrl = googleImageUrl
             }

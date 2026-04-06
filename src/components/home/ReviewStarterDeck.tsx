@@ -65,7 +65,7 @@ export default function ReviewStarterDeck({ locale }: ReviewStarterDeckProps) {
         </Link>
 
         <div className="flex items-center justify-center gap-4 mt-5">
-          <button onClick={prev} className="p-2 rounded-full border border-border/50 text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors bg-white/60">
+          <button type="button" onClick={prev} className="p-2 rounded-full border border-border/50 text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors bg-white/60">
             <ChevronLeft className="w-4 h-4" />
           </button>
           <div className="flex gap-1.5">
@@ -73,7 +73,7 @@ export default function ReviewStarterDeck({ locale }: ReviewStarterDeckProps) {
               <span key={i} className={`w-1.5 h-1.5 rounded-full transition-colors ${i === index ? 'bg-primary' : 'bg-foreground/15'}`} />
             ))}
           </div>
-          <button onClick={next} className="p-2 rounded-full border border-border/50 text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors bg-white/60">
+          <button type="button" onClick={next} className="p-2 rounded-full border border-border/50 text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors bg-white/60">
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>

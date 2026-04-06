@@ -50,7 +50,7 @@ export default function RelatedNews({ query, locale }: RelatedNewsProps) {
     return () => {
       isActive = false
     }
-  }, [query])
+  }, [query, locale])
 
   if (!query) return null
   if (!loading && articles.length === 0) return null

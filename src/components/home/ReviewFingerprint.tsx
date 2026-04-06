@@ -65,7 +65,6 @@ export default function ReviewFingerprint({ locale }: ReviewFingerprintProps) {
 
     fetchProfile()
   }, [user])
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   const artPaths = useMemo(() => {
     if (!profile) return []

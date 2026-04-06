@@ -92,7 +92,6 @@ export default function NotificationsPage() {
     setLoading(true)
     fetchNotifications(0, true).finally(() => setLoading(false))
   }, [user, fetchNotifications])
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   async function handleLoadMore() {
     if (loadingMore || !hasMore) return
@@ -106,11 +105,12 @@ export default function NotificationsPage() {
   async function markAllRead() {
     if (!user) return
     const supabase = createClient()
-    await supabase
+    const { error } = await supabase
       .from('notifications')
       .update({ is_read: true })
       .eq('user_id', user.id)
       .eq('is_read', false)
+    if (error) console.error('[NotificationsPage] markAllRead error:', error.message)
 
     setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })))
   }
@@ -118,10 +118,11 @@ export default function NotificationsPage() {
   async function handleNotificationClick(notif: Notification) {
     if (!notif.is_read && user) {
       const supabase = createClient()
-      await supabase
+      const { error } = await supabase
         .from('notifications')
         .update({ is_read: true })
         .eq('id', notif.id)
+      if (error) console.error('[NotificationsPage] markRead error:', error.message)
 
       setNotifications((prev) =>
         prev.map((n) => (n.id === notif.id ? { ...n, is_read: true } : n))

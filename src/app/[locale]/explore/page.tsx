@@ -36,7 +36,7 @@ const categoryAccents: Record<string, string> = {
   travel: 'border-cyan-400',
   attraction: 'border-green-400',
   beauty: 'border-pink-400',
-  shopping: 'border-purple-400',
+  shopping: 'border-violet-400',
   entertainment: 'border-yellow-400',
   health: 'border-red-400',
   education: 'border-primary/40',
@@ -44,7 +44,7 @@ const categoryAccents: Record<string, string> = {
 
 const accentFallbacks = [
   'border-primary/40',
-  'border-purple-400',
+  'border-violet-400',
   'border-pink-400',
   'border-orange-400',
   'border-teal-400',
@@ -253,10 +253,10 @@ export default function ExplorePage() {
           ) : subjects.length === 0 ? (
             <div className="bg-card rounded-xl border border-border p-12 text-center">
               <svg className="w-16 h-16 mx-auto mb-4" viewBox="0 0 64 64" fill="none">
-                <circle cx="28" cy="28" r="18" stroke="#c7d2fe" strokeWidth="3" />
-                <circle cx="28" cy="28" r="10" fill="#e0e7ff" />
+                <circle cx="28" cy="28" r="18" stroke="#fed7aa" strokeWidth="3" />
+                <circle cx="28" cy="28" r="10" fill="#ffedd5" />
                 <path d="M41 41l10 10" stroke="#FF6B35" strokeWidth="3" strokeLinecap="round" />
-                <path d="M24 24h8M24 30h5" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" />
+                <path d="M24 24h8M24 30h5" stroke="#fb923c" strokeWidth="2" strokeLinecap="round" />
               </svg>
               <p className="text-sm font-medium text-muted-foreground mb-1">{t('noResults') ?? 'No results found'}</p>
               <p className="text-xs text-muted-foreground">{currentLocale === 'ko' ? '필터 또는 검색어를 조정해보세요' : 'Try adjusting your filters or search term'}</p>

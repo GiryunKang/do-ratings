@@ -61,7 +61,6 @@ export default function RatingStreak({ locale }: RatingStreakProps) {
 
     fetchStreak()
   }, [user])
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   if (!user || streak === 0) return null
 

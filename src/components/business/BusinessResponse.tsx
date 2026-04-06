@@ -62,7 +62,6 @@ export default function BusinessResponse({
   useEffect(() => {
     fetchData()
   }, [fetchData])
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

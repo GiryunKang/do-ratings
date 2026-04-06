@@ -18,7 +18,7 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
         페이지를 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.
       </p>
       <div className="flex gap-3">
-        <button onClick={reset} className="h-9 px-4 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/80">
+        <button type="button" onClick={reset} className="h-9 px-4 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/80">
           다시 시도
         </button>
         <Link href="/" className="h-9 px-4 border border-border rounded-lg text-sm font-medium flex items-center hover:bg-muted">

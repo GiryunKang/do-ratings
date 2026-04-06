@@ -5,9 +5,6 @@ import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { motion } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
-import SubRatingInput from '@/components/review/SubRatingInput'
-import ImageUpload, { ImageFile } from '@/components/review/ImageUpload'
-import { calculateOverallRating } from '@/lib/utils/rating'
 import { sanitizeText, validateReviewInput } from '@/lib/utils/sanitize'
 import { containsProfanity, getProfanityWarning } from '@/lib/utils/profanity'
 
@@ -52,10 +49,10 @@ export default function ReviewForm({
 
   const [title, setTitle] = useState(existingReview?.title ?? '')
   const [content, setContent] = useState(existingReview?.content ?? '')
-  const [subRatings, setSubRatings] = useState<Record<string, number>>(
+  const [subRatings] = useState<Record<string, number>>(
     existingReview?.sub_ratings ?? {}
   )
-  const [images, setImages] = useState<ImageFile[]>([])
+  const [images] = useState<File[]>([])
   const [existingImages, setExistingImages] = useState<ExistingImage[]>([])
   const [removedImageIds, setRemovedImageIds] = useState<string[]>([])
   const [directRating, setDirectRating] = useState(existingReview?.overall_rating ?? 0)
@@ -85,11 +82,6 @@ export default function ReviewForm({
         if (data) setExistingImages(data as ExistingImage[])
       })
   }, [existingReview])
-
-  function handleRemoveExistingImage(id: string) {
-    setRemovedImageIds((prev) => [...prev, id])
-    setExistingImages((prev) => prev.filter((img) => img.id !== id))
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -181,7 +173,7 @@ export default function ReviewForm({
               const storagePath = `${user.id}/${reviewId}/${crypto.randomUUID()}.webp`
               const { error: uploadError } = await supabase.storage
                 .from('review-images')
-                .upload(storagePath, img.file, { contentType: 'image/webp' })
+                .upload(storagePath, img, { contentType: 'image/webp' })
               if (uploadError) throw uploadError
 
               const storageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/review-images/${storagePath}`
@@ -206,7 +198,7 @@ export default function ReviewForm({
             const storagePath = `${user.id}/${reviewId}/${crypto.randomUUID()}.webp`
             const { error: uploadError } = await supabase.storage
               .from('review-images')
-              .upload(storagePath, img.file, { contentType: 'image/webp' })
+              .upload(storagePath, img, { contentType: 'image/webp' })
             if (uploadError) throw uploadError
 
             const storageUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/review-images/${storagePath}`
@@ -231,8 +223,6 @@ export default function ReviewForm({
       setSubmitting(false)
     }
   }
-
-  const maxImages = 5 - existingImages.length + removedImageIds.length
 
   if (success) {
     return (

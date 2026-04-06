@@ -166,7 +166,6 @@ export default function BattlesPage() {
       void fetchUserVotes(battles.map((b) => b.id))
     }
   }, [battles, fetchUserVotes])
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   async function handleVote(battleId: string, side: 'a' | 'b') {
     if (!user) return

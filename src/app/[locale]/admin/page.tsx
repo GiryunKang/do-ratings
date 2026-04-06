@@ -148,7 +148,8 @@ export default function AdminPage() {
   async function handleReportAction(reportId: string, newStatus: 'resolved' | 'dismissed') {
     setActionLoading(reportId)
     const supabase = createClient()
-    await supabase.from('reports').update({ status: newStatus }).eq('id', reportId)
+    const { error } = await supabase.from('reports').update({ status: newStatus }).eq('id', reportId)
+    if (error) console.error('[AdminPage] report update error:', error.message)
     setReports((prev) => prev.filter((r) => r.id !== reportId))
     setStats((prev) => ({ ...prev, pendingReports: Math.max(0, prev.pendingReports - 1) }))
     setActionLoading(null)
@@ -158,10 +159,11 @@ export default function AdminPage() {
   async function handleClaimAction(claimId: string, newStatus: 'approved' | 'rejected') {
     setActionLoading(claimId)
     const supabase = createClient()
-    await supabase
+    const { error } = await supabase
       .from('business_claims')
       .update({ verification_status: newStatus })
       .eq('id', claimId)
+    if (error) console.error('[AdminPage] business_claims update error:', error.message)
     setClaims((prev) => prev.filter((c) => c.id !== claimId))
     setStats((prev) => ({ ...prev, pendingClaims: Math.max(0, prev.pendingClaims - 1) }))
     setActionLoading(null)
@@ -209,6 +211,7 @@ export default function AdminPage() {
       <div className="flex gap-1 bg-muted rounded-xl p-1 w-fit">
         {tabs.map(({ key, label }) => (
           <button
+            type="button"
             key={key}
             onClick={() => setTab(key)}
             className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
@@ -279,6 +282,7 @@ export default function AdminPage() {
                 </div>
                 <div className="flex gap-2 shrink-0">
                   <button
+                    type="button"
                     onClick={() => handleReportAction(report.id, 'resolved')}
                     disabled={actionLoading === report.id}
                     className="px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 dark:bg-green-950/30 text-green-700 hover:bg-green-100 disabled:opacity-50 transition-colors"
@@ -286,6 +290,7 @@ export default function AdminPage() {
                     {t('resolve')}
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleReportAction(report.id, 'dismissed')}
                     disabled={actionLoading === report.id}
                     className="px-3 py-1.5 rounded-lg text-xs font-medium bg-muted text-muted-foreground hover:bg-muted disabled:opacity-50 transition-colors"
@@ -329,6 +334,7 @@ export default function AdminPage() {
                 </div>
                 <div className="flex gap-2 shrink-0">
                   <button
+                    type="button"
                     onClick={() => handleClaimAction(claim.id, 'approved')}
                     disabled={actionLoading === claim.id}
                     className="px-3 py-1.5 rounded-lg text-xs font-medium bg-primary/5 dark:bg-primary/10 text-primary hover:bg-primary/10 dark:hover:bg-primary/20 disabled:opacity-50 transition-colors"
@@ -336,6 +342,7 @@ export default function AdminPage() {
                     {t('approve')}
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleClaimAction(claim.id, 'rejected')}
                     disabled={actionLoading === claim.id}
                     className="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-50 dark:bg-red-950/30 text-red-700 hover:bg-red-100 disabled:opacity-50 transition-colors"

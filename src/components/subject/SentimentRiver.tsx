@@ -53,7 +53,6 @@ export default function SentimentRiver({ subjectId, locale }: SentimentRiverProp
 
     fetchSentiment()
   }, [subjectId])
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   const { pathD, areaD, points, minRating, maxRating, moodColor, moodLabel } = useMemo(() => {
     if (data.length < 2) return { pathD: '', areaD: '', points: [], minRating: 0, maxRating: 5, moodColor: '', moodLabel: '' }

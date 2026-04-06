@@ -44,7 +44,7 @@ export default function AddSubjectModal({ onClose, defaultCategorySlug }: AddSub
       }
     }
     load()
-  }, [])
+  }, [categorySlug])
 
   function getCategoryLabel(cat: Category): string {
     return cat.name?.[locale] ?? cat.name?.ko ?? cat.name?.en ?? cat.slug
