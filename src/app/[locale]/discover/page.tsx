@@ -40,10 +40,15 @@ export default async function DiscoverPage({ params }: { params: Promise<{ local
   const { locale } = await params
   const supabase = await createClient()
 
-  const { data: allSubjects } = await supabase
+  // TODO: Extract shared subjects query to lib/data/subjects.ts with caching
+  const { data: allSubjects, error: subjectsError } = await supabase
     .from('subjects')
     .select('id, name, avg_rating, review_count, description, category_id, image_url, categories(slug, name, icon)')
     .limit(200)
+
+  if (subjectsError) {
+    console.error('[DiscoverPage] Supabase query error:', subjectsError.message)
+  }
 
   const subjects = (allSubjects ?? []) as SubjectRecord[]
 

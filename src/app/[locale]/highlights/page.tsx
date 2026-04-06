@@ -21,14 +21,19 @@ export default async function HighlightsPage({ params }: { params: Promise<{ loc
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
 
   const [
-    { data: theaterReviews },
-    { data: crownReviews },
-    { data: worldMapReviews },
+    { data: theaterReviews, error: e0 },
+    { data: crownReviews, error: e1 },
+    { data: worldMapReviews, error: e2 },
   ] = await Promise.all([
     supabase.from('reviews').select('id, title, content, overall_rating, subjects(name), public_profiles(nickname)').gt('helpful_count', 0).order('helpful_count', { ascending: false }).limit(10),
     supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, subject_id, subjects(name), public_profiles(nickname)').gte('created_at', sevenDaysAgo).order('helpful_count', { ascending: false }).limit(1),
     supabase.from('reviews').select('id, title, overall_rating, created_at, country_code, subjects(name), public_profiles(nickname)').not('country_code', 'is', null).order('created_at', { ascending: false }).limit(100),
   ])
+
+  const queryErrors = [e0, e1, e2].filter(Boolean)
+  if (queryErrors.length > 0) {
+    console.error('[HighlightsPage] Supabase query errors:', queryErrors.map(e => e!.message))
+  }
 
   const mappedTheaterReviews: TheaterReview[] = (theaterReviews ?? []).map(r => {
     const subject = Array.isArray(r.subjects) ? r.subjects[0] : r.subjects

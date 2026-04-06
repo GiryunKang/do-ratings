@@ -1,10 +1,13 @@
-import { createClient } from '@/lib/supabase/server'
-import { proxyImageUrl } from '@/lib/utils/image-proxy'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+
 import { Search } from 'lucide-react'
+
+import { createClient } from '@/lib/supabase/server'
+import { proxyImageUrl } from '@/lib/utils/image-proxy'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
+
 import FeaturedCarousel from '@/components/home/FeaturedCarousel'
 import TrendingSection from '@/components/home/TrendingSection'
 import PopularReviewsSection from '@/components/home/PopularReviewsSection'
@@ -70,17 +73,17 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const sevenDaysAgo = new Date(Date.now() - SEVEN_DAYS_MS).toISOString()
 
   const [
-    { data: categories },
-    { data: allSubjects },
-    { data: trendingReviews },
-    { count: totalReviewCount },
-    { count: totalUserCount },
-    { data: tickerReviews },
-    { data: dailyTrendingReviews },
-    { data: dailyPopularReviews },
-    { data: dailyVoteData },
-    { data: dailyVoteCountsData },
-    { data: popularReviewsData },
+    { data: categories, error: e0 },
+    { data: allSubjects, error: e1 },
+    { data: trendingReviews, error: e2 },
+    { count: totalReviewCount, error: e3 },
+    { count: totalUserCount, error: e4 },
+    { data: tickerReviews, error: e5 },
+    { data: dailyTrendingReviews, error: e6 },
+    { data: dailyPopularReviews, error: e7 },
+    { data: dailyVoteData, error: e8 },
+    { data: dailyVoteCountsData, error: e9 },
+    { data: popularReviewsData, error: e10 },
   ] = await Promise.all([
     supabase.from('categories').select('*'),
     supabase.from('subjects').select('id, name, avg_rating, review_count, description, category_id, image_url, categories(slug, name, icon)').limit(200),
@@ -94,6 +97,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     supabase.from('daily_vote_counts').select('*'),
     supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, subject_id, subjects(name, categories(slug, name)), public_profiles(nickname)').gt('helpful_count', 0).order('helpful_count', { ascending: false }).limit(3),
   ])
+
+  const queryErrors = [e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10].filter(Boolean)
+  if (queryErrors.length > 0) {
+    console.error('[HomePage] Supabase query errors:', queryErrors.map(e => e!.message))
+  }
 
   const cats = ((categories ?? []) as CategoryRecord[]).sort((a, b) => {
     const ai = categoryOrder.indexOf(a.slug as string)
@@ -586,6 +594,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <p className="text-sm text-muted-foreground mb-4">
           {locale === 'ko' ? '점수 변동이 크거나 갑자기 관심이 몰리는 주제' : 'Subjects with significant score changes or sudden interest'}
         </p>
+        {/* TODO: Replace with real trending evaluation data — currently mock */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {featured.slice(0, 3).map((s, idx) => {
             const badges = [
@@ -678,6 +687,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           {/* Leaderboard */}
           <div>
             <h3 className="font-display text-lg font-bold tracking-tight text-foreground mb-4">{locale === 'ko' ? '이번 주 리뷰왕' : 'Top Reviewers'} 👑</h3>
+            {/* TODO: Replace with real leaderboard data from Supabase */}
             <div className="space-y-3">
               {(['🥇', '🥈', '🥉'] as const).map((medal, i) => (
                 <div key={i} className="flex items-center gap-3">
@@ -702,15 +712,21 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           {/* Live Activity */}
           <div>
             <h3 className="font-display text-lg text-foreground mb-4 flex items-center gap-2">
-              {locale === 'ko' ? '실시간' : 'Live'} <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
+              {locale === 'ko' ? '최근 활동' : 'Recent Activity'}
             </h3>
-            <ActivityTicker
-              locale={locale}
-              recentReviews={tickerData}
-              totalReviews={totalReviewCount ?? 0}
-              totalSubjects={subjects.length}
-              totalUsers={totalUserCount ?? 0}
-            />
+            <div className="space-y-3">
+              {tickerData.slice(0, 5).map(r => (
+                <div key={r.id} className="flex items-center gap-2 text-sm">
+                  <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">
+                    {r.nickname.charAt(0)}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-foreground truncate">{r.nickname}</p>
+                    <p className="text-[11px] text-muted-foreground truncate">{r.title} · ★{r.overall_rating}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

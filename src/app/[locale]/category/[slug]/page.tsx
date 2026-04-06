@@ -91,7 +91,7 @@ export default async function CategoryPage({ params }: PageProps) {
               description: (s.description ?? null) as Record<string, string> | null,
               avg_rating: s.avg_rating,
               review_count: s.review_count,
-              image_url: (s as Record<string, unknown>).image_url as string | null,
+              image_url: s.image_url as string | null,
             }))}
             categorySlug={slug}
             categoryIcon={category.icon as string ?? 'folder'}
