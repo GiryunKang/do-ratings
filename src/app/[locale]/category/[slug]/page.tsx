@@ -7,6 +7,7 @@ import ReviewList from '@/components/review/ReviewList'
 import { CategoryIcon } from '@/lib/icons'
 import PlaceSearch from '@/components/places/PlaceSearch'
 import AddSubjectButton from '@/components/category/AddSubjectButton'
+import AutoScrollRow from '@/components/home/AutoScrollRow'
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>
@@ -57,7 +58,7 @@ export default async function CategoryPage({ params }: PageProps) {
 
   const { data: topSubjects } = await supabase
     .from('subjects')
-    .select('id, name, avg_rating, review_count')
+    .select('id, name, description, avg_rating, review_count, image_url')
     .eq('category_id', category.id)
     .order('avg_rating', { ascending: false })
     .limit(10)
@@ -75,6 +76,28 @@ export default async function CategoryPage({ params }: PageProps) {
       {/* Google Places Search - only for places and restaurants */}
       {(category.slug === 'places' || category.slug === 'restaurants') && (
         <PlaceSearch categorySlug={category.slug as 'places' | 'restaurants'} locale={locale} />
+      )}
+
+      {/* Auto Scroll Row — popular subjects carousel */}
+      {topSubjects && topSubjects.length >= 3 && (
+        <section className="mb-6">
+          <h2 className="font-display text-base font-bold tracking-tight text-foreground mb-3">
+            {locale === 'ko' ? `인기 ${categoryName}` : `Popular ${categoryName}`}
+          </h2>
+          <AutoScrollRow
+            subjects={topSubjects.map(s => ({
+              id: s.id,
+              name: s.name as Record<string, string>,
+              description: (s.description ?? null) as Record<string, string> | null,
+              avg_rating: s.avg_rating,
+              review_count: s.review_count,
+              image_url: (s as Record<string, unknown>).image_url as string | null,
+            }))}
+            categorySlug={slug}
+            categoryIcon={category.icon as string ?? 'folder'}
+            locale={locale}
+          />
+        </section>
       )}
 
       {/* Top Subjects */}
