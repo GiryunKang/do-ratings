@@ -89,7 +89,7 @@ export default function ReviewFingerprint({ locale }: ReviewFingerprintProps) {
       const cpx = cx + (r + nextR) * 0.3 * Math.cos((angle + nextAngle) / 2)
       const cpy = cy + (r + nextR) * 0.3 * Math.sin((angle + nextAngle) / 2)
 
-      const colors = ['#818cf8', '#c084fc', '#f472b6', '#fb923c', '#34d399']
+      const colors = ['#FF6B35', '#4ECDC4', '#3B82F6', '#8B5CF6', '#F43F5E']
       paths.push({
         d: `M${cx},${cy} L${x1},${y1} Q${cpx},${cpy} ${x2},${y2} Z`,
         color: colors[i],
@@ -109,10 +109,9 @@ export default function ReviewFingerprint({ locale }: ReviewFingerprintProps) {
     : (locale === 'ko' ? '엄격한 리뷰어' : 'Strict Reviewer')
 
   return (
-    <div className="bg-card rounded-2xl ring-1 ring-foreground/[0.06] p-4 shadow-sm">
-      <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2">
-        <span>🎨</span>
-        {locale === 'ko' ? '나의 리뷰 지문' : 'My Review Fingerprint'}
+    <div className="bg-card border border-border rounded-xl p-5">
+      <h3 className="font-display text-base font-bold tracking-tight text-foreground mb-3">
+        {locale === 'ko' ? '나의 평가 성향' : 'My Rating Profile'}
       </h3>
 
       <div className="flex items-center gap-4">
@@ -132,16 +131,16 @@ export default function ReviewFingerprint({ locale }: ReviewFingerprintProps) {
             />
           ))}
           {/* Center dot */}
-          <circle cx={80} cy={80} r={3} fill="white" stroke="#818cf8" strokeWidth={1} />
+          <circle cx={80} cy={80} r={3} fill="white" stroke="#FF6B35" strokeWidth={1} />
         </svg>
 
         {/* Stats */}
         <div className="flex-1 min-w-0">
-          <p className="text-lg font-black text-foreground">{personalityLabel}</p>
+          <p className="font-display text-lg font-black tracking-tight text-foreground">{personalityLabel}</p>
           <div className="space-y-1 mt-2">
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">{locale === 'ko' ? '평균 점수' : 'Avg Score'}</span>
-              <span className="font-bold text-yellow-500">★ {profile.avgRating.toFixed(1)}</span>
+              <span className="font-mono font-bold text-primary">★ {profile.avgRating.toFixed(1)}</span>
             </div>
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">{locale === 'ko' ? '리뷰 수' : 'Reviews'}</span>

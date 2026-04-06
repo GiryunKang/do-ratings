@@ -7,6 +7,7 @@ import FollowButton from '@/components/user/FollowButton'
 import ReviewList from '@/components/review/ReviewList'
 import AchievementList from '@/components/user/AchievementList'
 import TrustBadge from '@/components/user/TrustBadge'
+import ReviewFingerprint from '@/components/home/ReviewFingerprint'
 
 interface PageProps {
   params: Promise<{ locale: string; userId: string }>
@@ -128,6 +129,9 @@ export default async function ProfilePage({ params }: PageProps) {
           </div>
         </div>
       )}
+
+      {/* Review Fingerprint — rating personality visualization */}
+      <ReviewFingerprint locale={locale} />
 
       {/* Achievements */}
       <section className="mb-6">
