@@ -16,6 +16,7 @@ import ActivityTicker from '@/components/home/ActivityTicker'
 const DailyFocusVote = dynamic(() => import('@/components/home/DailyFocusVote'))
 const RatingPrediction = dynamic(() => import('@/components/home/RatingPrediction'))
 const ReviewStarterDeck = dynamic(() => import('@/components/home/ReviewStarterDeck'))
+const QuickRateStars = dynamic(() => import('@/components/home/QuickRateStars'))
 
 interface LocalizedText {
   [key: string]: string
@@ -86,6 +87,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     { data: dailyVoteData, error: e8 },
     { data: dailyVoteCountsData, error: e9 },
     { data: popularReviewsData, error: e10 },
+    { data: topReviewersData, error: e11 },
   ] = await Promise.all([
     supabase.from('categories').select('*'),
     supabase.from('subjects').select('id, name, avg_rating, review_count, description, category_id, image_url, categories(slug, name, icon)').limit(200),
@@ -98,9 +100,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     supabase.from('daily_votes').select('*').eq('is_active', true).gte('ends_at', new Date().toISOString()).order('starts_at', { ascending: false }).limit(1),
     supabase.from('daily_vote_counts').select('*'),
     supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, subject_id, subjects(name, categories(slug, name)), public_profiles!reviews_user_id_fkey(nickname)').gt('helpful_count', 0).order('helpful_count', { ascending: false }).limit(3),
+    supabase.from('public_profiles').select('id, nickname, review_count').order('review_count', { ascending: false }).limit(3),
   ])
 
-  const queryErrors = [e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10].filter(Boolean)
+  const queryErrors = [e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11].filter(Boolean)
   if (queryErrors.length > 0) {
     console.error('[HomePage] Supabase query errors:', queryErrors.map(e => e!.message))
   }
@@ -229,6 +232,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   const displayCats = cats.slice(0, 6)
 
+  // Process top reviewers for leaderboard
+  const topReviewers = (topReviewersData ?? []).map(r => ({
+    id: r.id as string,
+    nickname: (r.nickname as string) ?? 'Anonymous',
+    reviewCount: (r.review_count as number) ?? 0,
+  }))
+
   // Process popular reviews for 인기 평가글 section
   type PopularReviewSubject = { name: Record<string, string>; categories: { slug: string; name: Record<string, string> } | { slug: string; name: Record<string, string> }[] | null }
   type PopularReviewProfile = { nickname: string }
@@ -334,10 +344,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   </span>
                   <span className="font-mono text-xl text-muted-foreground">/ 10</span>
                 </div>
-                <div className="flex items-center gap-1 mb-3">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <span key={i} className={`text-xl ${i < Math.round((featured[0].avg_rating ?? 0) / 2) ? 'text-primary' : 'text-muted-foreground/20'}`}>★</span>
-                  ))}
+                <div className="mb-3">
+                  <QuickRateStars subjectId={featured[0].id} subjectName={(featured[0].name as Record<string, string>)[locale] ?? ''} locale={locale} size="md" />
                 </div>
                 <div className="flex items-center gap-3">
                   <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full ${getCategoryColor(featured[0].category_slug)} text-white`}>
@@ -479,7 +487,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <p className="font-medium text-sm text-foreground mb-1 truncate">
                 {(s.name as Record<string, string>)[locale] ?? (s.name as Record<string, string>)['ko']}
               </p>
-              <p className="font-mono text-lg font-semibold text-primary mb-3">{s.avg_rating?.toFixed(1) ?? '—'}</p>
+              <p className="font-mono text-lg font-semibold text-primary mb-2">{s.avg_rating?.toFixed(1) ?? '—'}</p>
+              <div className="mb-2">
+                <QuickRateStars subjectId={s.id} subjectName={(s.name as Record<string, string>)[locale] ?? ''} locale={locale} />
+              </div>
               <Link
                 href={`/${locale}/subject/${s.id}`}
                 className="inline-flex items-center justify-center w-full px-3 py-1.5 bg-primary text-white text-xs font-medium rounded-full hover:opacity-90 transition-opacity"
@@ -596,15 +607,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <p className="text-sm text-muted-foreground mb-4">
           {locale === 'ko' ? '점수 변동이 크거나 갑자기 관심이 몰리는 주제' : 'Subjects with significant score changes or sudden interest'}
         </p>
-        {/* TODO: Replace with real trending evaluation data — currently mock */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {featured.slice(0, 3).map((s, idx) => {
-            const badges = [
-              { label: locale === 'ko' ? '급상승' : 'Rising', bg: 'bg-emerald-50', text: 'text-emerald-600', change: '▲ +1.2', changeColor: 'text-emerald-600' },
-              { label: locale === 'ko' ? '논쟁중' : 'Debated', bg: 'bg-orange-50', text: 'text-orange-600', change: '▼ -0.3', changeColor: 'text-destructive' },
-              { label: locale === 'ko' ? '급상승' : 'Rising', bg: 'bg-emerald-50', text: 'text-emerald-600', change: '▲ +0.4', changeColor: 'text-emerald-600' },
-            ]
-            const badge = badges[idx]
+            const recentCount = weeklyReviewCounts.get(s.id) ?? 0
+            const isRising = recentCount > 2
+            const badge = isRising
+              ? { label: locale === 'ko' ? '급상승' : 'Rising', bg: 'bg-emerald-50', text: 'text-emerald-600' }
+              : { label: locale === 'ko' ? '주목' : 'Notable', bg: 'bg-orange-50', text: 'text-orange-600' }
             return (
               <Link key={s.id} href={`/${locale}/subject/${s.id}`} className="bg-card border border-border rounded-xl p-4 hover:shadow-sm transition-shadow">
                 <span className={`inline-block text-[10px] font-semibold px-2 py-0.5 rounded ${badge.bg} ${badge.text} mb-3`}>
@@ -615,14 +624,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </p>
                 <div className="flex items-baseline gap-2 mb-1">
                   <span className="font-mono text-2xl font-bold text-foreground">{s.avg_rating?.toFixed(1) ?? '—'}</span>
-                  <span className={`font-mono text-sm font-semibold ${badge.changeColor}`}>{badge.change}</span>
                 </div>
                 <p className="text-[11px] text-muted-foreground font-mono">
-                  {locale === 'ko' ? '지난 24시간' : 'Last 24h'} +{[340, 287, 198][idx]}{locale === 'ko' ? '건' : ''}
+                  {locale === 'ko' ? '이번 주' : 'This week'} {recentCount}{locale === 'ko' ? '건 평가' : ' reviews'}
                 </p>
-                <button type="button" className="mt-3 w-full text-center text-xs font-medium text-muted-foreground border border-border rounded-full py-1.5 hover:border-primary hover:text-primary transition-colors">
+                <span className="mt-3 inline-flex w-full justify-center text-xs font-medium text-muted-foreground border border-border rounded-full py-1.5 hover:border-primary hover:text-primary transition-colors">
                   {locale === 'ko' ? '평가 참여하기' : 'Join evaluation'}
-                </button>
+                </span>
               </Link>
             )
           })}
@@ -689,21 +697,24 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           {/* Leaderboard */}
           <div>
             <h3 className="font-display text-lg font-bold tracking-tight text-foreground mb-4">{locale === 'ko' ? '이번 주 리뷰왕' : 'Top Reviewers'} 👑</h3>
-            {/* TODO: Replace with real leaderboard data from Supabase */}
             <div className="space-y-3">
-              {(['🥇', '🥈', '🥉'] as const).map((medal, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <span>{medal}</span>
-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">
-                    {String.fromCharCode(75 + i)}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-foreground">{['김리뷰', '이평가', '박별점'][i]}</p>
-                    <p className="text-[11px] text-muted-foreground">🔥 {[12, 8, 5][i]}{locale === 'ko' ? '일 연속' : ' day streak'}</p>
-                  </div>
-                  <span className="font-mono text-sm font-semibold text-foreground">{[42, 38, 31][i]}{locale === 'ko' ? '리뷰' : ''}</span>
-                </div>
-              ))}
+              {topReviewers.length > 0 ? topReviewers.map((reviewer, i) => {
+                const medals = ['🥇', '🥈', '🥉']
+                return (
+                  <Link key={reviewer.id} href={`/${locale}/profile/${reviewer.id}`} className="flex items-center gap-3 hover:bg-muted/50 rounded-lg p-1 -m-1 transition-colors">
+                    <span>{medals[i] ?? `${i + 1}`}</span>
+                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">
+                      {reviewer.nickname.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-foreground">{reviewer.nickname}</p>
+                    </div>
+                    <span className="font-mono text-sm font-semibold text-foreground">{reviewer.reviewCount}{locale === 'ko' ? '리뷰' : ''}</span>
+                  </Link>
+                )
+              }) : (
+                <p className="text-sm text-muted-foreground">{locale === 'ko' ? '아직 리뷰어가 없습니다' : 'No reviewers yet'}</p>
+              )}
             </div>
           </div>
           {/* Daily Vote (compact) */}

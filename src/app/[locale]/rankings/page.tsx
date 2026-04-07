@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 import { formatRating } from '@/lib/utils/rating'
 import StarRating from '@/components/review/StarRating'
 import UserBadge from '@/components/user/UserBadge'
+import MyRanking from '@/components/user/MyRanking'
 
 type Tab = 'subjects' | 'reviews' | 'reviewers'
 
@@ -272,6 +273,8 @@ export default function RankingsPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6">
       <h1 className="text-xl font-bold text-foreground mb-5">{t('rankings')}</h1>
+
+      <MyRanking locale={locale} />
 
       {/* Tabs */}
       <div className="flex border-b border-border mb-6">
