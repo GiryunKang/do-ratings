@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import StarRating from './StarRating'
 import UserBadge from '@/components/user/UserBadge'

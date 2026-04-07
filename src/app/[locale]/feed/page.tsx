@@ -82,7 +82,7 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
           created_at,
           subject_id,
           user_id,
-          public_profiles(id, nickname, level, avatar_url)
+          public_profiles!reviews_user_id_fkey(id, nickname, level, avatar_url)
         `)
         .in('user_id', followingIds)
         .order('created_at', { ascending: false })

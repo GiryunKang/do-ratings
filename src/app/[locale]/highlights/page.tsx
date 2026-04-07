@@ -27,9 +27,9 @@ export default async function HighlightsPage({ params }: { params: Promise<{ loc
     { data: crownReviews, error: e1 },
     { data: worldMapReviews, error: e2 },
   ] = await Promise.all([
-    supabase.from('reviews').select('id, title, content, overall_rating, subjects(name), public_profiles(nickname)').gt('helpful_count', 0).order('helpful_count', { ascending: false }).limit(10),
-    supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, subject_id, subjects(name), public_profiles(nickname)').gte('created_at', sevenDaysAgo).order('helpful_count', { ascending: false }).limit(1),
-    supabase.from('reviews').select('id, title, overall_rating, created_at, country_code, subjects(name), public_profiles(nickname)').not('country_code', 'is', null).order('created_at', { ascending: false }).limit(100),
+    supabase.from('reviews').select('id, title, content, overall_rating, subjects(name), public_profiles!reviews_user_id_fkey(nickname)').gt('helpful_count', 0).order('helpful_count', { ascending: false }).limit(10),
+    supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, subject_id, subjects(name), public_profiles!reviews_user_id_fkey(nickname)').gte('created_at', sevenDaysAgo).order('helpful_count', { ascending: false }).limit(1),
+    supabase.from('reviews').select('id, title, overall_rating, created_at, country_code, subjects(name), public_profiles!reviews_user_id_fkey(nickname)').not('country_code', 'is', null).order('created_at', { ascending: false }).limit(100),
   ])
 
   const queryErrors = [e0, e1, e2].filter(Boolean)

@@ -196,7 +196,7 @@ export default function RankingsPage() {
           created_at,
           subject_id,
           user_id,
-          public_profiles(id, nickname, level, avatar_url)
+          public_profiles!reviews_user_id_fkey(id, nickname, level, avatar_url)
         `)
         .gte('created_at', oneWeekAgo.toISOString())
         .order('helpful_count', { ascending: false })

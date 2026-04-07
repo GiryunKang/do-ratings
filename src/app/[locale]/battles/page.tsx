@@ -81,7 +81,7 @@ export default function BattlesPage() {
     // Fetch all reviews at once with user nickname
     const { data: reviewRows, error: reviewRowsError } = await supabase
       .from('reviews')
-      .select('id, title, content, overall_rating, user_id, public_profiles(nickname)')
+      .select('id, title, content, overall_rating, user_id, public_profiles!reviews_user_id_fkey(nickname)')
       .in('id', reviewIds)
     if (reviewRowsError) console.error('[BattlesPage] reviews query error:', reviewRowsError.message)
 

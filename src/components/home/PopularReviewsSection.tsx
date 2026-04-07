@@ -55,7 +55,7 @@ export default function PopularReviewsSection({ locale, initialReviews }: Popula
 
       const { data } = await supabase
         .from('reviews')
-        .select('id, title, content, overall_rating, helpful_count, created_at, subject_id, subjects(name), public_profiles(nickname)')
+        .select('id, title, content, overall_rating, helpful_count, created_at, subject_id, subjects(name), public_profiles!reviews_user_id_fkey(nickname)')
         .gte('created_at', since)
         .order('helpful_count', { ascending: false })
         .limit(5)

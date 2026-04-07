@@ -47,10 +47,10 @@ const COUNTRY_POSITIONS: Record<string, { cx: number; cy: number; name_ko: strin
 }
 
 export default function ReviewWorldMap({ locale, initialReviews }: ReviewWorldMapProps) {
-  const reviews = initialReviews ?? []
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
 
   const countryData = useMemo(() => {
+    const reviews = initialReviews ?? []
     const grouped = new Map<string, MapReview[]>()
     for (const r of reviews) {
       const list = grouped.get(r.country_code) ?? []
@@ -71,8 +71,9 @@ export default function ReviewWorldMap({ locale, initialReviews }: ReviewWorldMa
       })
     }
     return result
-  }, [reviews, locale])
+  }, [initialReviews, locale])
 
+  const reviews = initialReviews ?? []
   if (reviews.length === 0) return null
 
   const selectedData = countryData.find(c => c.code === selectedCountry)

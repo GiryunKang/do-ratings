@@ -29,7 +29,7 @@ export default function FaultlineFeed({ subjectId, locale }: FaultlineFeedProps)
 
       const { data: reviews, error: reviewsError } = await supabase
         .from('reviews')
-        .select('id, title, overall_rating, public_profiles(nickname)')
+        .select('id, title, overall_rating, public_profiles!reviews_user_id_fkey(nickname)')
         .eq('subject_id', subjectId)
         .eq('is_deleted', false)
         .order('overall_rating', { ascending: true })

@@ -38,7 +38,7 @@ interface ExistingImage {
 
 export default function ReviewForm({
   subjectId,
-  criteria,
+  criteria: _criteria,
   locale,
   existingReview,
   readOnly = false,
@@ -53,8 +53,8 @@ export default function ReviewForm({
     existingReview?.sub_ratings ?? {}
   )
   const [images] = useState<File[]>([])
-  const [existingImages, setExistingImages] = useState<ExistingImage[]>([])
-  const [removedImageIds, setRemovedImageIds] = useState<string[]>([])
+  const [_existingImages, setExistingImages] = useState<ExistingImage[]>([])
+  const [removedImageIds, _setRemovedImageIds] = useState<string[]>([])
   const [directRating, setDirectRating] = useState(existingReview?.overall_rating ?? 0)
   const [photoUrl, setPhotoUrl] = useState('')
   const [agreed, setAgreed] = useState(false)

@@ -92,12 +92,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     supabase.from('reviews').select('subject_id, subjects(id, name, image_url, avg_rating, review_count, categories(slug, name, icon))').gte('created_at', sevenDaysAgo).order('created_at', { ascending: false }).limit(50),
     supabase.from('reviews').select('id', { count: 'exact', head: true }),
     supabase.from('users').select('id', { count: 'exact', head: true }),
-    supabase.from('reviews').select('id, title, overall_rating, created_at, public_profiles(nickname)').order('created_at', { ascending: false }).limit(10),
+    supabase.from('reviews').select('id, title, overall_rating, created_at, public_profiles!reviews_user_id_fkey(nickname)').order('created_at', { ascending: false }).limit(10),
     supabase.from('reviews').select('subject_id, subjects(id, name, image_url, avg_rating, review_count)').gte('created_at', oneDayAgo).order('created_at', { ascending: false }).limit(50),
-    supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, created_at, subject_id, subjects(name), public_profiles(nickname)').gte('created_at', oneDayAgo).order('helpful_count', { ascending: false }).limit(5),
+    supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, created_at, subject_id, subjects(name), public_profiles!reviews_user_id_fkey(nickname)').gte('created_at', oneDayAgo).order('helpful_count', { ascending: false }).limit(5),
     supabase.from('daily_votes').select('*').eq('is_active', true).gte('ends_at', new Date().toISOString()).order('starts_at', { ascending: false }).limit(1),
     supabase.from('daily_vote_counts').select('*'),
-    supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, subject_id, subjects(name, categories(slug, name)), public_profiles(nickname)').gt('helpful_count', 0).order('helpful_count', { ascending: false }).limit(3),
+    supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, subject_id, subjects(name, categories(slug, name)), public_profiles!reviews_user_id_fkey(nickname)').gt('helpful_count', 0).order('helpful_count', { ascending: false }).limit(3),
   ])
 
   const queryErrors = [e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10].filter(Boolean)
