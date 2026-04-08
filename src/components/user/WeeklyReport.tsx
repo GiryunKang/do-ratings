@@ -22,16 +22,14 @@ interface WeekStats {
 }
 
 export default function WeeklyReport({ locale }: WeeklyReportProps) {
-  const { user } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const [stats, setStats] = useState<WeekStats | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [fetchLoading, setFetchLoading] = useState(false)
 
   useEffect(() => {
-    if (!user) {
-      setLoading(false)
-      return
-    }
+    if (!user) return
 
+    setFetchLoading(true)
     async function fetchStats() {
       const supabase = createClient()
       const now = new Date()
@@ -97,11 +95,14 @@ export default function WeeklyReport({ locale }: WeeklyReportProps) {
         rank: (higherCount ?? 0) + 1,
         totalReviewers: totalCount ?? 1,
       })
-      setLoading(false)
+      setFetchLoading(false)
     }
 
     fetchStats()
   }, [user, locale])
+
+  // Derive combined loading state: auth not settled yet, or user exists but fetch not done
+  const loading = authLoading || (!!user && fetchLoading)
 
   if (loading) {
     return (

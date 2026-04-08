@@ -81,16 +81,16 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   const [
     { data: categories, error: e0 },
-    { data: trendingReviews, error: e2 },
-    { count: totalReviewCount, error: e3 },
-    { count: totalUserCount, error: e4 },
-    { data: tickerReviews, error: e5 },
-    { data: dailyTrendingReviews, error: e6 },
-    { data: dailyPopularReviews, error: e7 },
-    { data: dailyVoteData, error: e8 },
-    { data: dailyVoteCountsData, error: e9 },
-    { data: popularReviewsData, error: e10 },
-    { data: topReviewersData, error: e11 },
+    { data: trendingReviews, error: e1 },
+    { count: totalReviewCount, error: e2 },
+    { count: totalUserCount, error: e3 },
+    { data: tickerReviews, error: e4 },
+    { data: dailyTrendingReviews, error: e5 },
+    { data: dailyPopularReviews, error: e6 },
+    { data: dailyVoteData, error: e7 },
+    { data: dailyVoteCountsData, error: e8 },
+    { data: popularReviewsData, error: e9 },
+    { data: topReviewersData, error: e10 },
   ] = await Promise.all([
     supabase.from('categories').select('*'),
     supabase.from('reviews').select('subject_id, subjects(id, name, image_url, avg_rating, review_count, categories(slug, name, icon))').gte('created_at', sevenDaysAgo).order('created_at', { ascending: false }).limit(50),
@@ -105,7 +105,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     supabase.from('public_profiles').select('id, nickname, review_count').order('review_count', { ascending: false }).limit(3),
   ])
 
-  const queryErrors = [e0, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11].filter(Boolean)
+  const queryErrors = [e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10].filter(Boolean)
   if (queryErrors.length > 0) {
     console.error('[HomePage] Supabase query errors:', queryErrors.map(e => e!.message))
   }
@@ -347,9 +347,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   </span>
                   <span className="font-mono text-xl text-muted-foreground">/ 10</span>
                 </div>
-                <div className="mb-3">
-                  <QuickRateStars subjectId={featured[0].id} locale={locale} size="md" />
-                </div>
+                {!isPeopleCover && (
+                  <div className="mb-3">
+                    <QuickRateStars subjectId={featured[0].id} locale={locale} size="md" />
+                  </div>
+                )}
                 <div className="flex items-center gap-3">
                   <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full ${getCategoryColor(featured[0].category_slug)} text-white`}>
                     <CategoryIcon name={featured[0].category_icon} className="w-3 h-3" />
@@ -611,7 +613,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           {locale === 'ko' ? '점수 변동이 크거나 갑자기 관심이 몰리는 주제' : 'Subjects with significant score changes or sudden interest'}
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {featured.slice(0, 3).map((s, idx) => {
+          {featured.slice(0, 3).map((s) => {
             const recentCount = weeklyReviewCounts.get(s.id) ?? 0
             const isRising = recentCount > 2
             const badge = isRising

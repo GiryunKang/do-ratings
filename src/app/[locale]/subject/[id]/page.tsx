@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: isPersonMeta ? `${name} ${rating} — Do! Ratings!` : `${name} ${rating} ★ — Do! Ratings!`,
     description: desc,
     openGraph: {
-      title: `${name} — ${rating} ★`,
+      title: isPersonMeta ? `${name} — ${rating}` : `${name} — ${rating} ★`,
       description: desc,
       type: 'website',
       url: `https://do-ratings.com/${locale}/subject/${id}`,
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${name} — ${rating} ★`,
+      title: isPersonMeta ? `${name} — ${rating}` : `${name} — ${rating} ★`,
       description: desc,
     },
     alternates: {
