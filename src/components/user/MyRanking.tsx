@@ -51,8 +51,9 @@ export default function MyRanking({ locale }: MyRankingProps) {
         .gt('review_count', 0)
       if (totalError) console.error('[MyRanking] total count error:', totalError.message)
 
+      const safeTotal = total ?? 1
       setRank((higherCount ?? 0) + 1)
-      setTotalReviewers(total ?? 1)
+      setTotalReviewers(safeTotal)
     }
 
     fetchRanking()
@@ -60,7 +61,9 @@ export default function MyRanking({ locale }: MyRankingProps) {
 
   if (!user || rank === null || myReviewCount === 0) return null
 
-  const percentile = Math.round((1 - (rank - 1) / totalReviewers) * 100)
+  const percentile = totalReviewers > 0
+    ? Math.round((1 - (rank - 1) / totalReviewers) * 100)
+    : 100
 
   return (
     <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 mb-6">

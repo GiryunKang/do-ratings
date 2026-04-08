@@ -57,8 +57,12 @@ export default async function WriteReviewPage({ params, searchParams }: PageProp
   const isEditing = !!existingReview
   const isLoggedIn = !!user
 
-  // Pre-fill rating from QuickRateStars ?rating= query param (only when not editing)
-  const initialRating = !isEditing && ratingParam ? Math.min(10, Math.max(0, parseInt(ratingParam, 10))) : undefined
+  // Pre-fill rating from QuickRateStars ?rating= query param (only when not editing).
+  // QuickRateStars sends rating*2 (1-5 stars → 2-10), ReviewForm uses 1-5 scale,
+  // so divide by 2 and clamp to [1, 5].
+  const initialRating = !isEditing && ratingParam
+    ? Math.min(5, Math.max(1, Math.round(parseInt(ratingParam, 10) / 2)))
+    : undefined
 
   return (
     <div className="max-w-lg mx-auto px-4 py-6">

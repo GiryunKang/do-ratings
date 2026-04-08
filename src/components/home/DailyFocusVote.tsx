@@ -72,8 +72,12 @@ export default function DailyFocusVote({ locale, initialVote, initialCounts }: D
     return () => clearInterval(interval)
   }, [vote, locale])
 
+  const hasVoted = !!userVote
+  const isExpired = vote ? new Date(vote.ends_at).getTime() <= Date.now() : false
+  const totalVotes = counts.reduce((sum, c) => sum + c.count, 0) || 1
+
   async function handleVote(optionId: string) {
-    if (!user || !vote || userVote || submitting) return
+    if (!user || !vote || userVote || submitting || isExpired) return
     setSubmitting(true)
     try {
       const supabase = createClient()
@@ -99,9 +103,6 @@ export default function DailyFocusVote({ locale, initialVote, initialCounts }: D
     }
     setSubmitting(false)
   }
-
-  const hasVoted = !!userVote
-  const totalVotes = counts.reduce((sum, c) => sum + c.count, 0) || 1
 
   const majorityStatus = useMemo(() => {
     if (!hasVoted || !userVote || counts.length === 0) return null
@@ -158,7 +159,7 @@ export default function DailyFocusVote({ locale, initialVote, initialCounts }: D
               <button
                 key={option.id}
                 onClick={() => handleVote(option.id)}
-                disabled={hasVoted || submitting || !user}
+                disabled={hasVoted || submitting || !user || isExpired}
                 className={`relative w-full text-left p-3 border transition-all overflow-hidden ${
                   isSelected
                     ? 'border-primary bg-primary/5'

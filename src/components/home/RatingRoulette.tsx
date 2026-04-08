@@ -183,7 +183,8 @@ export default function RatingRoulette({ subjects, locale }: RatingRouletteProps
               </Link>
               <button
                 onClick={pickRandom}
-                className="px-4 py-2.5 text-sm font-medium border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+                disabled={picking}
+                className="px-4 py-2.5 text-sm font-medium border border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors disabled:opacity-50"
               >
                 <Shuffle className="w-4 h-4" />
               </button>
