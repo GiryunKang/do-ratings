@@ -26,6 +26,48 @@ export default function RatingRoulette({ subjects, locale }: RatingRouletteProps
   const [preview, setPreview] = useState<RouletteSubject | null>(null)
   const [revealed, setRevealed] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const audioRef = useRef<AudioContext | null>(null)
+
+  function playTickSound() {
+    try {
+      if (!audioRef.current) audioRef.current = new AudioContext()
+      const ctx = audioRef.current
+      if (ctx.state === 'suspended') {
+        ctx.resume().catch(() => { /* ignore */ })
+      }
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.type = 'sine'
+      osc.frequency.setValueAtTime(800, ctx.currentTime)
+      gain.gain.setValueAtTime(0.1, ctx.currentTime)
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.05)
+      osc.start(ctx.currentTime)
+      osc.stop(ctx.currentTime + 0.05)
+    } catch { /* audio unavailable */ }
+  }
+
+  function playDingSound() {
+    try {
+      if (!audioRef.current) audioRef.current = new AudioContext()
+      const ctx = audioRef.current
+      if (ctx.state === 'suspended') {
+        ctx.resume().catch(() => { /* ignore */ })
+      }
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.type = 'sine'
+      osc.frequency.setValueAtTime(1200, ctx.currentTime)
+      osc.frequency.linearRampToValueAtTime(800, ctx.currentTime + 0.3)
+      gain.gain.setValueAtTime(0.15, ctx.currentTime)
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5)
+      osc.start(ctx.currentTime)
+      osc.stop(ctx.currentTime + 0.5)
+    } catch { /* audio unavailable */ }
+  }
 
   const pickRandom = useCallback(() => {
     if (picking || subjects.length === 0) return
@@ -39,6 +81,7 @@ export default function RatingRoulette({ subjects, locale }: RatingRouletteProps
 
     function tick() {
       setPreview(subjects[Math.floor(Math.random() * subjects.length)])
+      playTickSound()
       count++
 
       if (count >= totalSteps) {
@@ -46,7 +89,11 @@ export default function RatingRoulette({ subjects, locale }: RatingRouletteProps
         setPreview(final)
         setResult(final)
         setPicking(false)
-        setTimeout(() => setRevealed(true), 100)
+        setTimeout(() => {
+          setRevealed(true)
+          playDingSound()
+          navigator.vibrate?.([50, 30, 100])
+        }, 100)
         return
       }
 
@@ -60,6 +107,10 @@ export default function RatingRoulette({ subjects, locale }: RatingRouletteProps
   useEffect(() => {
     return () => {
       if (intervalRef.current) clearTimeout(intervalRef.current)
+      if (audioRef.current) {
+        audioRef.current.close().catch(() => { /* ignore */ })
+        audioRef.current = null
+      }
     }
   }, [])
 

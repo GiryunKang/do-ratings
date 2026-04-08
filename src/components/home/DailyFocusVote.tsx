@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Vote, Clock, CheckCircle2 } from 'lucide-react'
 
 import { createClient } from '@/lib/supabase/client'
@@ -99,11 +100,31 @@ export default function DailyFocusVote({ locale, initialVote, initialCounts }: D
     setSubmitting(false)
   }
 
+  const hasVoted = !!userVote
+  const totalVotes = counts.reduce((sum, c) => sum + c.count, 0) || 1
+
+  const majorityStatus = useMemo(() => {
+    if (!hasVoted || !userVote || counts.length === 0) return null
+
+    // Single voter edge case: avoid false "majority" claim
+    const total = counts.reduce((sum, c) => sum + c.count, 0)
+    if (total <= 1) return 'first'
+
+    const countValues = counts.map(c => c.count)
+    const maxCount = Math.max(...countValues)
+    const minCount = Math.min(...countValues)
+    const userCount = counts.find(c => c.option_id === userVote)?.count ?? 0
+
+    // Tie: multiple options share maxCount → not a meaningful majority
+    const isTied = countValues.filter(v => v === maxCount).length > 1
+    if (userCount === maxCount && !isTied) return 'majority'
+    if (userCount === minCount) return 'minority'
+    return 'middle'
+  }, [hasVoted, userVote, counts])
+
   if (!vote) return null
 
   const question = vote.question[locale] ?? vote.question['ko'] ?? ''
-  const totalVotes = counts.reduce((sum, c) => sum + c.count, 0) || 1
-  const hasVoted = !!userVote
 
   return (
     <section>
@@ -168,6 +189,32 @@ export default function DailyFocusVote({ locale, initialVote, initialCounts }: D
             )
           })}
         </div>
+
+        <AnimatePresence>
+          {hasVoted && majorityStatus && (
+            <motion.div
+              key={majorityStatus}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.4, ease: 'easeOut', delay: 0.5 }}
+              className={`mx-6 mb-5 px-4 py-2.5 text-sm font-medium rounded-sm ${
+                majorityStatus === 'majority'
+                  ? 'bg-emerald-50 text-emerald-700'
+                  : majorityStatus === 'minority'
+                    ? 'bg-primary/5 text-primary'
+                    : majorityStatus === 'first'
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'bg-muted text-muted-foreground'
+              }`}
+            >
+              {majorityStatus === 'majority' && '👑 다수파! 대부분의 사람들이 당신과 같은 선택을 했어요'}
+              {majorityStatus === 'minority' && '🔥 소수파! 당신은 독특한 시각을 가지고 있네요'}
+              {majorityStatus === 'first' && '🌟 첫 번째 투표자! 당신이 흐름을 만들어가고 있어요'}
+              {majorityStatus === 'middle' && '당신의 의견이 반영되었습니다'}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {!user && (
           <div className="px-6 pb-4">

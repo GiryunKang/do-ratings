@@ -61,8 +61,9 @@ export default function ReviewForm({
   const [photoUrl, setPhotoUrl] = useState('')
   const [agreed, setAgreed] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [showConfetti, setShowConfetti] = useState(false)
+  const [reviewerNumber, setReviewerNumber] = useState<number | null>(null)
   const [countryCode, setCountryCode] = useState<string>('XX')
 
   useEffect(() => {
@@ -214,87 +215,28 @@ export default function ReviewForm({
         if (imageInsertError) throw imageInsertError
       }
 
-      setSuccess(true)
+      // For new reviews only: fetch reviewer count for the dopamine banner
+      if (!existingReview) {
+        const { count } = await supabase
+          .from('reviews')
+          .select('id', { count: 'exact', head: true })
+          .eq('subject_id', subjectId)
+        // Only display number if count is meaningful (>0)
+        setReviewerNumber(count && count > 0 ? count : null)
+      }
+      setShowConfetti(true)
+
+      if (navigator.vibrate) navigator.vibrate([100, 50, 200])
+
       setTimeout(() => {
         router.push(`/${locale}/subject/${subjectId}`)
         router.refresh()
-      }, 1000)
+      }, 2000)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to submit review')
     } finally {
       setSubmitting(false)
     }
-  }
-
-  if (success) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 gap-3 relative overflow-hidden">
-        {/* Confetti particles */}
-        {Array.from({ length: 30 }).map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{
-              opacity: 1,
-              x: 0,
-              y: 0,
-              scale: 1,
-              rotate: 0,
-            }}
-            animate={{
-              opacity: 0,
-              x: (Math.random() - 0.5) * 300,
-              y: -(Math.random() * 200 + 50),
-              scale: Math.random() * 0.5 + 0.5,
-              rotate: Math.random() * 720 - 360,
-            }}
-            transition={{
-              duration: 1.5 + Math.random(),
-              delay: Math.random() * 0.3,
-              ease: 'easeOut',
-            }}
-            className="absolute"
-            style={{
-              left: '50%',
-              top: '40%',
-              width: 8 + Math.random() * 8,
-              height: 8 + Math.random() * 8,
-              borderRadius: Math.random() > 0.5 ? '50%' : '2px',
-              background: ['#facc15', '#f59e0b', '#f97316', '#ec4899', '#10b981', '#3b82f6'][Math.floor(Math.random() * 6)],
-            }}
-          />
-        ))}
-
-        {/* Success icon with pop */}
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: [0, 1.3, 1] }}
-          transition={{ duration: 0.5, type: 'spring', stiffness: 200 }}
-          className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center z-10"
-        >
-          <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-          </svg>
-        </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="text-foreground font-bold text-lg z-10"
-        >
-          {locale === 'ko' ? '리뷰가 등록되었습니다! 🎉' : 'Review submitted! 🎉'}
-        </motion.p>
-        <motion.a
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          href={`/${locale}/subject/${subjectId}`}
-          className="mt-2 px-5 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:bg-primary/80 transition-colors z-10"
-        >
-          {locale === 'ko' ? '내 리뷰 보러가기 →' : 'View my review →'}
-        </motion.a>
-      </div>
-    )
   }
 
   return (
@@ -432,6 +374,50 @@ export default function ReviewForm({
             : submitting ? tCommon('loading') : t('submit')}
         </button>
       </div>
+
+      {/* Confetti overlay */}
+      {showConfetti && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+            className="text-center"
+          >
+            <p className="text-6xl mb-4">🎉</p>
+            <p className="font-display text-2xl font-black tracking-tight text-foreground mb-2">
+              {existingReview
+                ? (locale === 'ko' ? '평가 수정 완료!' : 'Review Updated!')
+                : (locale === 'ko' ? '평가 완료!' : 'Review Submitted!')}
+            </p>
+            {!existingReview && reviewerNumber !== null && (
+              <p className="font-mono text-lg text-primary font-bold">
+                {locale === 'ko'
+                  ? `${reviewerNumber.toLocaleString()}번째 평가자!`
+                  : `You're reviewer #${reviewerNumber.toLocaleString()}!`}
+              </p>
+            )}
+          </motion.div>
+          {Array.from({ length: 20 }).map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ x: 0, y: 0, scale: 1, opacity: 1 }}
+              animate={{
+                x: (Math.random() - 0.5) * 400,
+                y: (Math.random() - 0.5) * 400,
+                scale: 0,
+                opacity: 0,
+                rotate: Math.random() * 720,
+              }}
+              transition={{ duration: 1.5, delay: i * 0.05 }}
+              className="fixed left-1/2 top-1/2 w-3 h-3 rounded-full"
+              style={{
+                backgroundColor: ['#FF6B35', '#4ECDC4', '#3B82F6', '#8B5CF6', '#F43F5E'][i % 5],
+              }}
+            />
+          ))}
+        </div>
+      )}
     </form>
   )
 }
