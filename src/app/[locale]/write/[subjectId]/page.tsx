@@ -5,10 +5,12 @@ import ReviewForm from '@/components/review/ReviewForm'
 
 interface PageProps {
   params: Promise<{ locale: string; subjectId: string }>
+  searchParams: Promise<{ rating?: string }>
 }
 
-export default async function WriteReviewPage({ params }: PageProps) {
+export default async function WriteReviewPage({ params, searchParams }: PageProps) {
   const { locale, subjectId } = await params
+  const { rating: ratingParam } = await searchParams
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -55,6 +57,9 @@ export default async function WriteReviewPage({ params }: PageProps) {
   const isEditing = !!existingReview
   const isLoggedIn = !!user
 
+  // Pre-fill rating from QuickRateStars ?rating= query param (only when not editing)
+  const initialRating = !isEditing && ratingParam ? Math.min(10, Math.max(0, parseInt(ratingParam, 10))) : undefined
+
   return (
     <div className="max-w-lg mx-auto px-4 py-6">
       {/* Header */}
@@ -94,6 +99,7 @@ export default async function WriteReviewPage({ params }: PageProps) {
         criteria={criteria}
         locale={locale}
         readOnly={!isLoggedIn}
+        initialRating={initialRating}
         existingReview={
           existingReview
             ? {

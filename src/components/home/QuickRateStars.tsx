@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -8,17 +8,17 @@ import { useAuth } from '@/lib/hooks/useAuth'
 
 interface QuickRateStarsProps {
   subjectId: string
-  subjectName: string
   locale: string
   size?: 'sm' | 'md'
 }
 
-export default function QuickRateStars({ subjectId, subjectName, locale, size = 'sm' }: QuickRateStarsProps) {
+export default function QuickRateStars({ subjectId, locale, size = 'sm' }: QuickRateStarsProps) {
   const { user } = useAuth()
   const router = useRouter()
   const [hovered, setHovered] = useState(0)
   const [selected, setSelected] = useState(0)
   const [showFeedback, setShowFeedback] = useState(false)
+  const navTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const starSize = size === 'sm' ? 'text-lg' : 'text-2xl'
 
@@ -27,11 +27,17 @@ export default function QuickRateStars({ subjectId, subjectName, locale, size = 
       router.push(`/${locale}/auth/login`)
       return
     }
+
+    // Cancel any pending navigation from a previous rapid tap
+    if (navTimerRef.current) {
+      clearTimeout(navTimerRef.current)
+    }
+
     setSelected(rating)
     setShowFeedback(true)
 
     // Navigate to write page with pre-selected rating
-    setTimeout(() => {
+    navTimerRef.current = setTimeout(() => {
       router.push(`/${locale}/write/${subjectId}?rating=${rating * 2}`)
     }, 800)
   }
@@ -46,8 +52,8 @@ export default function QuickRateStars({ subjectId, subjectName, locale, size = 
             key={i}
             type="button"
             whileTap={{ scale: 1.4 }}
-            onMouseEnter={() => setHovered(starValue)}
-            onMouseLeave={() => setHovered(0)}
+            onPointerEnter={() => setHovered(starValue)}
+            onPointerLeave={() => setHovered(0)}
             onClick={() => handleClick(starValue)}
             className={`${starSize} transition-colors cursor-pointer ${isActive ? 'text-primary' : 'text-muted-foreground/20'}`}
             aria-label={`${starValue} stars`}

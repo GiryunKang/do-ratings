@@ -28,6 +28,7 @@ interface ReviewFormProps {
   locale: string
   existingReview?: ExistingReview
   readOnly?: boolean
+  initialRating?: number
 }
 
 interface ExistingImage {
@@ -42,6 +43,7 @@ export default function ReviewForm({
   locale,
   existingReview,
   readOnly = false,
+  initialRating,
 }: ReviewFormProps) {
   const t = useTranslations('review')
   const tCommon = useTranslations('common')
@@ -55,7 +57,7 @@ export default function ReviewForm({
   const [images] = useState<File[]>([])
   const [_existingImages, setExistingImages] = useState<ExistingImage[]>([])
   const [removedImageIds, _setRemovedImageIds] = useState<string[]>([])
-  const [directRating, setDirectRating] = useState(existingReview?.overall_rating ?? 0)
+  const [directRating, setDirectRating] = useState(existingReview?.overall_rating ?? initialRating ?? 0)
   const [photoUrl, setPhotoUrl] = useState('')
   const [agreed, setAgreed] = useState(false)
   const [error, setError] = useState<string | null>(null)

@@ -345,7 +345,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   <span className="font-mono text-xl text-muted-foreground">/ 10</span>
                 </div>
                 <div className="mb-3">
-                  <QuickRateStars subjectId={featured[0].id} subjectName={(featured[0].name as Record<string, string>)[locale] ?? ''} locale={locale} size="md" />
+                  <QuickRateStars subjectId={featured[0].id} locale={locale} size="md" />
                 </div>
                 <div className="flex items-center gap-3">
                   <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full ${getCategoryColor(featured[0].category_slug)} text-white`}>
@@ -489,7 +489,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </p>
               <p className="font-mono text-lg font-semibold text-primary mb-2">{s.avg_rating?.toFixed(1) ?? '—'}</p>
               <div className="mb-2">
-                <QuickRateStars subjectId={s.id} subjectName={(s.name as Record<string, string>)[locale] ?? ''} locale={locale} />
+                <QuickRateStars subjectId={s.id} locale={locale} />
               </div>
               <Link
                 href={`/${locale}/subject/${s.id}`}
@@ -706,10 +706,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary">
                       {reviewer.nickname.charAt(0).toUpperCase()}
                     </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground">{reviewer.nickname}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">{reviewer.nickname}</p>
                     </div>
-                    <span className="font-mono text-sm font-semibold text-foreground">{reviewer.reviewCount}{locale === 'ko' ? '리뷰' : ''}</span>
+                    <span className="font-mono text-sm font-semibold text-foreground shrink-0">{reviewer.reviewCount}{locale === 'ko' ? '리뷰' : ''}</span>
                   </Link>
                 )
               }) : (
