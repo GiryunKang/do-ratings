@@ -8,12 +8,14 @@ interface SubRatingChartProps {
   criteria: Criterion[]
   values: Record<string, number>
   locale: string
+  neutral?: boolean
 }
 
 export default function SubRatingChart({
   criteria,
   values,
   locale,
+  neutral,
 }: SubRatingChartProps) {
   return (
     <div className="space-y-2">
@@ -29,7 +31,7 @@ export default function SubRatingChart({
             </span>
             <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden">
               <div
-                className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                className={`${neutral ? 'bg-[#555555]' : 'bg-yellow-400'} h-2 rounded-full transition-all duration-300`}
                 style={{ width: `${pct}%` }}
               />
             </div>

@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const { data: subject, error: subjectMetaError } = await supabase
     .from('subjects')
-    .select('name, avg_rating')
+    .select('name, avg_rating, categories(slug)')
     .eq('id', id)
     .single()
   if (subjectMetaError) console.error('[SubjectPage] subject metadata query error:', subjectMetaError.message)
@@ -43,12 +43,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const rating = formatRating(subject.avg_rating)
 
+  const metaCategory = Array.isArray(subject.categories) ? subject.categories[0] : subject.categories
+  const isPersonMeta = (metaCategory as { slug: string } | null)?.slug === 'people'
+
   const desc = locale === 'ko'
     ? `${name}에 대한 솔직한 리뷰와 별점을 확인하세요. 평균 ${rating}점`
     : `Read honest reviews and ratings for ${name}. Average ${rating} stars`
 
   return {
-    title: `${name} ${rating} ★ — Do! Ratings!`,
+    title: isPersonMeta ? `${name} ${rating} — Do! Ratings!` : `${name} ${rating} ★ — Do! Ratings!`,
     description: desc,
     openGraph: {
       title: `${name} — ${rating} ★`,
@@ -103,6 +106,8 @@ export default async function SubjectPage({ params }: PageProps) {
     slug: string
     sub_rating_criteria: Array<{ key: string; ko: string; en: string }>
   }
+
+  const isPeople = category?.slug === 'people'
 
   const categoryName = category
     ? (category.name[locale as 'ko' | 'en'] ?? category.name.en)
@@ -215,7 +220,7 @@ export default async function SubjectPage({ params }: PageProps) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+    <div className={`max-w-2xl mx-auto px-4 py-6 space-y-6 ${isPeople ? 'bg-[#F7F7F7] min-h-screen' : ''}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -235,7 +240,7 @@ export default async function SubjectPage({ params }: PageProps) {
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <div className="w-20 h-20 rounded-lg bg-primary flex items-center justify-center">
+                <div className={`w-20 h-20 rounded-lg ${isPeople ? 'bg-[#333333]' : 'bg-primary'} flex items-center justify-center`}>
                   <span className="text-3xl font-bold text-white">{firstLetter}</span>
                 </div>
               )}
@@ -260,16 +265,31 @@ export default async function SubjectPage({ params }: PageProps) {
                   currentUserId={user?.id ?? null}
                 />
               </div>
-              <div className="flex items-center gap-2 golden-glow rounded-lg px-2 py-1 inline-flex">
-                <StarRating value={subject.avg_rating ?? 0} readonly size="lg" />
-                <AnimatedRating value={subject.avg_rating ?? 0} className="text-lg font-semibold text-foreground" />
-                {subject.avg_rating && totalInCategory && totalInCategory > 1 && (
-                  <span className="text-xs text-muted-foreground ml-1">
-                    {locale === 'ko' ? `상위 ${percentile}%` : `Top ${percentile}%`}
+              {isPeople ? (
+                <div className="flex items-center gap-2 px-2 py-1 inline-flex">
+                  <span className="font-mono text-4xl font-bold text-[#111111] tracking-tighter">
+                    {subject.avg_rating != null ? Number(subject.avg_rating).toFixed(1) : '—'}
                   </span>
-                )}
-                <span className="text-sm text-muted-foreground">({subject.review_count} {locale === 'ko' ? '개 리뷰' : subject.review_count === 1 ? 'review' : 'reviews'})</span>
-              </div>
+                  <span className="font-mono text-lg text-[#888888]">/ 10</span>
+                  {subject.avg_rating && totalInCategory && totalInCategory > 1 && (
+                    <span className="text-xs text-[#888888] ml-1">
+                      {locale === 'ko' ? `상위 ${percentile}%` : `Top ${percentile}%`}
+                    </span>
+                  )}
+                  <span className="text-sm text-[#888888]">({subject.review_count} {locale === 'ko' ? '개 평가' : subject.review_count === 1 ? 'evaluation' : 'evaluations'})</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 golden-glow rounded-lg px-2 py-1 inline-flex">
+                  <StarRating value={subject.avg_rating ?? 0} readonly size="lg" />
+                  <AnimatedRating value={subject.avg_rating ?? 0} className="text-lg font-semibold text-foreground" />
+                  {subject.avg_rating && totalInCategory && totalInCategory > 1 && (
+                    <span className="text-xs text-muted-foreground ml-1">
+                      {locale === 'ko' ? `상위 ${percentile}%` : `Top ${percentile}%`}
+                    </span>
+                  )}
+                  <span className="text-sm text-muted-foreground">({subject.review_count} {locale === 'ko' ? '개 리뷰' : subject.review_count === 1 ? 'review' : 'reviews'})</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -277,7 +297,7 @@ export default async function SubjectPage({ params }: PageProps) {
           {criteria.length > 0 && Object.keys(avgSubRatings).length > 0 && (
             <>
               <hr className="my-4 border-border" />
-              <SubRatingChart criteria={criteria} values={avgSubRatings} locale={locale} />
+              <SubRatingChart criteria={criteria} values={avgSubRatings} locale={locale} neutral={isPeople} />
             </>
           )}
 
@@ -297,9 +317,11 @@ export default async function SubjectPage({ params }: PageProps) {
           {/* Action Buttons */}
           <div className="flex gap-2 flex-wrap">
             <Link href={writeHref} className={`inline-flex items-center gap-1.5 h-9 px-5 text-sm font-semibold rounded-lg transition-all ${
-              existingReviewId
-                ? 'bg-primary text-primary-foreground hover:bg-primary/80'
-                : 'bg-primary text-white shadow-md hover:shadow-lg hover:scale-105'
+              isPeople
+                ? 'bg-[#111111] text-white hover:bg-[#333333]'
+                : existingReviewId
+                  ? 'bg-primary text-primary-foreground hover:bg-primary/80'
+                  : 'bg-primary text-white shadow-md hover:shadow-lg hover:scale-105'
             }`}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -341,6 +363,14 @@ export default async function SubjectPage({ params }: PageProps) {
         query={typeof subject.name === 'object' ? ((subject.name as Record<string, string>)['ko'] ?? '') : String(subject.name)}
         locale={locale}
       />
+
+      {isPeople && (
+        <div className="text-center text-xs text-[#999999] border-t border-[#E5E5E5] pt-4 mt-2">
+          {locale === 'ko'
+            ? '인물에 대한 평가는 개인의 의견이며, DO! Ratings!는 사실 관계를 보증하지 않습니다.'
+            : 'Evaluations of persons reflect individual opinions. DO! Ratings! does not guarantee factual accuracy.'}
+        </div>
+      )}
     </div>
   )
 }

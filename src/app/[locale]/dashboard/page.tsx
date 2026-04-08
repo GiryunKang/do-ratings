@@ -192,6 +192,16 @@ export default function DashboardPage() {
         <StatCard label={t('avgRating')} value={avgRating} color="text-amber-600" />
       </div>
 
+      {/* Weekly report link */}
+      <div>
+        <Link
+          href={`/${currentLocale}/dashboard/weekly-report`}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity"
+        >
+          {currentLocale === 'ko' ? '주간 리포트 보기 →' : 'View Weekly Report →'}
+        </Link>
+      </div>
+
       {/* Charts row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Category breakdown */}

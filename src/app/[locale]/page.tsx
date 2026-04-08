@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Search } from 'lucide-react'
 
 import { createClient } from '@/lib/supabase/server'
+import { getCachedSubjects } from '@/lib/data/subjects'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
@@ -76,9 +77,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const oneDayAgo = new Date(now.getTime() - ONE_DAY_MS).toISOString()
   const sevenDaysAgo = new Date(now.getTime() - SEVEN_DAYS_MS).toISOString()
 
+  const allSubjects = await getCachedSubjects()
+
   const [
     { data: categories, error: e0 },
-    { data: allSubjects, error: e1 },
     { data: trendingReviews, error: e2 },
     { count: totalReviewCount, error: e3 },
     { count: totalUserCount, error: e4 },
@@ -91,7 +93,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     { data: topReviewersData, error: e11 },
   ] = await Promise.all([
     supabase.from('categories').select('*'),
-    supabase.from('subjects').select('id, name, avg_rating, review_count, description, category_id, image_url, categories(slug, name, icon)').limit(200),
     supabase.from('reviews').select('subject_id, subjects(id, name, image_url, avg_rating, review_count, categories(slug, name, icon))').gte('created_at', sevenDaysAgo).order('created_at', { ascending: false }).limit(50),
     supabase.from('reviews').select('id', { count: 'exact', head: true }),
     supabase.from('users').select('id', { count: 'exact', head: true }),
@@ -104,7 +105,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     supabase.from('public_profiles').select('id, nickname, review_count').order('review_count', { ascending: false }).limit(3),
   ])
 
-  const queryErrors = [e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11].filter(Boolean)
+  const queryErrors = [e0, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11].filter(Boolean)
   if (queryErrors.length > 0) {
     console.error('[HomePage] Supabase query errors:', queryErrors.map(e => e!.message))
   }
@@ -232,6 +233,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     .map(c => ({ option_id: c.option_id, count: c.count }))
 
   const displayCats = cats.slice(0, 6)
+  const isPeopleCover = featured[0]?.category_slug === 'people'
 
   // Process top reviewers for leaderboard
   const topReviewers = (topReviewersData ?? []).map(r => ({
@@ -261,7 +263,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   }).filter(r => r.helpful_count > 0)
 
   return (
-    <div className="pb-16">
+    <div className={`pb-16 ${isPeopleCover ? 'bg-[#F7F7F7]' : ''}`}>
       {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
@@ -340,7 +342,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   &ldquo;{locale === 'ko' ? `${(featured[0].category_name as Record<string, string>)[locale] ?? ''} 분야의 주목받는 평가, 지금 확인하세요` : 'A trending evaluation in this category'}&rdquo;
                 </p>
                 <div className="flex items-baseline gap-2 mb-3">
-                  <span className="font-mono text-7xl font-bold text-primary tracking-tighter">
+                  <span className={`font-mono text-7xl font-bold tracking-tighter ${isPeopleCover ? 'text-[#111111]' : 'text-primary'}`}>
                     {featured[0].avg_rating?.toFixed(1) ?? '—'}
                   </span>
                   <span className="font-mono text-xl text-muted-foreground">/ 10</span>
@@ -353,7 +355,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     <CategoryIcon name={featured[0].category_icon} className="w-3 h-3" />
                     {(featured[0].category_name as Record<string, string>)[locale] ?? ''}
                   </span>
-                  <Link href={`/${locale}/subject/${featured[0].id}`} className="text-sm font-medium text-primary hover:underline">
+                  <Link href={`/${locale}/subject/${featured[0].id}`} className={`text-sm font-medium hover:underline ${isPeopleCover ? 'text-[#333333]' : 'text-primary'}`}>
                     {locale === 'ko' ? '평가하기 →' : 'Rate now →'}
                   </Link>
                 </div>
@@ -373,7 +375,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className="font-mono text-xl font-semibold text-primary">{s.avg_rating?.toFixed(1) ?? '—'}</span>
+                    <span className={`font-mono text-xl font-semibold ${s.category_slug === 'people' ? 'text-[#111111]' : 'text-primary'}`}>{s.avg_rating?.toFixed(1) ?? '—'}</span>
                     <p className="text-[10px] text-muted-foreground">{s.review_count} {locale === 'ko' ? '평가' : 'ratings'}</p>
                   </div>
                 </Link>
@@ -384,13 +386,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* SECTION 3: Taste Ticker Ribbon */}
-      <section className="mt-8 bg-primary py-3 overflow-hidden">
+      <section className={`mt-8 py-3 overflow-hidden ${isPeopleCover ? 'bg-[#F0F0F0]' : 'bg-primary'}`}>
         <div className="animate-ticker whitespace-nowrap flex">
           {[...featured, ...featured].map((s, i) => (
-            <span key={i} className="inline-flex items-center gap-2 mx-6 text-white text-sm font-medium">
+            <span key={i} className={`inline-flex items-center gap-2 mx-6 text-sm font-medium ${isPeopleCover ? 'text-[#333333]' : 'text-white'}`}>
               {(s.name as Record<string, string>)[locale] ?? (s.name as Record<string, string>)['ko']}
               <span className="font-mono font-bold">{s.avg_rating?.toFixed(1) ?? '—'}</span>
-              <span className="text-white/40">●</span>
+              <span className={isPeopleCover ? 'text-[#999999]' : 'text-white/40'}>●</span>
             </span>
           ))}
         </div>
@@ -664,6 +666,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               totalReviews={totalReviewCount ?? 0}
               totalSubjects={subjects.length}
               totalUsers={totalUserCount ?? 0}
+              variant={isPeopleCover ? 'muted' : 'default'}
             />
             <div className="mt-6">
               <RatingPrediction locale={locale} />
@@ -693,7 +696,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* SECTION 9: Community Pulse (3 columns) */}
-      <section className="px-6 mt-8 bg-muted/50 -mx-0 py-8">
+      {!isPeopleCover && <section className="px-6 mt-8 bg-muted/50 -mx-0 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Leaderboard */}
           <div>
@@ -746,10 +749,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </div>
           </div>
         </div>
-      </section>
+      </section>}
 
       {/* SECTION 10: Challenge CTA Banner */}
-      <section className="px-6 mt-8">
+      {!isPeopleCover && <section className="px-6 mt-8">
         <div className="bg-primary rounded-xl p-6 md:p-8 flex items-center justify-between">
           <div>
             <p className="text-[11px] font-semibold tracking-widest uppercase text-white/60 mb-1">
@@ -766,7 +769,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <span className="text-primary text-xl">→</span>
           </Link>
         </div>
-      </section>
+      </section>}
 
       {/* SECTION 11: CTA — "평가하고 싶은 주제가 없으신가요?" */}
       <section className="px-6 mt-8 pb-8">

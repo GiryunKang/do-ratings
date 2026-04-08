@@ -26,9 +26,10 @@ interface ActivityTickerProps {
   totalReviews?: number
   totalSubjects?: number
   totalUsers?: number
+  variant?: 'default' | 'muted'
 }
 
-export default function ActivityTicker({ locale, recentReviews, totalReviews = 0, totalSubjects = 0, totalUsers = 0 }: ActivityTickerProps) {
+export default function ActivityTicker({ locale, recentReviews, totalReviews = 0, totalSubjects = 0, totalUsers = 0, variant = 'default' }: ActivityTickerProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
@@ -92,7 +93,7 @@ export default function ActivityTicker({ locale, recentReviews, totalReviews = 0
   const current = activities[currentIndex]
 
   return (
-    <div className="relative overflow-hidden rounded-xl bg-card border border-border px-4 py-2.5">
+    <div className={`relative overflow-hidden rounded-xl border border-border px-4 py-2.5 ${variant === 'muted' ? 'bg-[#F0F0F0]' : 'bg-card'}`}>
       <div className="flex items-center gap-3">
         <div className="shrink-0 w-2 h-2 rounded-full bg-green-500 animate-pulse" />
         <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider shrink-0">
