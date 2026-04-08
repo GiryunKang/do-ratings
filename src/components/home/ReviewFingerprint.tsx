@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/hooks/useAuth'
+import ShareableFingerprint from '@/components/user/ShareableFingerprint'
 
 interface ReviewFingerprintProps {
   locale: string
@@ -19,6 +20,7 @@ interface RatingProfile {
 
 export default function ReviewFingerprint({ locale }: ReviewFingerprintProps) {
   const { user } = useAuth()
+  const nickname = user?.user_metadata?.nickname || user?.user_metadata?.name || user?.email?.split('@')[0] || 'Reviewer'
   const [profile, setProfile] = useState<RatingProfile | null>(null)
 
   useEffect(() => {
@@ -150,6 +152,14 @@ export default function ReviewFingerprint({ locale }: ReviewFingerprintProps) {
               <span className="font-bold text-foreground">{profile.categorySpread}</span>
             </div>
           </div>
+          <ShareableFingerprint
+            locale={locale}
+            nickname={nickname}
+            avgRating={profile.avgRating}
+            totalReviews={profile.totalReviews}
+            categorySpread={profile.categorySpread}
+            personalityLabel={personalityLabel}
+          />
         </div>
       </div>
     </div>

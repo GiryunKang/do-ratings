@@ -14,6 +14,7 @@ import PopularReviewsSection from '@/components/home/PopularReviewsSection'
 import ActivityTicker from '@/components/home/ActivityTicker'
 
 const DailyFocusVote = dynamic(() => import('@/components/home/DailyFocusVote'))
+const DailyMission = dynamic(() => import('@/components/home/DailyMission'))
 const RatingPrediction = dynamic(() => import('@/components/home/RatingPrediction'))
 const ReviewStarterDeck = dynamic(() => import('@/components/home/ReviewStarterDeck'))
 const QuickRateStars = dynamic(() => import('@/components/home/QuickRateStars'))
@@ -717,8 +718,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               )}
             </div>
           </div>
-          {/* Daily Vote (compact) */}
+          {/* Daily Vote + Mission */}
           <div>
+            <div className="mb-4">
+              <DailyMission locale={locale} />
+            </div>
             <h3 className="font-display text-lg font-bold tracking-tight text-foreground mb-4">{locale === 'ko' ? '오늘의 투표' : 'Daily Poll'}</h3>
             <DailyFocusVote locale={locale} initialVote={activeVote} initialCounts={voteCounts} />
           </div>
