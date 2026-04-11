@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic'
 
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
-import { getCachedSubjects } from '@/lib/data/subjects'
+import { createClient } from '@/lib/supabase/server'
 
 const SubjectShuffle = dynamic(() => import('@/components/home/SubjectShuffle'))
 const RatingRoulette = dynamic(() => import('@/components/home/RatingRoulette'))
@@ -39,9 +39,15 @@ function pickRelation<T>(value: T | T[] | null | undefined): T | null {
 
 export default async function DiscoverPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
+  const supabase = await createClient()
 
-  const allSubjects = await getCachedSubjects()
-  const subjects = allSubjects as SubjectRecord[]
+  const { data: allSubjects, error: subjectsError } = await supabase
+    .from('subjects')
+    .select('id, name, avg_rating, review_count, description, category_id, image_url, categories(slug, name, icon)')
+    .limit(200)
+  if (subjectsError) console.error('[DiscoverPage] subjects query error:', subjectsError.message)
+
+  const subjects = (allSubjects ?? []) as SubjectRecord[]
 
   const mappedSubjects = subjects.map((subject) => {
     const category = pickRelation(subject.categories)

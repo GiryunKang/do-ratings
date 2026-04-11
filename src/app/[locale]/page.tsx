@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { Search } from 'lucide-react'
 
 import { createClient } from '@/lib/supabase/server'
-import { getCachedSubjects } from '@/lib/data/subjects'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
@@ -77,10 +76,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const oneDayAgo = new Date(now.getTime() - ONE_DAY_MS).toISOString()
   const sevenDaysAgo = new Date(now.getTime() - SEVEN_DAYS_MS).toISOString()
 
-  const allSubjects = await getCachedSubjects()
-
   const [
     { data: categories, error: e0 },
+    { data: allSubjects, error: eSubjects },
     { data: trendingReviews, error: e1 },
     { count: totalReviewCount, error: e2 },
     { count: totalUserCount, error: e3 },
@@ -93,6 +91,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     { data: topReviewersData, error: e10 },
   ] = await Promise.all([
     supabase.from('categories').select('*'),
+    supabase.from('subjects').select('id, name, avg_rating, review_count, description, category_id, image_url, categories(slug, name, icon)').limit(200),
     supabase.from('reviews').select('subject_id, subjects(id, name, image_url, avg_rating, review_count, categories(slug, name, icon))').gte('created_at', sevenDaysAgo).order('created_at', { ascending: false }).limit(50),
     supabase.from('reviews').select('id', { count: 'exact', head: true }),
     supabase.from('users').select('id', { count: 'exact', head: true }),
@@ -105,7 +104,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     supabase.from('public_profiles').select('id, nickname, review_count').order('review_count', { ascending: false }).limit(3),
   ])
 
-  const queryErrors = [e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10].filter(Boolean)
+  const queryErrors = [e0, eSubjects, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10].filter(Boolean)
   if (queryErrors.length > 0) {
     console.error('[HomePage] Supabase query errors:', queryErrors.map(e => e!.message))
   }
