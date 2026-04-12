@@ -23,9 +23,10 @@ export default function RatingPrediction({ locale }: RatingPredictionProps) {
   const { user } = useAuth()
   const [prediction, setPrediction] = useState<Prediction | null>(null)
   const [revealed, setRevealed] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!user) return
+    if (!user) { setLoading(false); return }
 
     async function generatePrediction() {
       const supabase = createClient()
@@ -69,10 +70,19 @@ export default function RatingPrediction({ locale }: RatingPredictionProps) {
       })
     }
 
-    generatePrediction()
+    generatePrediction().finally(() => setLoading(false))
   }, [user, locale])
 
-  if (!user || !prediction) return null
+  if (!user) return null
+  if (loading) return (
+    <div className="border border-border bg-card rounded-xl p-5 animate-pulse">
+      <div className="h-4 w-20 bg-muted rounded mb-3" />
+      <div className="h-3 w-full bg-muted rounded mb-3" />
+      <div className="h-4 w-32 bg-muted rounded mb-3" />
+      <div className="h-10 w-full bg-muted rounded" />
+    </div>
+  )
+  if (!prediction) return null
 
   return (
     <div className="border border-border bg-card rounded-xl p-5 relative overflow-hidden">

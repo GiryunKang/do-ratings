@@ -67,7 +67,7 @@ export default function FeaturedCarousel({
             <div key={subject.id} className="shrink-0 snap-center">
               <Link
                 href={`/${locale}/subject/${subject.id}`}
-                className={`group relative block w-[280px] md:w-[320px] aspect-[16/9] overflow-hidden ${subject.image_url ? '' : bgColor}`}
+                className={`group relative block w-[240px] sm:w-[280px] md:w-[320px] aspect-[16/9] overflow-hidden ${subject.image_url ? '' : bgColor}`}
               >
                 {/* Image */}
                 {subject.image_url ? (

@@ -157,7 +157,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       byCategory.set(s.category_slug, list)
     }
     const balanced: typeof mappedSubjects = []
-    for (const slug of categoryOrder) {
+    const rotatedOrder = [...categoryOrder]
+    const dayIndex = new Date().getDay() % rotatedOrder.length
+    const rotated = [...rotatedOrder.slice(dayIndex), ...rotatedOrder.slice(0, dayIndex)]
+    for (const slug of rotated) {
       const list = byCategory.get(slug) ?? []
       list.sort((a, b) => b.review_count - a.review_count || (b.avg_rating ?? 0) - (a.avg_rating ?? 0))
       balanced.push(...list.slice(0, 2))
@@ -280,7 +283,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       />
 
       {/* SECTION 1: "무엇이든 평가하세요" Search Module */}
-      <section className="px-6 pt-8">
+      <section className="px-4 sm:px-6 pt-8">
         <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
           <h2 className="font-display text-2xl font-black tracking-tight text-foreground mb-4">
             {locale === 'ko' ? '무엇이든 평가하세요' : 'Rate Anything'}
@@ -324,7 +327,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* SECTION 2: Cover Story + Live Index (Editorial Split) */}
-      <section className="px-6 mt-8">
+      <section className="px-4 sm:px-6 mt-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* LEFT: Cover Story (7 cols) */}
           <div className="lg:col-span-7 relative overflow-hidden">
@@ -335,14 +338,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 <span className="absolute top-0 right-0 font-display text-[80px] leading-none text-foreground/[0.04] uppercase select-none pointer-events-none">
                   {(featured[0].category_name as Record<string, string>)['en']?.toUpperCase() ?? ''}
                 </span>
-                <h3 className="font-display text-3xl lg:text-4xl font-black tracking-tight text-foreground mb-2">
+                <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-foreground mb-2">
                   {(featured[0].name as Record<string, string>)[locale] ?? (featured[0].name as Record<string, string>)['ko']}
                 </h3>
                 <p className="text-sm text-muted-foreground mb-4 italic">
                   &ldquo;{locale === 'ko' ? `${(featured[0].category_name as Record<string, string>)[locale] ?? ''} 분야의 주목받는 평가, 지금 확인하세요` : 'A trending evaluation in this category'}&rdquo;
                 </p>
                 <div className="flex items-baseline gap-2 mb-3">
-                  <span className={`font-mono text-7xl font-bold tracking-tighter ${isPeopleCover ? 'text-foreground' : 'text-primary'}`}>
+                  <span className={`font-mono text-5xl sm:text-7xl font-bold tracking-tighter ${isPeopleCover ? 'text-foreground' : 'text-primary'}`}>
                     {displayRating(featured[0].avg_rating)}
                   </span>
                   <span className="font-mono text-xl text-muted-foreground">/ 10</span>
@@ -401,7 +404,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* SECTION 4: Top 5 + Categories (Asymmetric 65/35) */}
-      <section className="px-6 mt-8">
+      <section className="px-4 sm:px-6 mt-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* LEFT: Top 5 (8 cols) */}
           <div className="lg:col-span-8">
@@ -415,13 +418,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 return (
                   <div key={s.id} className="flex items-center gap-3">
                     <span className={`font-display text-lg w-6 text-center ${idx < 3 ? 'text-primary font-bold' : 'text-muted-foreground'}`}>{idx + 1}</span>
-                    <span className="text-sm font-medium text-foreground w-28 truncate">
+                    <span className="text-xs sm:text-sm font-medium text-foreground w-16 sm:w-28 truncate">
                       {(s.name as Record<string, string>)[locale] ?? (s.name as Record<string, string>)['ko']}
                     </span>
-                    <div className="flex-1 h-4 bg-muted rounded-full overflow-hidden">
+                    <div className="flex-1 h-3 sm:h-4 bg-muted rounded-full overflow-hidden">
                       <div className={`h-full ${barColors[idx]} rounded-full transition-all`} style={{ width: `${barWidth}%` }} />
                     </div>
-                    <span className="font-mono text-sm font-semibold text-foreground w-8 text-right">{displayRating(s.avg_rating)}</span>
+                    <span className="font-mono text-xs sm:text-sm font-semibold text-foreground w-8 text-right">{displayRating(s.avg_rating)}</span>
                   </div>
                 )
               })}
@@ -471,21 +474,21 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* SECTION 4.5: ReviewStarterDeck — first-time user onboarding */}
-      <section className="px-6 mt-8">
+      <section className="px-4 sm:px-6 mt-8">
         <ReviewStarterDeck locale={locale} />
       </section>
 
       {/* SECTION 5: "당신이 아직 평가하지 않은 주제" (Personalized) */}
-      <section className="px-6 mt-8">
+      <section className="px-4 sm:px-6 mt-8">
         <h2 className="font-display text-xl font-black tracking-tight text-foreground mb-2">
           {locale === 'ko' ? '당신이 아직 평가하지 않은 주제' : "Topics You Haven't Rated"}
         </h2>
         <p className="text-sm text-muted-foreground mb-4">
           {locale === 'ko' ? '로그인하면 맞춤 추천을 받을 수 있어요' : 'Log in for personalized recommendations'}
         </p>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
           {featured.slice(3, 7).map(s => (
-            <div key={s.id} className="bg-card border border-border rounded-xl p-4">
+            <div key={s.id} className="bg-card border border-border rounded-xl p-3 sm:p-4">
               <span className={`inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full ${getCategoryColor(s.category_slug)} text-white mb-2`}>
                 {(s.category_name as Record<string, string>)[locale] ?? ''}
               </span>
@@ -508,7 +511,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* SECTION 6: 인기 평가글 (Popular Reviews Feed) */}
-      <section className="px-6 mt-8">
+      <section className="px-4 sm:px-6 mt-8">
         <h2 className="font-display text-xl font-black tracking-tight text-foreground mb-2 flex items-center gap-2">
           {locale === 'ko' ? '인기 평가글' : 'Popular Reviews'} 🔥
         </h2>
@@ -544,15 +547,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* SECTION 6.5: 기간별 랭킹 */}
-      <section className="px-6 mt-8">
+      <section className="px-4 sm:px-6 mt-8">
         <h2 className="font-display text-xl font-black tracking-tight text-foreground mb-4">
           {locale === 'ko' ? '랭킹' : 'Rankings'}
         </h2>
-        <div className="flex gap-0 mb-4 border-b border-border">
+        <div className="flex gap-0 mb-4 border-b border-border overflow-x-auto">
           {['일간', '주간', '월간', '분기', '연간'].map((period, i) => (
             <span
               key={period}
-              className={`px-4 py-2 text-sm font-medium cursor-pointer transition-colors ${i === 1 ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium cursor-pointer transition-colors whitespace-nowrap ${i === 1 ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'}`}
             >
               {period}
             </span>
@@ -570,7 +573,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 return (
                   <Link key={s.id} href={`/${locale}/subject/${s.id}`} className="flex items-center gap-3 group">
                     <span className={`font-display text-base w-5 text-center ${idx < 3 ? 'text-primary font-black' : 'text-muted-foreground font-medium'}`}>{idx + 1}</span>
-                    <span className="text-sm font-medium text-foreground w-24 truncate group-hover:text-primary transition-colors">
+                    <span className="text-xs sm:text-sm font-medium text-foreground w-16 sm:w-24 truncate group-hover:text-primary transition-colors">
                       {(s.name as Record<string, string>)[locale] ?? (s.name as Record<string, string>)['ko']}
                     </span>
                     <div className="flex-1 h-4 bg-muted rounded-full overflow-hidden">
@@ -605,7 +608,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* SECTION 6.7: 화제의 평가 */}
-      <section className="px-6 mt-8">
+      <section className="px-4 sm:px-6 mt-8">
         <h2 className="font-display text-xl font-black tracking-tight text-foreground mb-2">
           {locale === 'ko' ? '화제의 평가' : 'Trending Evaluations'}
         </h2>
@@ -643,7 +646,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* SECTION 7: Live Feed (Trending + Popular + Activity Ticker + RatingPrediction) */}
-      <section className="px-6 mt-8">
+      <section className="px-4 sm:px-6 mt-8">
         <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
           Live Feed
         </p>
@@ -678,7 +681,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* SECTION 8: Featured Carousel */}
-      <section className="px-6 mt-12">
+      <section className="px-4 sm:px-6 mt-12">
         <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
           {locale === 'ko' ? "Editor's Picks" : "Editor's Picks"}
         </p>
@@ -698,7 +701,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* SECTION 9: Community Pulse (3 columns) */}
-      {!isPeopleCover && <section className="px-6 mt-8 bg-muted/50 -mx-0 py-8">
+      {!isPeopleCover && <section className="px-4 sm:px-6 mt-8 bg-muted/50 -mx-0 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Leaderboard */}
           <div>
@@ -754,27 +757,27 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>}
 
       {/* SECTION 10: Challenge CTA Banner */}
-      {!isPeopleCover && <section className="px-6 mt-8">
-        <div className="bg-primary rounded-xl p-6 md:p-8 flex items-center justify-between">
-          <div>
+      {!isPeopleCover && <section className="px-4 sm:px-6 mt-8">
+        <div className="bg-primary rounded-xl p-5 sm:p-6 md:p-8 flex items-center justify-between gap-3">
+          <div className="min-w-0">
             <p className="text-[11px] font-semibold tracking-widest uppercase text-white/60 mb-1">
               {locale === 'ko' ? '오늘의 챌린지' : "Today's Challenge"}
             </p>
-            <p className="font-display text-lg md:text-xl text-white">
+            <p className="font-display text-base sm:text-lg md:text-xl text-white">
               {locale === 'ko' ? '가장 좋아하는 카페를 평가하세요!' : 'Rate your favorite cafe!'}
             </p>
           </div>
           <Link
             href={`/${locale}/explore`}
-            className="w-12 h-12 rounded-full bg-white flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity"
           >
-            <span className="text-primary text-xl">→</span>
+            <span className="text-primary text-lg sm:text-xl">→</span>
           </Link>
         </div>
       </section>}
 
       {/* SECTION 11: CTA — "평가하고 싶은 주제가 없으신가요?" */}
-      <section className="px-6 mt-8 pb-8">
+      <section className="px-4 sm:px-6 mt-8 pb-8">
         <div className="border border-border rounded-xl p-8 text-center">
           <p className="text-foreground font-medium mb-2">
             {locale === 'ko' ? '평가하고 싶은 주제가 없으신가요?' : "Can't find what you want to rate?"}

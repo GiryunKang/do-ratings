@@ -59,7 +59,7 @@ export default function QuickFaceoff({ subjects, locale }: QuickFaceoffProps) {
         </span>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3">
         {[a, b].map((subject, idx) => {
           const name = subject.name[locale] ?? subject.name['ko'] ?? ''
           const catName = subject.category_name[locale] ?? subject.category_name['ko'] ?? ''

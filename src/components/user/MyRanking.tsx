@@ -15,9 +15,10 @@ export default function MyRanking({ locale }: MyRankingProps) {
   const [rank, setRank] = useState<number | null>(null)
   const [totalReviewers, setTotalReviewers] = useState(0)
   const [myReviewCount, setMyReviewCount] = useState(0)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!user) return
+    if (!user) { setLoading(false); return }
 
     async function fetchRanking() {
       const supabase = createClient()
@@ -56,10 +57,26 @@ export default function MyRanking({ locale }: MyRankingProps) {
       setTotalReviewers(safeTotal)
     }
 
-    fetchRanking()
+    fetchRanking().finally(() => setLoading(false))
   }, [user])
 
-  if (!user || rank === null || myReviewCount === 0) return null
+  if (!user) return null
+  if (loading) return (
+    <div className="bg-muted/50 border border-border rounded-xl p-5 mb-6 animate-pulse">
+      <div className="flex items-center gap-3">
+        <div className="w-12 h-12 rounded-full bg-muted" />
+        <div className="flex-1 space-y-2">
+          <div className="h-4 w-40 bg-muted rounded" />
+          <div className="h-3 w-52 bg-muted rounded" />
+        </div>
+        <div className="text-right space-y-1">
+          <div className="h-8 w-12 bg-muted rounded ml-auto" />
+          <div className="h-2.5 w-8 bg-muted rounded ml-auto" />
+        </div>
+      </div>
+    </div>
+  )
+  if (rank === null || myReviewCount === 0) return null
 
   const percentile = totalReviewers > 0
     ? Math.round((1 - (rank - 1) / totalReviewers) * 100)

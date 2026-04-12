@@ -23,9 +23,10 @@ export default function ReviewFingerprint({ locale }: ReviewFingerprintProps) {
   const { user } = useAuth()
   const nickname = user?.user_metadata?.nickname || user?.user_metadata?.name || user?.email?.split('@')[0] || 'Reviewer'
   const [profile, setProfile] = useState<RatingProfile | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!user) return
+    if (!user) { setLoading(false); return }
 
     async function fetchProfile() {
       const supabase = createClient()
@@ -66,7 +67,7 @@ export default function ReviewFingerprint({ locale }: ReviewFingerprintProps) {
       })
     }
 
-    fetchProfile()
+    fetchProfile().finally(() => setLoading(false))
   }, [user])
 
   const artPaths = useMemo(() => {
@@ -102,7 +103,22 @@ export default function ReviewFingerprint({ locale }: ReviewFingerprintProps) {
     return paths
   }, [profile])
 
-  if (!user || !profile) return null
+  if (!user) return null
+  if (loading) return (
+    <div className="bg-card border border-border rounded-xl p-5 animate-pulse">
+      <div className="h-4 w-28 bg-muted rounded mb-3" />
+      <div className="flex items-center gap-4">
+        <div className="w-24 h-24 bg-muted rounded-full shrink-0" />
+        <div className="flex-1 space-y-2">
+          <div className="h-4 w-32 bg-muted rounded" />
+          <div className="h-3 w-24 bg-muted rounded" />
+          <div className="h-3 w-20 bg-muted rounded" />
+          <div className="h-3 w-28 bg-muted rounded" />
+        </div>
+      </div>
+    </div>
+  )
+  if (!profile) return null
 
   const personalityLabel = profile.generosity > 0.7
     ? (locale === 'ko' ? '관대한 리뷰어' : 'Generous Reviewer')

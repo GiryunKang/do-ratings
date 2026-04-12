@@ -15,9 +15,10 @@ export default function RatingStreak({ locale }: RatingStreakProps) {
   const { user } = useAuth()
   const [streak, setStreak] = useState(0)
   const [showFlame, setShowFlame] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!user) return
+    if (!user) { setLoading(false); return }
 
     async function fetchStreak() {
       if (!user) return
@@ -59,10 +60,22 @@ export default function RatingStreak({ locale }: RatingStreakProps) {
       }
     }
 
-    fetchStreak()
+    fetchStreak().finally(() => setLoading(false))
   }, [user])
 
-  if (!user || streak === 0) return null
+  if (!user) return null
+  if (loading) return (
+    <div className="rounded-xl bg-muted/50 border border-border px-4 py-3 animate-pulse">
+      <div className="flex items-center gap-3">
+        <div className="w-6 h-6 bg-muted rounded" />
+        <div className="flex-1 space-y-1.5">
+          <div className="h-3.5 w-32 bg-muted rounded" />
+          <div className="h-2.5 w-48 bg-muted rounded" />
+        </div>
+      </div>
+    </div>
+  )
+  if (streak === 0) return null
 
   const flameSize = Math.min(streak, 7)
   const flameCount = streak >= 7 ? 3 : streak >= 3 ? 2 : 1

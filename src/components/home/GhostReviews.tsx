@@ -27,7 +27,7 @@ export default function GhostReviews({ locale, writeHref }: GhostReviewsProps) {
         {locale === 'ko' ? '첫 번째 평가자가 되어주세요. 당신의 의견이 기준이 됩니다.' : 'Be the first to review. Your opinion sets the standard.'}
       </p>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
         {GHOST_CARDS.map((card, index) => (
           <motion.div
             key={index}

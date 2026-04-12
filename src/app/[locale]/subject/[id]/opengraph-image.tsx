@@ -51,7 +51,7 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
         {Array.from({ length: 5 }).map((_, i) => (
-          <span key={i} style={{ fontSize: 48, color: i < fullStars || (i === fullStars && hasHalf) ? '#f59e0b' : '#d1d5db' }}>
+          <span key={i} style={{ fontSize: 48, color: i < fullStars || (i === fullStars && hasHalf) ? '#FF6B35' : '#d1d5db' }}>
             ★
           </span>
         ))}

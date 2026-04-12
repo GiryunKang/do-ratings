@@ -48,9 +48,9 @@ export default function ReviewStarterDeck({ locale }: ReviewStarterDeckProps) {
         {locale === 'ko' ? '카드를 넘기면서 관심 있는 주제를 찾아보세요' : 'Swipe through cards to find your interest'}
       </p>
 
-      <div className={`${card.bgColor} rounded-xl p-8 text-center transition-colors duration-300`}>
-        <p className="text-4xl mb-3">{card.emoji}</p>
-        <p className="font-display text-xl font-bold tracking-tight text-foreground mb-1">
+      <div className={`${card.bgColor} rounded-xl p-5 sm:p-8 text-center transition-colors duration-300`}>
+        <p className="text-3xl sm:text-4xl mb-3">{card.emoji}</p>
+        <p className="font-display text-lg sm:text-xl font-bold tracking-tight text-foreground mb-1">
           {locale === 'ko' ? card.ko : card.en}
         </p>
         <p className="text-xs text-muted-foreground mb-6">
