@@ -51,9 +51,10 @@ interface ReviewCardProps {
   }
   currentUserId?: string | null
   locale?: string
+  isPeople?: boolean
 }
 
-export default function ReviewCard({ review, currentUserId, locale = 'ko' }: ReviewCardProps) {
+export default function ReviewCard({ review, currentUserId, locale = 'ko', isPeople }: ReviewCardProps) {
   const { user } = review
 
   const subjectHref = review.subject_slug
@@ -140,7 +141,7 @@ export default function ReviewCard({ review, currentUserId, locale = 'ko' }: Rev
 
         {/* Rating */}
         <div className="flex items-center gap-2 mt-3">
-          <StarRating value={review.overall_rating} readonly size="sm" />
+          <StarRating value={review.overall_rating} readonly size="sm" muted={isPeople} />
           <span className="text-sm text-muted-foreground font-medium tabular-nums">
             {review.overall_rating.toFixed(1)}
           </span>

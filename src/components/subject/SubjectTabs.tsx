@@ -20,6 +20,7 @@ interface SubjectTabsProps {
   subjectName?: string
   avgRating?: number | null
   reviewCount?: number
+  isPeople?: boolean
 }
 
 const tabs = [
@@ -37,6 +38,7 @@ export default function SubjectTabs({
   subjectName,
   avgRating,
   reviewCount,
+  isPeople,
 }: SubjectTabsProps) {
   const [activeTab, setActiveTab] = useState('reviews')
 
@@ -71,7 +73,7 @@ export default function SubjectTabs({
           transition={{ duration: 0.2 }}
           className="mt-4"
         >
-          {activeTab === 'reviews' && <ReviewList subjectId={subjectId} />}
+          {activeTab === 'reviews' && <ReviewList subjectId={subjectId} isPeople={isPeople} />}
           {activeTab === 'photos' && images.length > 0 && <ImageGallery images={images} />}
           {activeTab === 'trend' && <TrendChart subjectId={subjectId} locale={locale} />}
           {activeTab === 'summary' && <AISummary subjectId={subjectId} locale={locale} />}

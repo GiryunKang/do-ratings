@@ -356,6 +356,7 @@ export default async function SubjectPage({ params }: PageProps) {
         subjectName={subjectName}
         avgRating={subject.avg_rating ? Number(subject.avg_rating) : null}
         reviewCount={subject.review_count as number}
+        isPeople={isPeople}
       />
 
       {/* Related News */}

@@ -17,6 +17,7 @@ import SortSelect from '@/components/search/SortSelect'
 interface ReviewListProps {
   subjectId?: string
   userId?: string
+  isPeople?: boolean
 }
 
 interface ReviewRow {
@@ -36,7 +37,7 @@ interface ReviewRow {
 
 const PAGE_SIZE = 10
 
-export default function ReviewList({ subjectId, userId }: ReviewListProps) {
+export default function ReviewList({ subjectId, userId, isPeople }: ReviewListProps) {
   const { user: currentUser } = useAuth()
   const pathname = usePathname()
   const locale = pathname?.startsWith('/en') ? 'en' : 'ko'
@@ -213,6 +214,7 @@ export default function ReviewList({ subjectId, userId }: ReviewListProps) {
                 <ReviewCard
                   review={review}
                   currentUserId={currentUser?.id ?? null}
+                  isPeople={isPeople}
                 />
               </motion.div>
             ))}

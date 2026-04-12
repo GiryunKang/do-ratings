@@ -24,9 +24,19 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ subjectId: string }> }
 ) {
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  }
+
+  if (request.method === 'OPTIONS') {
+    return new NextResponse(null, { status: 204, headers: corsHeaders })
+  }
+
   const ip = request.headers.get('x-forwarded-for') ?? 'unknown'
   if (!checkRateLimit(ip, 60, 60000)) {
-    return new NextResponse('Rate limit exceeded', { status: 429 })
+    return new NextResponse('Rate limit exceeded', { status: 429, headers: corsHeaders })
   }
 
   try {
@@ -41,7 +51,7 @@ export async function GET(
       .eq('id', subjectId)
       .single()
 
-    if (!subject) return new NextResponse('Not found', { status: 404 })
+    if (!subject) return new NextResponse('Not found', { status: 404, headers: corsHeaders })
 
     const rawName =
       typeof subject.name === 'object'
@@ -109,6 +119,7 @@ export async function GET(
 
     return new NextResponse(html, {
       headers: {
+        ...corsHeaders,
         'Content-Type': 'text/html; charset=utf-8',
         'X-Frame-Options': 'ALLOWALL',
         'Cache-Control': 'public, max-age=60, stale-while-revalidate=300',
@@ -116,6 +127,6 @@ export async function GET(
     })
   } catch (error) {
     console.error('[embed] error:', error instanceof Error ? error.message : error)
-    return new NextResponse('Internal server error', { status: 500 })
+    return new NextResponse('Internal server error', { status: 500, headers: { 'Access-Control-Allow-Origin': '*' } })
   }
 }

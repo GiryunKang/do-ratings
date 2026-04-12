@@ -7,6 +7,7 @@ interface StarRatingProps {
   onChange?: (value: number) => void
   readonly?: boolean
   size?: 'sm' | 'md' | 'lg'
+  muted?: boolean
 }
 
 const sizeClass = {
@@ -23,6 +24,7 @@ function Star({
   onHoverLeft,
   onHoverRight,
   readonly,
+  muted,
 }: {
   fill: 'empty' | 'half' | 'full'
   size: 'sm' | 'md' | 'lg'
@@ -31,6 +33,7 @@ function Star({
   onHoverLeft?: () => void
   onHoverRight?: () => void
   readonly?: boolean
+  muted?: boolean
 }) {
   const cls = sizeClass[size]
   const interactive = !readonly ? 'cursor-pointer' : 'cursor-default'
@@ -53,7 +56,7 @@ function Star({
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          className={`absolute inset-0 ${cls} text-primary golden-glow`}
+          className={`absolute inset-0 ${cls} ${muted ? 'text-foreground/70' : 'text-primary golden-glow'}`}
           fill="currentColor"
           style={fill === 'half' ? { clipPath: 'inset(0 50% 0 0)' } : undefined}
         >
@@ -85,6 +88,7 @@ export default function StarRating({
   onChange,
   readonly = false,
   size = 'md',
+  muted = false,
 }: StarRatingProps) {
   const [hoverValue, setHoverValue] = useState<number | null>(null)
 
@@ -108,6 +112,7 @@ export default function StarRating({
           fill={getFill(i)}
           size={size}
           readonly={readonly}
+          muted={muted}
           onClickLeft={() => onChange?.(i + 0.5)}
           onClickRight={() => onChange?.(i + 1)}
           onHoverLeft={() => setHoverValue(i + 0.5)}
