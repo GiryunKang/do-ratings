@@ -220,7 +220,7 @@ export default async function SubjectPage({ params }: PageProps) {
   }
 
   return (
-    <div className={`max-w-2xl mx-auto px-4 py-6 space-y-6 ${isPeople ? 'bg-[#F7F7F7] min-h-screen' : ''}`}>
+    <div className={`max-w-2xl mx-auto px-4 py-6 space-y-6 ${isPeople ? 'bg-muted dark:bg-background min-h-screen' : ''}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
@@ -240,7 +240,7 @@ export default async function SubjectPage({ params }: PageProps) {
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <div className={`w-20 h-20 rounded-lg ${isPeople ? 'bg-[#333333]' : 'bg-primary'} flex items-center justify-center`}>
+                <div className={`w-20 h-20 rounded-lg ${isPeople ? 'bg-foreground/80' : 'bg-primary'} flex items-center justify-center`}>
                   <span className="text-3xl font-bold text-white">{firstLetter}</span>
                 </div>
               )}
@@ -267,16 +267,16 @@ export default async function SubjectPage({ params }: PageProps) {
               </div>
               {isPeople ? (
                 <div className="flex items-center gap-2 px-2 py-1 inline-flex">
-                  <span className="font-mono text-4xl font-bold text-[#111111] tracking-tighter">
+                  <span className="font-mono text-4xl font-bold text-foreground tracking-tighter">
                     {displayRating(subject.avg_rating)}
                   </span>
-                  <span className="font-mono text-lg text-[#888888]">/ 10</span>
+                  <span className="font-mono text-lg text-muted-foreground">/ 10</span>
                   {subject.avg_rating && totalInCategory && totalInCategory > 1 && (
-                    <span className="text-xs text-[#888888] ml-1">
+                    <span className="text-xs text-muted-foreground ml-1">
                       {locale === 'ko' ? `상위 ${percentile}%` : `Top ${percentile}%`}
                     </span>
                   )}
-                  <span className="text-sm text-[#888888]">({subject.review_count} {locale === 'ko' ? '개 평가' : subject.review_count === 1 ? 'evaluation' : 'evaluations'})</span>
+                  <span className="text-sm text-muted-foreground">({subject.review_count} {locale === 'ko' ? '개 평가' : subject.review_count === 1 ? 'evaluation' : 'evaluations'})</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2 golden-glow rounded-lg px-2 py-1 inline-flex">
@@ -318,7 +318,7 @@ export default async function SubjectPage({ params }: PageProps) {
           <div className="flex gap-2 flex-wrap">
             <Link href={writeHref} className={`inline-flex items-center gap-1.5 h-9 px-5 text-sm font-semibold rounded-lg transition-all ${
               isPeople
-                ? 'bg-[#111111] text-white hover:bg-[#333333]'
+                ? 'bg-foreground text-background hover:opacity-90'
                 : existingReviewId
                   ? 'bg-primary text-primary-foreground hover:bg-primary/80'
                   : 'bg-primary text-white shadow-md hover:shadow-lg hover:scale-105'
@@ -365,7 +365,7 @@ export default async function SubjectPage({ params }: PageProps) {
       />
 
       {isPeople && (
-        <div className="text-center text-xs text-[#999999] border-t border-[#E5E5E5] pt-4 mt-2">
+        <div className="text-center text-xs text-muted-foreground border-t border-border pt-4 mt-2">
           {locale === 'ko'
             ? '인물에 대한 평가는 개인의 의견이며, DO! Ratings!는 사실 관계를 보증하지 않습니다.'
             : 'Evaluations of persons reflect individual opinions. DO! Ratings! does not guarantee factual accuracy.'}

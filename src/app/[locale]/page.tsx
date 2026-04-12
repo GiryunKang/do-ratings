@@ -263,7 +263,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   }).filter(r => r.helpful_count > 0)
 
   return (
-    <div className={`pb-16 ${isPeopleCover ? 'bg-[#F7F7F7]' : ''}`}>
+    <div className={`pb-16 ${isPeopleCover ? 'bg-muted dark:bg-background' : ''}`}>
       {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
@@ -342,7 +342,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   &ldquo;{locale === 'ko' ? `${(featured[0].category_name as Record<string, string>)[locale] ?? ''} 분야의 주목받는 평가, 지금 확인하세요` : 'A trending evaluation in this category'}&rdquo;
                 </p>
                 <div className="flex items-baseline gap-2 mb-3">
-                  <span className={`font-mono text-7xl font-bold tracking-tighter ${isPeopleCover ? 'text-[#111111]' : 'text-primary'}`}>
+                  <span className={`font-mono text-7xl font-bold tracking-tighter ${isPeopleCover ? 'text-foreground' : 'text-primary'}`}>
                     {displayRating(featured[0].avg_rating)}
                   </span>
                   <span className="font-mono text-xl text-muted-foreground">/ 10</span>
@@ -357,7 +357,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     <CategoryIcon name={featured[0].category_icon} className="w-3 h-3" />
                     {(featured[0].category_name as Record<string, string>)[locale] ?? ''}
                   </span>
-                  <Link href={`/${locale}/subject/${featured[0].id}`} className={`text-sm font-medium hover:underline ${isPeopleCover ? 'text-[#333333]' : 'text-primary'}`}>
+                  <Link href={`/${locale}/subject/${featured[0].id}`} className={`text-sm font-medium hover:underline ${isPeopleCover ? 'text-foreground' : 'text-primary'}`}>
                     {locale === 'ko' ? '평가하기 →' : 'Rate now →'}
                   </Link>
                 </div>
@@ -377,7 +377,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className={`font-mono text-xl font-semibold ${s.category_slug === 'people' ? 'text-[#111111]' : 'text-primary'}`}>{displayRating(s.avg_rating)}</span>
+                    <span className={`font-mono text-xl font-semibold ${s.category_slug === 'people' ? 'text-foreground' : 'text-primary'}`}>{displayRating(s.avg_rating)}</span>
                     <p className="text-[10px] text-muted-foreground">{s.review_count} {locale === 'ko' ? '평가' : 'ratings'}</p>
                   </div>
                 </Link>
@@ -388,13 +388,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* SECTION 3: Taste Ticker Ribbon */}
-      <section className={`mt-8 py-3 overflow-hidden ${isPeopleCover ? 'bg-[#F0F0F0]' : 'bg-primary'}`}>
+      <section className={`mt-8 py-3 overflow-hidden ${isPeopleCover ? 'bg-muted dark:bg-muted/50' : 'bg-primary'}`}>
         <div className="animate-ticker whitespace-nowrap flex">
           {[...featured, ...featured].map((s, i) => (
-            <span key={i} className={`inline-flex items-center gap-2 mx-6 text-sm font-medium ${isPeopleCover ? 'text-[#333333]' : 'text-white'}`}>
+            <span key={i} className={`inline-flex items-center gap-2 mx-6 text-sm font-medium ${isPeopleCover ? 'text-foreground' : 'text-white'}`}>
               {(s.name as Record<string, string>)[locale] ?? (s.name as Record<string, string>)['ko']}
               <span className="font-mono font-bold">{displayRating(s.avg_rating)}</span>
-              <span className={isPeopleCover ? 'text-[#999999]' : 'text-white/40'}>●</span>
+              <span className={isPeopleCover ? 'text-muted-foreground' : 'text-white/40'}>●</span>
             </span>
           ))}
         </div>

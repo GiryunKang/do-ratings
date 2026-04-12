@@ -209,10 +209,18 @@ export default function DailyFocusVote({ locale, initialVote, initialCounts }: D
                       : 'bg-muted text-muted-foreground'
               }`}
             >
-              {majorityStatus === 'majority' && '👑 다수파! 대부분의 사람들이 당신과 같은 선택을 했어요'}
-              {majorityStatus === 'minority' && '🔥 소수파! 당신은 독특한 시각을 가지고 있네요'}
-              {majorityStatus === 'first' && '🌟 첫 번째 투표자! 당신이 흐름을 만들어가고 있어요'}
-              {majorityStatus === 'middle' && '당신의 의견이 반영되었습니다'}
+              {majorityStatus === 'majority' && (locale === 'ko'
+                ? '👑 다수파! 대부분의 사람들이 당신과 같은 선택을 했어요'
+                : '👑 Majority! Most people chose like you')}
+              {majorityStatus === 'minority' && (locale === 'ko'
+                ? '🔥 소수파! 당신은 독특한 시각을 가지고 있네요'
+                : '🔥 Minority! You have a unique perspective')}
+              {majorityStatus === 'first' && (locale === 'ko'
+                ? '🌟 첫 번째 투표자! 당신이 흐름을 만들어가고 있어요'
+                : '🌟 First voter! You\'re setting the trend')}
+              {majorityStatus === 'middle' && (locale === 'ko'
+                ? '당신의 의견이 반영되었습니다'
+                : 'Your opinion has been counted')}
             </motion.div>
           )}
         </AnimatePresence>
