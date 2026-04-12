@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
@@ -23,16 +24,30 @@ interface PageProps {
   params: Promise<{ locale: string; id: string }>
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { locale, id } = await params
+const getSubject = cache(async (id: string) => {
   const supabase = await createClient()
-
-  const { data: subject, error: subjectMetaError } = await supabase
+  const { data, error } = await supabase
     .from('subjects')
-    .select('name, avg_rating, categories(slug)')
+    .select(`
+      id,
+      name,
+      description,
+      image_url,
+      avg_rating,
+      review_count,
+      category_id,
+      metadata,
+      categories!inner(id, name, slug, sub_rating_criteria)
+    `)
     .eq('id', id)
     .single()
-  if (subjectMetaError) console.error('[SubjectPage] subject metadata query error:', subjectMetaError.message)
+  if (error) console.error('[SubjectPage] subject query error:', error.message)
+  return data
+})
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { locale, id } = await params
+  const subject = await getSubject(id)
 
   if (!subject) return {}
 
@@ -76,23 +91,7 @@ export default async function SubjectPage({ params }: PageProps) {
   const { locale, id } = await params
   const supabase = await createClient()
 
-  const { data: subject, error: subjectError } = await supabase
-    .from('subjects')
-    .select(`
-      id,
-      name,
-      description,
-      image_url,
-      avg_rating,
-      review_count,
-      category_id,
-      metadata,
-      categories!inner(id, name, slug, sub_rating_criteria)
-    `)
-    .eq('id', id)
-    .single()
-  if (subjectError) console.error('[SubjectPage] subject query error:', subjectError.message)
-
+  const subject = await getSubject(id)
   if (!subject) notFound()
 
   const subjectName =

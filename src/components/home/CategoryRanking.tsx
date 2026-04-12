@@ -16,37 +16,42 @@ const medalRowConfig = [
 export default async function CategoryRanking({ locale }: CategoryRankingProps) {
   const supabase = await createClient()
 
-  const { data: categories, error: categoriesError } = await supabase
-    .from('categories')
-    .select('id, name, slug')
-    .order('name', { ascending: true })
+  const [{ data: categories, error: categoriesError }, { data: allSubjects, error: subjectsError }] = await Promise.all([
+    supabase
+      .from('categories')
+      .select('id, name, slug')
+      .order('name', { ascending: true }),
+    supabase
+      .from('subjects')
+      .select('id, name, avg_rating, review_count, category_id')
+      .not('avg_rating', 'is', null)
+      .order('avg_rating', { ascending: false }),
+  ])
   if (categoriesError) console.error('[CategoryRanking] categories query error:', categoriesError.message)
+  if (subjectsError) console.error('[CategoryRanking] subjects query error:', subjectsError.message)
 
   if (!categories || categories.length === 0) return null
 
-  const categoryData = await Promise.all(
-    categories.map(async (category) => {
-      const { data: topSubjects, error: topSubjectsError } = await supabase
-        .from('subjects')
-        .select('id, name, avg_rating, review_count')
-        .eq('category_id', category.id)
-        .order('avg_rating', { ascending: false })
-        .limit(5)
-      if (topSubjectsError) console.error('[CategoryRanking] top subjects query error:', topSubjectsError.message)
+  const subjectsByCategory = new Map<string, typeof allSubjects>()
+  for (const s of allSubjects ?? []) {
+    const list = subjectsByCategory.get(s.category_id) ?? []
+    list.push(s)
+    subjectsByCategory.set(s.category_id, list)
+  }
 
-      const catName =
-        typeof category.name === 'object' && category.name !== null
-          ? (category.name as { ko: string; en: string })[locale as 'ko' | 'en'] ?? (category.name as { ko: string; en: string }).en
-          : String(category.name)
+  const categoryData = categories.map((category) => {
+    const catName =
+      typeof category.name === 'object' && category.name !== null
+        ? (category.name as { ko: string; en: string })[locale as 'ko' | 'en'] ?? (category.name as { ko: string; en: string }).en
+        : String(category.name)
 
-      return {
-        id: category.id,
-        slug: category.slug as string,
-        name: catName,
-        subjects: topSubjects ?? [],
-      }
-    })
-  )
+    return {
+      id: category.id,
+      slug: category.slug as string,
+      name: catName,
+      subjects: (subjectsByCategory.get(category.id) ?? []).slice(0, 5),
+    }
+  })
 
   const seeAllLabel = locale === 'ko' ? '모두 보기' : 'See all'
   const noSubjectsLabel = locale === 'ko' ? '아직 등록된 항목이 없습니다' : 'No subjects yet'

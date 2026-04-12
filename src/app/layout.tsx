@@ -14,6 +14,11 @@ export default function RootLayout({
   return (
     <html className={cn(outfit.variable, plusJakartaSans.variable, ibmPlexMono.variable, "h-full antialiased")} suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('ratings-theme');var d=t==='dark'||(t!=='light'&&matchMedia('(prefers-color-scheme:dark)').matches);if(d)document.documentElement.classList.add('dark')}catch(e){}})()`,
+          }}
+        />
         <link rel="icon" type="image/png" sizes="48x48" href="/ko/icon" />
         <link rel="apple-touch-icon" sizes="180x180" href="/ko/apple-icon" />
         <link rel="manifest" href="/manifest.json" />
