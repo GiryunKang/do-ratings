@@ -3,21 +3,15 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { useAuth } from '@/lib/hooks/useAuth'
 
 export default function SignupFloatingBar() {
   const pathname = usePathname()
   const locale = pathname?.startsWith('/en') ? 'en' : 'ko'
+  const { user, loading: authLoading } = useAuth()
   const [show, setShow] = useState(false)
   const [dismissed, setDismissed] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(true)
-
-  useEffect(() => {
-    const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setIsLoggedIn(!!user)
-    })
-  }, [])
+  const isLoggedIn = authLoading || !!user
 
   useEffect(() => {
     if (isLoggedIn || dismissed) return
