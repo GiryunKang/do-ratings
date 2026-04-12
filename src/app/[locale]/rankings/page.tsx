@@ -160,7 +160,7 @@ export default function RankingsPage() {
         .from('subjects')
         .select('id, name, avg_rating, review_count')
         .eq('category_id', selectedCategoryId)
-        .order('avg_rating', { ascending: false })
+        .order('avg_rating', { ascending: false, nullsFirst: false })
         .limit(10)
 
       if (!isActive) {

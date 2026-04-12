@@ -19,7 +19,7 @@ export function formatRating(value: number | null): string {
  * The UI displays ratings as "X.X / 10" but the DB stores 0-5.
  */
 export function displayRating(value: number | null | undefined): string {
-  if (value == null) return '—'
+  if (value == null || value === 0) return '—'
   return (Number(value) * 2).toFixed(1)
 }
 

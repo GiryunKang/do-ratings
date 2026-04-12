@@ -20,6 +20,8 @@ export default function RatingStreak({ locale }: RatingStreakProps) {
   useEffect(() => {
     if (!user) { setLoading(false); return }
 
+    let cancelled = false
+
     async function fetchStreak() {
       if (!user) return
       const supabase = createClient()
@@ -54,13 +56,15 @@ export default function RatingStreak({ locale }: RatingStreakProps) {
         }
       }
 
+      if (cancelled) return
       setStreak(currentStreak)
       if (currentStreak >= 2) {
         setShowFlame(true)
       }
     }
 
-    fetchStreak().finally(() => setLoading(false))
+    fetchStreak().finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
   }, [user])
 
   if (!user) return null

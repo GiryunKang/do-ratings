@@ -81,7 +81,10 @@ export default function AISummary({ subjectId, locale }: AISummaryProps) {
   const [summary, setSummary] = useState<Summary | null>(null)
 
   useEffect(() => {
+    let cancelled = false
+    let timerId: ReturnType<typeof setTimeout>
     const supabase = createClient()
+
     async function fetchReviews() {
       setLoading(true)
       const { data, error } = await supabase
@@ -89,17 +92,21 @@ export default function AISummary({ subjectId, locale }: AISummaryProps) {
         .select('title, content, overall_rating')
         .eq('subject_id', subjectId)
 
+      if (cancelled) return
       if (!error && data && data.length > 0) {
         setReviews(data)
         setGenerating(true)
-        setTimeout(() => {
+        timerId = setTimeout(() => {
+          if (cancelled) return
           setSummary(generateSummary(data))
           setGenerating(false)
         }, 500)
       }
       setLoading(false)
     }
+
     fetchReviews()
+    return () => { cancelled = true; clearTimeout(timerId) }
   }, [subjectId])
 
   const MIN_REVIEWS = 3

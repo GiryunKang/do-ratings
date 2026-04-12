@@ -24,6 +24,8 @@ export default function FaultlineFeed({ subjectId, locale }: FaultlineFeedProps)
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    let cancelled = false
+
     async function analyze() {
       const supabase = createClient()
 
@@ -50,15 +52,15 @@ export default function FaultlineFeed({ subjectId, locale }: FaultlineFeedProps)
 
       if (polarScore < 0.3) return
 
-      setPolarization(polarScore)
-      setShakeIntensity(polarScore * 2)
-
       // Hidden reviews = the most extreme ones
       const extreme = reviews.filter(r => {
         const rating = Number(r.overall_rating)
         return rating <= 1.5 || rating >= 4.5
       }).slice(0, 4)
 
+      if (cancelled) return
+      setPolarization(polarScore)
+      setShakeIntensity(polarScore * 2)
       setHiddenReviews(extreme.map(r => {
         const profile = Array.isArray(r.public_profiles) ? r.public_profiles[0] : r.public_profiles
         return {
@@ -71,6 +73,7 @@ export default function FaultlineFeed({ subjectId, locale }: FaultlineFeedProps)
     }
 
     analyze()
+    return () => { cancelled = true }
   }, [subjectId])
 
   useEffect(() => {

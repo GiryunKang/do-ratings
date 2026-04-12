@@ -28,6 +28,8 @@ export default function ReviewFingerprint({ locale }: ReviewFingerprintProps) {
   useEffect(() => {
     if (!user) { setLoading(false); return }
 
+    let cancelled = false
+
     async function fetchProfile() {
       const supabase = createClient()
 
@@ -58,6 +60,7 @@ export default function ReviewFingerprint({ locale }: ReviewFingerprintProps) {
         }).filter(Boolean)
       )
 
+      if (cancelled) return
       setProfile({
         avgRating,
         totalReviews: reviews.length,
@@ -67,7 +70,8 @@ export default function ReviewFingerprint({ locale }: ReviewFingerprintProps) {
       })
     }
 
-    fetchProfile().finally(() => setLoading(false))
+    fetchProfile().finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
   }, [user])
 
   const artPaths = useMemo(() => {

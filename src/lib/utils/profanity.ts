@@ -23,3 +23,11 @@ export function getProfanityWarning(locale: string): string {
     ? '비방, 욕설, 혐오 표현이 포함되어 있어 게시할 수 없습니다.'
     : 'Your review contains prohibited language and cannot be posted.'
 }
+
+/**
+ * Returns a locale-appropriate error message if text contains profanity, otherwise null.
+ */
+export function checkProfanity(text: string, locale?: string): string | null {
+  if (!containsProfanity(text)) return null
+  return getProfanityWarning(locale ?? 'ko')
+}

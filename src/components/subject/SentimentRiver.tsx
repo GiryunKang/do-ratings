@@ -19,6 +19,8 @@ export default function SentimentRiver({ subjectId, locale }: SentimentRiverProp
   const [data, setData] = useState<DataPoint[]>([])
 
   useEffect(() => {
+    let cancelled = false
+
     async function fetchSentiment() {
       const supabase = createClient()
 
@@ -48,10 +50,12 @@ export default function SentimentRiver({ subjectId, locale }: SentimentRiverProp
         count,
       }))
 
+      if (cancelled) return
       setData(points)
     }
 
     fetchSentiment()
+    return () => { cancelled = true }
   }, [subjectId])
 
   const { pathD, areaD, points, minRating, maxRating, moodColor, moodLabel } = useMemo(() => {

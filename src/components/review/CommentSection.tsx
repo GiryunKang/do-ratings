@@ -22,6 +22,7 @@ interface CommentSectionProps {
 export default function CommentSection({
   reviewId,
   currentUserId,
+  locale,
 }: CommentSectionProps) {
   const t = useTranslations('comment')
   const [expanded, setExpanded] = useState(false)
@@ -141,7 +142,7 @@ export default function CommentSection({
       <button
         type="button"
         onClick={toggleExpanded}
-        aria-label="댓글 펼치기"
+        aria-label={locale === 'ko' ? '댓글 펼치기' : 'Expand comments'}
         data-testid="comment-toggle"
         className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors px-2 py-1.5 rounded-md hover:bg-muted"
       >

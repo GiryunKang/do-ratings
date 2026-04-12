@@ -28,6 +28,8 @@ export default function RatingPrediction({ locale }: RatingPredictionProps) {
   useEffect(() => {
     if (!user) { setLoading(false); return }
 
+    let cancelled = false
+
     async function generatePrediction() {
       const supabase = createClient()
 
@@ -62,6 +64,7 @@ export default function RatingPrediction({ locale }: RatingPredictionProps) {
       const cat = Array.isArray(picked.categories) ? picked.categories[0] : picked.categories
       const nameObj = picked.name as Record<string, string>
 
+      if (cancelled) return
       setPrediction({
         subjectId: picked.id,
         subjectName: nameObj[locale] ?? nameObj['ko'] ?? '',
@@ -70,7 +73,8 @@ export default function RatingPrediction({ locale }: RatingPredictionProps) {
       })
     }
 
-    generatePrediction().finally(() => setLoading(false))
+    generatePrediction().finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
   }, [user, locale])
 
   if (!user) return null

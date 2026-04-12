@@ -215,6 +215,7 @@ export default function ReviewList({ subjectId, userId, isPeople }: ReviewListPr
                   review={review}
                   currentUserId={currentUser?.id ?? null}
                   isPeople={isPeople}
+                  locale={locale}
                 />
               </motion.div>
             ))}

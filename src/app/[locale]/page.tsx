@@ -391,17 +391,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* SECTION 3: Taste Ticker Ribbon */}
-      <section className={`mt-8 py-3 overflow-hidden ${isPeopleCover ? 'bg-muted dark:bg-muted/50' : 'bg-primary'}`}>
-        <div className="animate-ticker whitespace-nowrap flex">
-          {[...featured, ...featured].map((s, i) => (
-            <span key={i} className={`inline-flex items-center gap-2 mx-6 text-sm font-medium ${isPeopleCover ? 'text-foreground' : 'text-white'}`}>
-              {(s.name as Record<string, string>)[locale] ?? (s.name as Record<string, string>)['ko']}
-              <span className="font-mono font-bold">{displayRating(s.avg_rating)}</span>
-              <span className={isPeopleCover ? 'text-muted-foreground' : 'text-white/40'}>●</span>
-            </span>
-          ))}
-        </div>
-      </section>
+      {featured.length > 0 && (
+        <section className={`mt-8 py-3 overflow-hidden ${isPeopleCover ? 'bg-muted dark:bg-muted/50' : 'bg-primary'}`}>
+          <div className="animate-ticker whitespace-nowrap flex">
+            {[...featured, ...featured].map((s, i) => (
+              <span key={i} className={`inline-flex items-center gap-2 mx-6 text-sm font-medium ${isPeopleCover ? 'text-foreground' : 'text-white'}`}>
+                {(s.name as Record<string, string>)[locale] ?? (s.name as Record<string, string>)['ko']}
+                <span className="font-mono font-bold">{displayRating(s.avg_rating)}</span>
+                <span className={isPeopleCover ? 'text-muted-foreground' : 'text-white/40'}>●</span>
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* SECTION 4: Top 5 + Categories (Asymmetric 65/35) */}
       <section className="px-4 sm:px-6 mt-8">

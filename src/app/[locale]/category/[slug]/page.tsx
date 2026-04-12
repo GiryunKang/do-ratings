@@ -62,7 +62,7 @@ export default async function CategoryPage({ params }: PageProps) {
     .from('subjects')
     .select('id, name, description, avg_rating, review_count, image_url')
     .eq('category_id', category.id)
-    .order('avg_rating', { ascending: false })
+    .order('avg_rating', { ascending: false, nullsFirst: false })
     .limit(10)
   if (topSubjectsError) console.error('[CategoryPage] top subjects query error:', topSubjectsError.message)
 
