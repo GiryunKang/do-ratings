@@ -42,6 +42,7 @@ export default function DailyFocusVote({ locale, initialVote, initialCounts }: D
 
   useEffect(() => {
     if (!user || !vote) return
+    let cancelled = false
     async function checkVote() {
       const supabase = createClient()
       const { data } = await supabase
@@ -50,9 +51,10 @@ export default function DailyFocusVote({ locale, initialVote, initialCounts }: D
         .eq('vote_id', vote!.id)
         .eq('user_id', user!.id)
         .single()
-      if (data) setUserVote(data.option_id)
+      if (!cancelled && data) setUserVote(data.option_id)
     }
     checkVote()
+    return () => { cancelled = true }
   }, [user, vote])
 
   useEffect(() => {
@@ -73,7 +75,11 @@ export default function DailyFocusVote({ locale, initialVote, initialCounts }: D
   }, [vote, locale])
 
   const hasVoted = !!userVote
-  const isExpired = vote ? new Date(vote.ends_at).getTime() <= Date.now() : false
+  const isExpired = useMemo(
+    () => (vote ? new Date(vote.ends_at).getTime() <= Date.now() : false),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [vote, timeLeft] // timeLeft updates every minute, keeping isExpired in sync
+  )
   const totalVotes = counts.reduce((sum, c) => sum + c.count, 0) || 1
 
   async function handleVote(optionId: string) {

@@ -31,12 +31,14 @@ export default function Sidebar({ locale }: { locale: string }) {
   const { user } = useAuth()
 
   useEffect(() => {
+    let cancelled = false
     const supabase = createClient()
     const categoryOrder = ['people', 'places', 'companies', 'restaurants', 'airlines', 'hotels']
     supabase
       .from('categories')
       .select('id, name, slug, icon')
       .then(({ data }) => {
+        if (cancelled) return
         const sorted = (data as Category[] ?? []).sort((a, b) => {
           const ai = categoryOrder.indexOf(a.slug)
           const bi = categoryOrder.indexOf(b.slug)
@@ -44,6 +46,7 @@ export default function Sidebar({ locale }: { locale: string }) {
         })
         setCategories(sorted)
       })
+    return () => { cancelled = true }
   }, [])
 
   const navItems = [

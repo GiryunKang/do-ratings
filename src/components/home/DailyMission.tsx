@@ -35,6 +35,7 @@ export default function DailyMission({ locale }: DailyMissionProps) {
 
   useEffect(() => {
     if (!user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setChecking(false)
       return
     }

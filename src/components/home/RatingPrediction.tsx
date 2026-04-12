@@ -26,7 +26,11 @@ export default function RatingPrediction({ locale }: RatingPredictionProps) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!user) { setLoading(false); return }
+    if (!user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLoading(false)
+      return
+    }
 
     let cancelled = false
 

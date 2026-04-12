@@ -29,6 +29,7 @@ export default function WeeklyReport({ locale }: WeeklyReportProps) {
 
   useEffect(() => {
     if (!user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFetchLoading(false)
       return
     }

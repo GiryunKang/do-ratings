@@ -18,7 +18,13 @@ export default function MyRanking({ locale }: MyRankingProps) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!user) { setLoading(false); return }
+    if (!user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLoading(false)
+      return
+    }
+
+    let cancelled = false
 
     async function fetchRanking() {
       const supabase = createClient()
@@ -33,10 +39,9 @@ export default function MyRanking({ locale }: MyRankingProps) {
         console.error('[MyRanking] profile query error:', profileError.message)
       }
 
-      if (!myProfile) return
+      if (cancelled || !myProfile) return
 
       const myCount = (myProfile.review_count as number) ?? 0
-      setMyReviewCount(myCount)
 
       // Count how many reviewers have more reviews than me
       const { count: higherCount, error: higherError } = await supabase
@@ -52,12 +57,16 @@ export default function MyRanking({ locale }: MyRankingProps) {
         .gt('review_count', 0)
       if (totalError) console.error('[MyRanking] total count error:', totalError.message)
 
+      if (cancelled) return
+
       const safeTotal = total ?? 1
+      setMyReviewCount(myCount)
       setRank((higherCount ?? 0) + 1)
       setTotalReviewers(safeTotal)
     }
 
-    fetchRanking().finally(() => setLoading(false))
+    fetchRanking().finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
   }, [user])
 
   if (!user) return null

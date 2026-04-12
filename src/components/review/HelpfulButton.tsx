@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
+
 import { createClient } from '@/lib/supabase/client'
 
 
@@ -19,6 +21,8 @@ export default function HelpfulButton({
   reviewUserId,
   currentUserId,
 }: HelpfulButtonProps) {
+  const pathname = usePathname()
+  const locale = pathname.split('/')[1] === 'ko' ? 'ko' : 'en'
   const [helpful, setHelpful] = useState(isHelpful)
   const [count, setCount] = useState(initialCount)
   const [pending, setPending] = useState(false)
@@ -59,7 +63,7 @@ export default function HelpfulButton({
       }
     } catch (err) {
       console.error('helpful vote error:', err)
-      setMutationError('요청에 실패했습니다')
+      setMutationError(locale === 'ko' ? '요청에 실패했습니다' : 'Request failed')
     } finally {
       setPending(false)
     }

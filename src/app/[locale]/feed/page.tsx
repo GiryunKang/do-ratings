@@ -159,6 +159,7 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
 
   useEffect(() => {
     if (loading || items.length > 0) return
+    let cancelled = false
     async function loadTopReviewers() {
       const supabase = createClient()
       const [
@@ -175,6 +176,7 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
           .select('following_id')
           .eq('follower_id', userId),
       ])
+      if (cancelled) return
       const queryErrors = [reviewersError, followsError].filter(Boolean)
       if (queryErrors.length > 0) {
         console.error('[FeedPage] top reviewers query errors:', queryErrors.map(e => e!.message))
@@ -183,6 +185,7 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
       if (follows) setFollowingIds(new Set(follows.map((f) => f.following_id)))
     }
     loadTopReviewers()
+    return () => { cancelled = true }
   }, [loading, items.length, userId])
 
   async function handleFollow(targetId: string) {

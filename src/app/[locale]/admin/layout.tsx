@@ -2,8 +2,15 @@ import { redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 
-export const metadata: Metadata = {
-  title: '관리자 — Do! Ratings!',
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return {
+    title: locale === 'ko' ? '관리자 — Do! Ratings!' : 'Admin — Do! Ratings!',
+  }
 }
 
 export default async function Layout({
