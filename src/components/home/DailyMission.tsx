@@ -39,6 +39,8 @@ export default function DailyMission({ locale }: DailyMissionProps) {
       return
     }
 
+    let cancelled = false
+
     async function checkCompletion() {
       const supabase = createClient()
       // Use UTC midnight to match DB timestamps; avoids timezone mismatch with server
@@ -54,6 +56,8 @@ export default function DailyMission({ locale }: DailyMissionProps) {
         .limit(50)
       if (error) console.error('[DailyMission] query error:', error.message)
 
+      if (cancelled) return
+
       const hasCompleted = (todayReviews ?? []).some(r => {
         const subject = Array.isArray(r.subjects) ? r.subjects[0] : r.subjects
         const cat = subject?.categories
@@ -61,11 +65,14 @@ export default function DailyMission({ locale }: DailyMissionProps) {
         return (catObj as { slug: string } | null)?.slug === todayMission.categorySlug
       })
 
-      setCompleted(hasCompleted)
-      setChecking(false)
+      if (!cancelled) {
+        setCompleted(hasCompleted)
+        setChecking(false)
+      }
     }
 
     checkCompletion()
+    return () => { cancelled = true }
   }, [user, todayMission.categorySlug])
 
   if (checking) return null

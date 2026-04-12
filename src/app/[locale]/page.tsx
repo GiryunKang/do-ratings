@@ -525,7 +525,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[10px] px-1.5 py-0.5 bg-muted rounded text-muted-foreground">{review.categoryName}</span>
                 <span className="text-sm font-medium text-foreground">{review.subjectName}</span>
-                <span className="ml-auto font-mono text-lg font-semibold text-primary">{review.overall_rating}점</span>
+                <span className="ml-auto font-mono text-lg font-semibold text-primary">{displayRating(review.overall_rating)}점</span>
               </div>
               <p className="font-medium text-sm text-foreground mb-1">{review.title}</p>
               <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{review.content}</p>
@@ -744,7 +744,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   </span>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-foreground truncate">{r.nickname}</p>
-                    <p className="text-[11px] text-muted-foreground truncate">{r.title} · ★{r.overall_rating}</p>
+                    <p className="text-[11px] text-muted-foreground truncate">{r.title} · ★{displayRating(r.overall_rating)}</p>
                   </div>
                 </div>
               ))}

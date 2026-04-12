@@ -28,54 +28,70 @@ export default function WeeklyReport({ locale }: WeeklyReportProps) {
   const [fetchLoading, setFetchLoading] = useState(false)
 
   useEffect(() => {
-    if (!user) return
+    if (!user) {
+      setFetchLoading(false)
+      return
+    }
 
+    let cancelled = false
     setFetchLoading(true)
+
     async function fetchStats() {
       const supabase = createClient()
       const now = new Date()
       const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()
       const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString()
 
-      // This week's reviews
-      const { data: thisWeek, error: e1 } = await supabase
-        .from('reviews')
-        .select('id, overall_rating, subjects(categories(slug, name))')
-        .eq('user_id', user!.id)
-        .gte('created_at', sevenDaysAgo)
-      if (e1) console.error('[WeeklyReport] this week query error:', e1.message)
+      // Phase 1: parallel — this week reviews + last week count
+      const [thisWeekResult, lastWeekCountResult] = await Promise.all([
+        supabase
+          .from('reviews')
+          .select('id, overall_rating, subjects(categories(slug, name))')
+          .eq('user_id', user!.id)
+          .gte('created_at', sevenDaysAgo),
+        supabase
+          .from('reviews')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', user!.id)
+          .gte('created_at', fourteenDaysAgo)
+          .lt('created_at', sevenDaysAgo),
+      ])
+      if (cancelled) return
 
-      // Last week's count
-      const { count: lastWeekCount, error: e2 } = await supabase
-        .from('reviews')
-        .select('id', { count: 'exact', head: true })
-        .eq('user_id', user!.id)
-        .gte('created_at', fourteenDaysAgo)
-        .lt('created_at', sevenDaysAgo)
-      if (e2) console.error('[WeeklyReport] last week query error:', e2.message)
+      if (thisWeekResult.error) console.error('[WeeklyReport] this week query error:', thisWeekResult.error.message)
+      if (lastWeekCountResult.error) console.error('[WeeklyReport] last week query error:', lastWeekCountResult.error.message)
 
-      // My rank
-      const { data: myProfile, error: e3 } = await supabase
+      // Phase 2: need myProfile to compute rank
+      const myProfileResult = await supabase
         .from('public_profiles')
         .select('review_count')
         .eq('id', user!.id)
         .single()
-      if (e3 && e3.code !== 'PGRST116') console.error('[WeeklyReport] profile query error:', e3.message)
+      if (cancelled) return
 
-      const myCount = (myProfile?.review_count as number) ?? 0
-      const { count: higherCount, error: e4 } = await supabase
-        .from('public_profiles')
-        .select('id', { count: 'exact', head: true })
-        .gt('review_count', myCount)
-      if (e4) console.error('[WeeklyReport] rank query error:', e4.message)
+      if (myProfileResult.error && myProfileResult.error.code !== 'PGRST116') {
+        console.error('[WeeklyReport] profile query error:', myProfileResult.error.message)
+      }
 
-      const { count: totalCount, error: e5 } = await supabase
-        .from('public_profiles')
-        .select('id', { count: 'exact', head: true })
-        .gt('review_count', 0)
-      if (e5) console.error('[WeeklyReport] total query error:', e5.message)
+      const myCount = (myProfileResult.data?.review_count as number) ?? 0
 
-      const reviews = thisWeek ?? []
+      // Phase 3: parallel — rank counts
+      const [higherCountResult, totalCountResult] = await Promise.all([
+        supabase
+          .from('public_profiles')
+          .select('id', { count: 'exact', head: true })
+          .gt('review_count', myCount),
+        supabase
+          .from('public_profiles')
+          .select('id', { count: 'exact', head: true })
+          .gt('review_count', 0),
+      ])
+      if (cancelled) return
+
+      if (higherCountResult.error) console.error('[WeeklyReport] rank query error:', higherCountResult.error.message)
+      if (totalCountResult.error) console.error('[WeeklyReport] total query error:', totalCountResult.error.message)
+
+      const reviews = thisWeekResult.data ?? []
       const ratings = reviews.map(r => Number(r.overall_rating))
       const avgRating = ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0
 
@@ -88,18 +104,21 @@ export default function WeeklyReport({ locale }: WeeklyReportProps) {
         if (catName) categorySet.add(catName)
       }
 
-      setStats({
-        reviewCount: reviews.length,
-        categories: [...categorySet],
-        avgRating,
-        lastWeekCount: lastWeekCount ?? 0,
-        rank: (higherCount ?? 0) + 1,
-        totalReviewers: totalCount ?? 1,
-      })
-      setFetchLoading(false)
+      if (!cancelled) {
+        setStats({
+          reviewCount: reviews.length,
+          categories: [...categorySet],
+          avgRating,
+          lastWeekCount: lastWeekCountResult.count ?? 0,
+          rank: (higherCountResult.count ?? 0) + 1,
+          totalReviewers: totalCountResult.count ?? 1,
+        })
+        setFetchLoading(false)
+      }
     }
 
     fetchStats()
+    return () => { cancelled = true }
   }, [user, locale])
 
   // Derive combined loading state: auth not settled yet, or user exists but fetch not done

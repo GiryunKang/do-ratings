@@ -31,7 +31,7 @@ export default function SubRatingChart({
             </span>
             <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden">
               <div
-                className={`${neutral ? 'bg-[#555555]' : 'bg-yellow-400'} h-2 rounded-full transition-all duration-300`}
+                className={`${neutral ? 'bg-foreground/60' : 'bg-primary'} h-2 rounded-full transition-all duration-300`}
                 style={{ width: `${pct}%` }}
               />
             </div>

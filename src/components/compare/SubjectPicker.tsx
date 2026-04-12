@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
+import { displayRating } from '@/lib/utils/rating'
 
 interface PickedSubject {
   id: string
@@ -196,9 +197,7 @@ export default function SubjectPicker({
                         </span>
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
                           <span className="text-primary">★</span>
-                          {subject.avg_rating !== null
-                            ? subject.avg_rating.toFixed(1)
-                            : '—'}
+                          {displayRating(subject.avg_rating)}
                           <span className="mx-1">·</span>
                           {subject.review_count.toLocaleString()}{' '}
                           {locale === 'ko' ? '리뷰' : 'reviews'}

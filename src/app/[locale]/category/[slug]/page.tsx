@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
-import { formatRating } from '@/lib/utils/rating'
+import { formatRating, displayRating } from '@/lib/utils/rating'
 import ReviewList from '@/components/review/ReviewList'
 import { CategoryIcon } from '@/lib/icons'
 import PlaceSearch from '@/components/places/PlaceSearch'
@@ -149,7 +149,7 @@ export default async function CategoryPage({ params }: PageProps) {
                     </span>
                     <div className="flex items-center gap-2 shrink-0">
                       <span className="text-sm font-semibold text-primary">
-                        ★ {formatRating(subject.avg_rating)}
+                        ★ {displayRating(subject.avg_rating)}
                       </span>
                       <span className="text-xs text-muted-foreground">({subject.review_count})</span>
                     </div>

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { TrendingUp } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
+import { displayRating } from '@/lib/utils/rating'
 
 interface TrendingItem {
   id: string
@@ -139,7 +140,7 @@ export default function TrendingSection({ locale, initialItems }: TrendingSectio
                 <div className="p-3">
                   <h4 className="text-sm font-semibold text-foreground truncate">{name}</h4>
                   <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
-                    {item.avg_rating != null && <span className="text-primary font-medium">★ {item.avg_rating.toFixed(1)}</span>}
+                    {item.avg_rating != null && <span className="text-primary font-medium">★ {displayRating(item.avg_rating)}</span>}
                     <span>{item.recentCount} {locale === 'ko' ? '개 리뷰' : 'reviews'}</span>
                   </div>
                 </div>

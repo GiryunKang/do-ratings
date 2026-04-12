@@ -213,14 +213,15 @@ export default async function SubjectPage({ params }: PageProps) {
         '@type': 'AggregateRating',
         ratingValue: displayRating(subject.avg_rating),
         bestRating: '10',
-        worstRating: '1',
+        worstRating: '2',
         ratingCount: subject.review_count,
       }
     } : {}),
   }
 
   return (
-    <div className={`max-w-2xl mx-auto px-4 py-6 space-y-6 ${isPeople ? 'bg-muted dark:bg-background min-h-screen' : ''}`}>
+    <div className={isPeople ? 'bg-muted dark:bg-background min-h-screen' : ''}>
+    <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}

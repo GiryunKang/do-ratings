@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import AddSubjectModal from '@/components/subject/AddSubjectModal'
+import { displayRating } from '@/lib/utils/rating'
 
 interface Subject {
   id: string
@@ -163,7 +164,7 @@ export default function SearchBar({ className }: SearchBarProps) {
                 </div>
                 {subject.avg_rating != null && (
                   <span className="text-xs font-semibold text-primary shrink-0">
-                    ★ {subject.avg_rating.toFixed(1)}
+                    ★ {displayRating(subject.avg_rating)}
                   </span>
                 )}
               </button>

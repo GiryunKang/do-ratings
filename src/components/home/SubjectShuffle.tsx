@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
+import { displayRating } from '@/lib/utils/rating'
 
 interface ShuffleSubject {
   id: string
@@ -111,7 +112,7 @@ export default function SubjectShuffle({ subjects, locale }: SubjectShuffleProps
                       {/* Floating rating badge */}
                       {subject.avg_rating != null && (
                         <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-primary text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
-                          ★ {subject.avg_rating.toFixed(1)}
+                          ★ {displayRating(subject.avg_rating)}
                         </div>
                       )}
                     </div>
@@ -120,7 +121,7 @@ export default function SubjectShuffle({ subjects, locale }: SubjectShuffleProps
                       <CategoryIcon name={subject.category_icon} className="w-10 h-10 text-white/40" />
                       {subject.avg_rating != null && (
                         <div className="absolute bottom-2 right-2 bg-black/40 text-primary text-xs font-bold px-2 py-1 rounded-full">
-                          ★ {subject.avg_rating.toFixed(1)}
+                          ★ {displayRating(subject.avg_rating)}
                         </div>
                       )}
                     </div>

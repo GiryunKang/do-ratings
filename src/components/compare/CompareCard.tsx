@@ -1,6 +1,7 @@
 'use client'
 
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
+import { displayRating } from '@/lib/utils/rating'
 
 interface CompareCardProps {
   subject: {
@@ -80,7 +81,7 @@ export default function CompareCard({
         <div className="flex items-center gap-1">
           <InlineStars rating={subject.avg_rating ?? 0} />
           <span className="text-sm font-semibold text-foreground/80 ml-1">
-            {subject.avg_rating !== null ? subject.avg_rating.toFixed(1) : '—'}
+            {displayRating(subject.avg_rating)}
           </span>
         </div>
         {/* Review count */}

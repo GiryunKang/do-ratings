@@ -9,6 +9,7 @@ import SearchBar from '@/components/search/SearchBar'
 import FilterPanel from '@/components/search/FilterPanel'
 import AddSubjectModal from '@/components/subject/AddSubjectModal'
 import { createClient } from '@/lib/supabase/client'
+import { displayRating } from '@/lib/utils/rating'
 
 interface Subject {
   id: string
@@ -238,7 +239,7 @@ export default function ExplorePage() {
                           {subject.avg_rating != null ? (
                             <>
                               <span className="text-primary text-sm">★</span>
-                              <span className="text-sm font-bold text-foreground">{subject.avg_rating.toFixed(1)}</span>
+                              <span className="text-sm font-bold text-foreground">{displayRating(subject.avg_rating)}</span>
                               <span className="text-xs text-muted-foreground">({subject.review_count})</span>
                             </>
                           ) : (
@@ -282,7 +283,7 @@ export default function ExplorePage() {
                       {subject.avg_rating != null ? (
                         <>
                           <span className="text-primary text-sm">★</span>
-                          <span className="text-sm font-bold text-foreground">{subject.avg_rating.toFixed(1)}</span>
+                          <span className="text-sm font-bold text-foreground">{displayRating(subject.avg_rating)}</span>
                           <span className="text-xs text-muted-foreground">({subject.review_count})</span>
                         </>
                       ) : (

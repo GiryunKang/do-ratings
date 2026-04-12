@@ -7,6 +7,7 @@ import { Sparkles, Lock, Star } from 'lucide-react'
 
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
+import { displayRating } from '@/lib/utils/rating'
 
 interface SubjectData {
   id: string
@@ -150,7 +151,7 @@ export default function MysterySubject({ locale, subjects: subjectsProp }: Myste
                 <h3 className="text-xl font-black text-foreground mb-2">{name}</h3>
 
                 {subject.avg_rating != null ? (
-                  <p className="text-primary font-bold mb-3">★ {subject.avg_rating.toFixed(1)} · {subject.review_count} {locale === 'ko' ? '리뷰' : 'reviews'}</p>
+                  <p className="text-primary font-bold mb-3">★ {displayRating(subject.avg_rating)} · {subject.review_count} {locale === 'ko' ? '리뷰' : 'reviews'}</p>
                 ) : (
                   <p className="text-sm text-muted-foreground mb-3">
                     {locale === 'ko' ? '아직 리뷰가 없습니다 — 첫 번째가 되어보세요!' : 'No reviews yet — be the first!'}

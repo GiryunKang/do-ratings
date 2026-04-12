@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { createClient } from '@/lib/supabase/client'
+import { displayRating } from '@/lib/utils/rating'
 import {
   PieChart,
   Pie,
@@ -293,7 +294,7 @@ export default function DashboardPage() {
               <li key={review.id} className="py-3 flex items-start gap-3">
                 {/* Rating badge */}
                 <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-full bg-primary/5 dark:bg-primary/10 text-primary font-bold text-sm">
-                  {review.overall_rating}
+                  {displayRating(review.overall_rating)}
                 </span>
                 <div className="flex-1 min-w-0">
                   <Link

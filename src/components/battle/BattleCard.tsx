@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import StarRating from '@/components/review/StarRating'
+import { displayRating } from '@/lib/utils/rating'
 
 type ReviewInfo = { id: string; title: string; content: string; overall_rating: number; user_nickname: string }
 
@@ -71,7 +72,7 @@ function ReviewSide({
       <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{review.content}</p>
       <div className="flex items-center gap-1.5">
         <StarRating value={review.overall_rating} readonly size="sm" />
-        <span className="text-xs text-muted-foreground font-medium">{review.overall_rating.toFixed(1)}</span>
+        <span className="text-xs text-muted-foreground font-medium">{displayRating(review.overall_rating)}</span>
       </div>
       <p className="text-xs text-muted-foreground">@{review.user_nickname}</p>
 

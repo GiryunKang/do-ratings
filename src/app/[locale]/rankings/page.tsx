@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
-import { formatRating } from '@/lib/utils/rating'
+import { formatRating, displayRating } from '@/lib/utils/rating'
 import StarRating from '@/components/review/StarRating'
 import UserBadge from '@/components/user/UserBadge'
 import MyRanking from '@/components/user/MyRanking'
@@ -338,7 +338,7 @@ export default function RankingsPage() {
                       <div className="flex items-center gap-2 shrink-0">
                         <StarRating value={subject.avg_rating ?? 0} readonly size="sm" />
                         <span className="text-sm font-semibold text-primary">
-                          {formatRating(subject.avg_rating)}
+                          {displayRating(subject.avg_rating)}
                         </span>
                       </div>
                     </Link>

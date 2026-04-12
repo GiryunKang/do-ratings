@@ -7,6 +7,7 @@ import { Swords } from 'lucide-react'
 import { getCategoryColor } from '@/lib/utils/category-colors'
 import { CategoryIcon } from '@/lib/icons'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
+import { displayRating } from '@/lib/utils/rating'
 
 interface FaceoffSubject {
   id: string
@@ -115,7 +116,7 @@ export default function QuickFaceoff({ subjects, locale }: QuickFaceoffProps) {
                 </div>
                 <p className="text-sm font-bold text-foreground line-clamp-1">{name}</p>
                 {subject.avg_rating != null && (
-                  <p className="text-xs text-primary font-medium mt-1">★ {subject.avg_rating.toFixed(1)}</p>
+                  <p className="text-xs text-primary font-medium mt-1">★ {displayRating(subject.avg_rating)}</p>
                 )}
               </div>
 
