@@ -373,5 +373,6 @@ export default async function SubjectPage({ params }: PageProps) {
         </div>
       )}
     </div>
+    </div>
   )
 }

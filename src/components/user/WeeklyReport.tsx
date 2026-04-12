@@ -253,7 +253,7 @@ export default function WeeklyReport({ locale }: WeeklyReportProps) {
             {locale === 'ko' ? `전체 리뷰어 중 ${stats.rank}위` : `Ranked #${stats.rank} overall`}
           </p>
           <p className="text-xs text-muted-foreground">
-            {locale === 'ko' ? `${stats.totalReviewers}명 중` : `out of ${stats.totalReviewers}`}
+            {locale === 'ko' ? `누적 평가 기준 · ${stats.totalReviewers}명 중` : `Cumulative · out of ${stats.totalReviewers}`}
           </p>
         </div>
         <span className="font-mono text-2xl font-bold text-primary">#{stats.rank}</span>

@@ -75,7 +75,19 @@ export default function DailyMission({ locale }: DailyMissionProps) {
     return () => { cancelled = true }
   }, [user, todayMission.categorySlug])
 
-  if (checking) return null
+  if (checking) {
+    return (
+      <div className="border border-border rounded-xl p-4 animate-pulse">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-muted shrink-0" />
+          <div className="flex-1">
+            <div className="h-3 bg-muted rounded w-20 mb-2" />
+            <div className="h-4 bg-muted rounded w-40" />
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className={`border rounded-xl p-4 transition-all ${completed ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800' : 'bg-card border-border'}`}>

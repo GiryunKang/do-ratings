@@ -1,4 +1,3 @@
-// TODO: extract metadata to server component wrapper
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'

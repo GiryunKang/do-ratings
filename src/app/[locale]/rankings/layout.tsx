@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import CategoryRanking from '@/components/home/CategoryRanking'
+
+export const metadata: Metadata = {
+  title: '랭킹 — Do! Ratings!',
+  description: '전체 랭킹 및 카테고리별 순위',
+}
 
 export default async function RankingsLayout({
   children,
