@@ -5,7 +5,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient()
 
   const locales = ['ko', 'en']
-  const staticPages = ['', '/explore', '/rankings', '/compare', '/collections', '/battles']
+  const staticPages = ['', '/explore', '/rankings', '/compare', '/collections', '/battles', '/discover', '/highlights', '/weekly-report']
 
   const staticEntries = locales.flatMap(locale =>
     staticPages.map(page => ({

@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { displayRating } from '@/lib/utils/rating'
 
 const rateLimit = new Map<string, { count: number; resetAt: number }>()
 function checkRateLimit(ip: string, limit: number, windowMs: number): boolean {
@@ -49,7 +50,7 @@ export async function GET(
         : String(subject.name)
 
     const name = escapeHtml(rawName ?? '')
-    const rating = subject.avg_rating ? Number(subject.avg_rating).toFixed(1) : '—'
+    const rating = displayRating(subject.avg_rating)
     const safeRating = escapeHtml(rating)
     const roundedRating = Math.round(Number(subject.avg_rating ?? 0))
     const stars = '★'.repeat(roundedRating) + '☆'.repeat(5 - roundedRating)
@@ -85,7 +86,7 @@ export async function GET(
     .badge:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     .name { font-weight: 600; color: #111827; font-size: ${nameFontSize}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .rating-row { display: flex; align-items: center; gap: 4px; }
-    .stars { color: #f59e0b; font-size: ${starFontSize}; }
+    .stars { color: #FF6B35; font-size: ${starFontSize}; }
     .score { color: #374151; font-weight: 600; font-size: ${starFontSize}; }
     .meta { color: #6b7280; font-size: ${metaFontSize}; }
   </style>
@@ -99,7 +100,7 @@ export async function GET(
         <span class="stars">${stars}</span>
         <span class="score">${safeRating}</span>
       </div>
-      <div class="meta">${reviewCount} reviews &bull; Ratings</div>
+      <div class="meta">${reviewCount} ${reviewCount === 1 ? 'review' : 'reviews'} &bull; Ratings</div>
     </div>
   </div>
 </a>
