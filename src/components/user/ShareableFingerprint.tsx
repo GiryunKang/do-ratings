@@ -2,6 +2,7 @@
 
 import { useCallback } from 'react'
 import { Share2 } from 'lucide-react'
+import { displayRating } from '@/lib/utils/rating'
 
 interface ShareableFingerprintProps {
   locale: string
@@ -22,8 +23,8 @@ export default function ShareableFingerprint({
 }: ShareableFingerprintProps) {
   const handleShare = useCallback(async () => {
     const shareText = locale === 'ko'
-      ? `🎨 ${nickname}의 DO! Ratings! 평가 성향\n${personalityLabel} · 평균 ${avgRating.toFixed(1)}점 · ${totalReviews}개 리뷰 · ${categorySpread}개 카테고리\n\nhttps://do-ratings.com`
-      : `🎨 ${nickname}'s DO! Ratings! Profile\n${personalityLabel} · Avg ${avgRating.toFixed(1)} · ${totalReviews} reviews · ${categorySpread} categories\n\nhttps://do-ratings.com`
+      ? `🎨 ${nickname}의 DO! Ratings! 평가 성향\n${personalityLabel} · 평균 ${displayRating(avgRating)}점 · ${totalReviews}개 리뷰 · ${categorySpread}개 카테고리\n\nhttps://do-ratings.com`
+      : `🎨 ${nickname}'s DO! Ratings! Profile\n${personalityLabel} · Avg ${displayRating(avgRating)} · ${totalReviews} reviews · ${categorySpread} categories\n\nhttps://do-ratings.com`
 
     if (navigator.share) {
       try {

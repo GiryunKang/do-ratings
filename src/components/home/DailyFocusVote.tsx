@@ -201,11 +201,11 @@ export default function DailyFocusVote({ locale, initialVote, initialCounts }: D
               transition={{ duration: 0.4, ease: 'easeOut', delay: 0.5 }}
               className={`mx-6 mb-5 px-4 py-2.5 text-sm font-medium rounded-sm ${
                 majorityStatus === 'majority'
-                  ? 'bg-emerald-50 text-emerald-700'
+                  ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300'
                   : majorityStatus === 'minority'
                     ? 'bg-primary/5 text-primary'
                     : majorityStatus === 'first'
-                      ? 'bg-blue-50 text-blue-700'
+                      ? 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300'
                       : 'bg-muted text-muted-foreground'
               }`}
             >

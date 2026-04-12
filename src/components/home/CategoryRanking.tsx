@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { formatRating } from '@/lib/utils/rating'
+import { displayRating } from '@/lib/utils/rating'
 import { CategoryIcon } from '@/lib/icons'
 
 interface CategoryRankingProps {
@@ -104,7 +104,7 @@ export default async function CategoryRanking({ locale }: CategoryRankingProps) 
                         {subjectName}
                       </span>
                       <span className="font-mono text-sm font-bold text-primary shrink-0">
-                        {formatRating(subject.avg_rating)}
+                        {displayRating(subject.avg_rating)}
                       </span>
                     </Link>
                   </li>

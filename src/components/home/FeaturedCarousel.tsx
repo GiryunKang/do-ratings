@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { getCategoryColor } from '@/lib/utils/category-colors'
 import { CategoryIcon } from '@/lib/icons'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
+import { displayRating } from '@/lib/utils/rating'
 
 interface Subject {
   id: string
@@ -98,7 +99,7 @@ export default function FeaturedCarousel({
                       {catName}
                     </span>
                     {subject.avg_rating != null && (
-                      <span className="text-[11px] text-primary font-semibold">★ {subject.avg_rating.toFixed(1)}</span>
+                      <span className="text-[11px] text-primary font-semibold">★ {displayRating(subject.avg_rating)}</span>
                     )}
                   </div>
                   <h3 className="font-display text-white text-base md:text-lg leading-tight line-clamp-2">

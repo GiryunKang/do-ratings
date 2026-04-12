@@ -70,9 +70,9 @@ export default function DailyMission({ locale }: DailyMissionProps) {
   if (checking) return null
 
   return (
-    <div className={`border rounded-xl p-4 transition-all ${completed ? 'bg-emerald-50 border-emerald-200' : 'bg-card border-border'}`}>
+    <div className={`border rounded-xl p-4 transition-all ${completed ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800' : 'bg-card border-border'}`}>
       <div className="flex items-center gap-3">
-        <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${completed ? 'bg-emerald-100' : 'bg-primary/10'}`}>
+        <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${completed ? 'bg-emerald-100 dark:bg-emerald-900/40' : 'bg-primary/10'}`}>
           {completed ? (
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 500 }}>
               <Check className="w-5 h-5 text-emerald-600" />
@@ -85,12 +85,12 @@ export default function DailyMission({ locale }: DailyMissionProps) {
           <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground">
             {locale === 'ko' ? '오늘의 미션' : "Today's Mission"}
           </p>
-          <p className={`text-sm font-bold ${completed ? 'text-emerald-700 line-through' : 'text-foreground'}`}>
+          <p className={`text-sm font-bold ${completed ? 'text-emerald-700 dark:text-emerald-300 line-through' : 'text-foreground'}`}>
             {locale === 'ko' ? todayMission.ko : todayMission.en}
           </p>
         </div>
         {completed ? (
-          <span className="text-xs font-bold text-emerald-600 bg-emerald-100 px-3 py-1 rounded-full">
+          <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/40 px-3 py-1 rounded-full">
             {locale === 'ko' ? '완료!' : 'Done!'}
           </span>
         ) : (

@@ -1,7 +1,18 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import ReviewForm from '@/components/review/ReviewForm'
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; subjectId: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  return {
+    title: locale === 'ko' ? '리뷰 작성 — Do! Ratings!' : 'Write Review — Do! Ratings!',
+    description: locale === 'ko'
+      ? '솔직한 리뷰를 작성하고 커뮤니티와 공유하세요.'
+      : 'Write an honest review and share it with the community.',
+  }
+}
 
 interface PageProps {
   params: Promise<{ locale: string; subjectId: string }>

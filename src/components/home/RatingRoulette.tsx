@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Shuffle, ArrowRight } from 'lucide-react'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
+import { proxyImageUrl } from '@/lib/utils/image-proxy'
 
 interface RouletteSubject {
   id: string
@@ -134,7 +135,7 @@ export default function RatingRoulette({ subjects, locale }: RatingRouletteProps
           {display.image_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={display.image_url}
+              src={proxyImageUrl(display.image_url) ?? ''}
               alt={name}
               className={`w-full h-full object-cover transition-all duration-150 ${picking ? 'blur-sm scale-105' : ''}`}
               referrerPolicy="no-referrer"

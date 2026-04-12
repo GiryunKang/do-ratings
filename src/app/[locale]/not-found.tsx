@@ -3,7 +3,7 @@ import Link from 'next/link'
 export default function NotFound() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
-      <div className="w-20 h-20 rounded-full bg-amber-100 flex items-center justify-center mb-4">
+      <div className="w-20 h-20 rounded-full bg-amber-100 dark:bg-amber-950/30 flex items-center justify-center mb-4">
         <span className="text-4xl">🔍</span>
       </div>
       <h2 className="text-xl font-bold mb-2">페이지를 찾을 수 없습니다</h2>

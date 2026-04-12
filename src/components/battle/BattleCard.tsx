@@ -52,7 +52,7 @@ function ReviewSide({
         isMyVote
           ? 'border-primary bg-primary/10'
           : isWinner && isEnded
-          ? 'border-yellow-400 bg-yellow-50'
+          ? 'border-yellow-400 bg-yellow-50 dark:bg-yellow-950/30'
           : 'border-border bg-card'
       }`}
     >

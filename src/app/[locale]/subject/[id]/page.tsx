@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
-import { formatRating } from '@/lib/utils/rating'
+import { displayRating } from '@/lib/utils/rating'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
 import AnimatedRating from '@/components/ui/AnimatedRating'
 import StarRating from '@/components/review/StarRating'
@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ? (subject.name as { ko: string; en: string })[locale as 'ko' | 'en'] ?? (subject.name as { ko: string; en: string }).en
       : String(subject.name)
 
-  const rating = formatRating(subject.avg_rating)
+  const rating = displayRating(subject.avg_rating)
 
   const metaCategory = Array.isArray(subject.categories) ? subject.categories[0] : subject.categories
   const isPersonMeta = (metaCategory as { slug: string } | null)?.slug === 'people'
@@ -211,8 +211,8 @@ export default async function SubjectPage({ params }: PageProps) {
     ...(subject.avg_rating != null && subject.review_count > 0 ? {
       aggregateRating: {
         '@type': 'AggregateRating',
-        ratingValue: Number(subject.avg_rating).toFixed(1),
-        bestRating: '5',
+        ratingValue: displayRating(subject.avg_rating),
+        bestRating: '10',
         worstRating: '1',
         ratingCount: subject.review_count,
       }
@@ -223,7 +223,7 @@ export default async function SubjectPage({ params }: PageProps) {
     <div className={`max-w-2xl mx-auto px-4 py-6 space-y-6 ${isPeople ? 'bg-[#F7F7F7] min-h-screen' : ''}`}>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       {/* Subject Header Card */}
       <div className="bg-card rounded-xl shadow-sm ring-1 ring-foreground/[0.06] overflow-hidden">
@@ -268,7 +268,7 @@ export default async function SubjectPage({ params }: PageProps) {
               {isPeople ? (
                 <div className="flex items-center gap-2 px-2 py-1 inline-flex">
                   <span className="font-mono text-4xl font-bold text-[#111111] tracking-tighter">
-                    {subject.avg_rating != null ? Number(subject.avg_rating).toFixed(1) : '—'}
+                    {displayRating(subject.avg_rating)}
                   </span>
                   <span className="font-mono text-lg text-[#888888]">/ 10</span>
                   {subject.avg_rating && totalInCategory && totalInCategory > 1 && (

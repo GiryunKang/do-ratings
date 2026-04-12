@@ -1,7 +1,18 @@
+import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
 import { createClient } from '@/lib/supabase/server'
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  return {
+    title: locale === 'ko' ? '발견 — Do! Ratings!' : 'Discover — Do! Ratings!',
+    description: locale === 'ko'
+      ? '무작위 추천, 대결, 미스터리까지 — 새로운 관점을 만나보세요.'
+      : 'Random picks, face-offs, and mysteries — find your next perspective.',
+  }
+}
 
 const SubjectShuffle = dynamic(() => import('@/components/home/SubjectShuffle'))
 const RatingRoulette = dynamic(() => import('@/components/home/RatingRoulette'))

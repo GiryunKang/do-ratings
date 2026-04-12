@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
+import { proxyImageUrl } from '@/lib/utils/image-proxy'
 
 interface ShuffleSubject {
   id: string
@@ -96,7 +97,7 @@ export default function SubjectShuffle({ subjects, locale }: SubjectShuffleProps
                     <div className="h-32 relative overflow-hidden">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={subject.image_url}
+                        src={proxyImageUrl(subject.image_url) ?? ''}
                         alt={name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                         onError={(e) => {

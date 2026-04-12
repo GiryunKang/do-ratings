@@ -93,7 +93,7 @@ export default function BusinessResponse({
     <div className="mt-2">
       {/* Existing response display */}
       {response && (
-        <div className="rounded-xl border border-teal-200 bg-teal-50 px-4 py-3 mt-2">
+        <div className="rounded-xl border border-teal-200 dark:border-teal-800 bg-teal-50 dark:bg-teal-950/30 px-4 py-3 mt-2">
           <div className="flex items-center gap-1.5 mb-1.5">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -107,10 +107,10 @@ export default function BusinessResponse({
                 clipRule="evenodd"
               />
             </svg>
-            <span className="text-xs font-semibold text-teal-700">{t('businessResponse')}</span>
+            <span className="text-xs font-semibold text-teal-700 dark:text-teal-300">{t('businessResponse')}</span>
             <span className="text-xs text-teal-500 ml-auto">{timeAgo(response.created_at)}</span>
           </div>
-          <p className="text-sm text-teal-900 leading-relaxed">{response.content}</p>
+          <p className="text-sm text-teal-900 dark:text-teal-100 leading-relaxed">{response.content}</p>
         </div>
       )}
 
@@ -142,7 +142,7 @@ export default function BusinessResponse({
           ) : (
             <form
               onSubmit={handleSubmit}
-              className="border border-teal-200 rounded-xl bg-teal-50 p-3 space-y-2"
+              className="border border-teal-200 dark:border-teal-800 rounded-xl bg-teal-50 dark:bg-teal-950/30 p-3 space-y-2"
             >
               <div className="flex items-center gap-1.5 mb-1">
                 <svg
@@ -157,7 +157,7 @@ export default function BusinessResponse({
                     clipRule="evenodd"
                   />
                 </svg>
-                <span className="text-xs font-semibold text-teal-700">{t('businessResponse')}</span>
+                <span className="text-xs font-semibold text-teal-700 dark:text-teal-300">{t('businessResponse')}</span>
               </div>
               <textarea
                 value={content}

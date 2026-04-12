@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/server'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
+import { displayRating, ratingPercent } from '@/lib/utils/rating'
 
 import FeaturedCarousel from '@/components/home/FeaturedCarousel'
 import TrendingSection from '@/components/home/TrendingSection'
@@ -342,7 +343,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </p>
                 <div className="flex items-baseline gap-2 mb-3">
                   <span className={`font-mono text-7xl font-bold tracking-tighter ${isPeopleCover ? 'text-[#111111]' : 'text-primary'}`}>
-                    {featured[0].avg_rating?.toFixed(1) ?? '—'}
+                    {displayRating(featured[0].avg_rating)}
                   </span>
                   <span className="font-mono text-xl text-muted-foreground">/ 10</span>
                 </div>
@@ -376,7 +377,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className={`font-mono text-xl font-semibold ${s.category_slug === 'people' ? 'text-[#111111]' : 'text-primary'}`}>{s.avg_rating?.toFixed(1) ?? '—'}</span>
+                    <span className={`font-mono text-xl font-semibold ${s.category_slug === 'people' ? 'text-[#111111]' : 'text-primary'}`}>{displayRating(s.avg_rating)}</span>
                     <p className="text-[10px] text-muted-foreground">{s.review_count} {locale === 'ko' ? '평가' : 'ratings'}</p>
                   </div>
                 </Link>
@@ -392,7 +393,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           {[...featured, ...featured].map((s, i) => (
             <span key={i} className={`inline-flex items-center gap-2 mx-6 text-sm font-medium ${isPeopleCover ? 'text-[#333333]' : 'text-white'}`}>
               {(s.name as Record<string, string>)[locale] ?? (s.name as Record<string, string>)['ko']}
-              <span className="font-mono font-bold">{s.avg_rating?.toFixed(1) ?? '—'}</span>
+              <span className="font-mono font-bold">{displayRating(s.avg_rating)}</span>
               <span className={isPeopleCover ? 'text-[#999999]' : 'text-white/40'}>●</span>
             </span>
           ))}
@@ -409,7 +410,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </h2>
             <div className="space-y-3">
               {featured.slice(0, 5).map((s, idx) => {
-                const barWidth = ((s.avg_rating ?? 0) / 10) * 100
+                const barWidth = ratingPercent(s.avg_rating)
                 const barColors = ['bg-primary', 'bg-secondary', 'bg-blue-500', 'bg-violet-500', 'bg-rose-500']
                 return (
                   <div key={s.id} className="flex items-center gap-3">
@@ -420,7 +421,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     <div className="flex-1 h-4 bg-muted rounded-full overflow-hidden">
                       <div className={`h-full ${barColors[idx]} rounded-full transition-all`} style={{ width: `${barWidth}%` }} />
                     </div>
-                    <span className="font-mono text-sm font-semibold text-foreground w-8 text-right">{s.avg_rating?.toFixed(1)}</span>
+                    <span className="font-mono text-sm font-semibold text-foreground w-8 text-right">{displayRating(s.avg_rating)}</span>
                   </div>
                 )
               })}
@@ -439,14 +440,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 const catSubjects = subjectsByCategory[cat.id] ?? []
                 const totalReviews = catSubjects.reduce((sum, s) => sum + s.review_count, 0)
                 const bgColors: Record<string, string> = {
-                  people: 'bg-rose-50 hover:bg-rose-100',
-                  places: 'bg-emerald-50 hover:bg-emerald-100',
-                  companies: 'bg-blue-50 hover:bg-blue-100',
-                  restaurants: 'bg-orange-50 hover:bg-orange-100',
-                  airlines: 'bg-sky-50 hover:bg-sky-100',
-                  hotels: 'bg-teal-50 hover:bg-teal-100',
+                  people: 'bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 dark:hover:bg-rose-900/50',
+                  places: 'bg-emerald-50 dark:bg-emerald-950/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50',
+                  companies: 'bg-blue-50 dark:bg-blue-950/30 hover:bg-blue-100 dark:hover:bg-blue-900/50',
+                  restaurants: 'bg-orange-50 dark:bg-orange-950/30 hover:bg-orange-100 dark:hover:bg-orange-900/50',
+                  airlines: 'bg-sky-50 dark:bg-sky-950/30 hover:bg-sky-100 dark:hover:bg-sky-900/50',
+                  hotels: 'bg-teal-50 dark:bg-teal-950/30 hover:bg-teal-100 dark:hover:bg-teal-900/50',
                 }
-                const bgColor = bgColors[slug] ?? 'bg-gray-50 hover:bg-gray-100'
+                const bgColor = bgColors[slug] ?? 'bg-gray-50 dark:bg-gray-900/30 hover:bg-gray-100 dark:hover:bg-gray-900/50'
                 const color = getCategoryColor(slug)
                 return (
                   <Link
@@ -491,7 +492,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <p className="font-medium text-sm text-foreground mb-1 truncate">
                 {(s.name as Record<string, string>)[locale] ?? (s.name as Record<string, string>)['ko']}
               </p>
-              <p className="font-mono text-lg font-semibold text-primary mb-2">{s.avg_rating?.toFixed(1) ?? '—'}</p>
+              <p className="font-mono text-lg font-semibold text-primary mb-2">{displayRating(s.avg_rating)}</p>
               <div className="mb-2">
                 <QuickRateStars subjectId={s.id} locale={locale} />
               </div>
@@ -564,7 +565,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </p>
             <div className="space-y-2">
               {featured.slice(0, 5).map((s, idx) => {
-                const barWidth = ((s.avg_rating ?? 0) / 10) * 100
+                const barWidth = ratingPercent(s.avg_rating)
                 const barColors = ['bg-gradient-to-r from-primary to-orange-400', 'bg-gradient-to-r from-secondary to-teal-400', 'bg-gradient-to-r from-blue-500 to-blue-400', 'bg-gradient-to-r from-violet-500 to-violet-400', 'bg-gradient-to-r from-rose-500 to-rose-400']
                 return (
                   <Link key={s.id} href={`/${locale}/subject/${s.id}`} className="flex items-center gap-3 group">
@@ -575,7 +576,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                     <div className="flex-1 h-4 bg-muted rounded-full overflow-hidden">
                       <div className={`h-full ${barColors[idx]} rounded-full`} style={{ width: `${barWidth}%` }} />
                     </div>
-                    <span className="font-mono text-sm font-bold text-primary w-8 text-right">{s.avg_rating?.toFixed(1)}</span>
+                    <span className="font-mono text-sm font-bold text-primary w-8 text-right">{displayRating(s.avg_rating)}</span>
                     {idx === 0 && <span className="text-[10px] px-1.5 py-0.5 bg-primary/10 text-primary rounded font-semibold">NEW</span>}
                     {idx === 1 && <span className="text-[10px] text-secondary font-mono">▲ 1</span>}
                     {idx === 2 && <span className="text-[10px] text-destructive font-mono">▼ 1</span>}
@@ -616,8 +617,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             const recentCount = weeklyReviewCounts.get(s.id) ?? 0
             const isRising = recentCount > 2
             const badge = isRising
-              ? { label: locale === 'ko' ? '급상승' : 'Rising', bg: 'bg-emerald-50', text: 'text-emerald-600' }
-              : { label: locale === 'ko' ? '주목' : 'Notable', bg: 'bg-orange-50', text: 'text-orange-600' }
+              ? { label: locale === 'ko' ? '급상승' : 'Rising', bg: 'bg-emerald-50 dark:bg-emerald-950/30', text: 'text-emerald-600 dark:text-emerald-400' }
+              : { label: locale === 'ko' ? '주목' : 'Notable', bg: 'bg-orange-50 dark:bg-orange-950/30', text: 'text-orange-600 dark:text-orange-400' }
             return (
               <Link key={s.id} href={`/${locale}/subject/${s.id}`} className="bg-card border border-border rounded-xl p-4 hover:shadow-sm transition-shadow">
                 <span className={`inline-block text-[10px] font-semibold px-2 py-0.5 rounded ${badge.bg} ${badge.text} mb-3`}>

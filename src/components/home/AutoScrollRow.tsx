@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
+import { displayRating } from '@/lib/utils/rating'
 
 interface SubjectItem {
   id: string
@@ -125,7 +126,7 @@ export default function AutoScrollRow({
               {desc && <p className="text-xs text-muted-foreground truncate mt-0.5">{desc}</p>}
               <div className="flex items-center gap-1 mt-2 text-xs">
                 {subject.avg_rating ? (
-                  <span className="text-primary font-mono font-bold">★ {subject.avg_rating.toFixed(1)}</span>
+                  <span className="text-primary font-mono font-bold">★ {displayRating(subject.avg_rating)}</span>
                 ) : (
                   <span className="flex items-center gap-1">
                     <span className="text-muted-foreground/40 text-[11px]">★ ★ ★ ★ ★</span>

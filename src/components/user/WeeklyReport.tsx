@@ -7,6 +7,7 @@ import { BarChart3, TrendingUp, TrendingDown, Share2, Minus } from 'lucide-react
 
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/hooks/useAuth'
+import { displayRating } from '@/lib/utils/rating'
 
 interface WeeklyReportProps {
   locale: string
@@ -151,8 +152,8 @@ export default function WeeklyReport({ locale }: WeeklyReportProps) {
 
   async function handleShare() {
     const text = locale === 'ko'
-      ? `📊 이번 주 DO! Ratings! 리포트\n평가: ${stats!.reviewCount}건 | 카테고리: ${stats!.categories.length}개 | 평균: ${stats!.avgRating.toFixed(1)}점 | 상위 ${percentile}%\n\nhttps://do-ratings.com`
-      : `📊 My DO! Ratings! Weekly Report\nReviews: ${stats!.reviewCount} | Categories: ${stats!.categories.length} | Avg: ${stats!.avgRating.toFixed(1)} | Top ${percentile}%\n\nhttps://do-ratings.com`
+      ? `📊 이번 주 DO! Ratings! 리포트\n평가: ${stats!.reviewCount}건 | 카테고리: ${stats!.categories.length}개 | 평균: ${displayRating(stats!.avgRating)}점 | 상위 ${percentile}%\n\nhttps://do-ratings.com`
+      : `📊 My DO! Ratings! Weekly Report\nReviews: ${stats!.reviewCount} | Categories: ${stats!.categories.length} | Avg: ${displayRating(stats!.avgRating)} | Top ${percentile}%\n\nhttps://do-ratings.com`
 
     if (navigator.share) {
       try { await navigator.share({ title: 'DO! Ratings! Weekly Report', text }) } catch { /* cancelled */ }
@@ -200,7 +201,7 @@ export default function WeeklyReport({ locale }: WeeklyReportProps) {
           <p className="text-xs text-muted-foreground mt-1">{locale === 'ko' ? '카테고리' : 'Categories'}</p>
         </div>
         <div className="bg-card border border-border rounded-xl p-4 text-center">
-          <p className="font-mono text-2xl font-bold text-primary">{stats.avgRating.toFixed(1)}</p>
+          <p className="font-mono text-2xl font-bold text-primary">{displayRating(stats.avgRating)}</p>
           <p className="text-xs text-muted-foreground mt-1">{locale === 'ko' ? '평균 점수' : 'Avg Score'}</p>
         </div>
         <div className="bg-card border border-border rounded-xl p-4 text-center">

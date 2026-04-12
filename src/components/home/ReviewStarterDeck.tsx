@@ -18,12 +18,12 @@ interface PromptCard {
 }
 
 const PROMPTS: PromptCard[] = [
-  { emoji: '✈️', ko: '마지막으로 탄 비행기를 평가하세요', en: 'Rate your last flight', category: '항공사', categorySlug: 'airlines', bgColor: 'bg-sky-50' },
-  { emoji: '🍽️', ko: '어제 간 맛집은 어떠셨나요?', en: 'How was your last restaurant?', category: '맛집', categorySlug: 'restaurants', bgColor: 'bg-orange-50' },
-  { emoji: '🏨', ko: '최근 호텔 경험을 공유하세요', en: 'Share your hotel experience', category: '호텔', categorySlug: 'hotels', bgColor: 'bg-teal-50' },
-  { emoji: '🏢', ko: '당신의 회사를 평가해보세요', en: 'Rate your company', category: '기업', categorySlug: 'companies', bgColor: 'bg-blue-50' },
-  { emoji: '📍', ko: '좋아하는 장소를 추천하세요', en: 'Recommend a favorite place', category: '장소', categorySlug: 'places', bgColor: 'bg-emerald-50' },
-  { emoji: '👤', ko: '존경하는 인물에게 별점을', en: 'Rate someone you admire', category: '인물', categorySlug: 'people', bgColor: 'bg-rose-50' },
+  { emoji: '✈️', ko: '마지막으로 탄 비행기를 평가하세요', en: 'Rate your last flight', category: '항공사', categorySlug: 'airlines', bgColor: 'bg-sky-50 dark:bg-sky-950/30' },
+  { emoji: '🍽️', ko: '어제 간 맛집은 어떠셨나요?', en: 'How was your last restaurant?', category: '맛집', categorySlug: 'restaurants', bgColor: 'bg-orange-50 dark:bg-orange-950/30' },
+  { emoji: '🏨', ko: '최근 호텔 경험을 공유하세요', en: 'Share your hotel experience', category: '호텔', categorySlug: 'hotels', bgColor: 'bg-teal-50 dark:bg-teal-950/30' },
+  { emoji: '🏢', ko: '당신의 회사를 평가해보세요', en: 'Rate your company', category: '기업', categorySlug: 'companies', bgColor: 'bg-blue-50 dark:bg-blue-950/30' },
+  { emoji: '📍', ko: '좋아하는 장소를 추천하세요', en: 'Recommend a favorite place', category: '장소', categorySlug: 'places', bgColor: 'bg-emerald-50 dark:bg-emerald-950/30' },
+  { emoji: '👤', ko: '존경하는 인물에게 별점을', en: 'Rate someone you admire', category: '인물', categorySlug: 'people', bgColor: 'bg-rose-50 dark:bg-rose-950/30' },
 ]
 
 export default function ReviewStarterDeck({ locale }: ReviewStarterDeckProps) {

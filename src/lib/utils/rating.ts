@@ -13,3 +13,21 @@ export function formatRating(value: number | null): string {
   if (value === null) return '-'
   return value.toFixed(1)
 }
+
+/**
+ * Convert DB rating (0-5 scale) to display rating (0-10 scale).
+ * The UI displays ratings as "X.X / 10" but the DB stores 0-5.
+ */
+export function displayRating(value: number | null | undefined): string {
+  if (value == null) return '—'
+  return (Number(value) * 2).toFixed(1)
+}
+
+/**
+ * Compute bar fill percentage from DB rating (0-5 scale).
+ * Returns 0-100 (percent).
+ */
+export function ratingPercent(value: number | null | undefined): number {
+  if (value == null) return 0
+  return Math.min(100, Math.max(0, (Number(value) / 5) * 100))
+}

@@ -1,3 +1,4 @@
+// TODO: extract metadata to server component wrapper
 'use client'
 
 import { useState } from 'react'
@@ -28,7 +29,7 @@ export default function ForgotPasswordPage() {
   if (sent) {
     return (
       <div className="max-w-md mx-auto px-4 py-16 text-center">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 dark:bg-green-950/30 flex items-center justify-center">
           <span className="text-3xl">✉️</span>
         </div>
         <h1 className="text-xl font-bold mb-2">{locale === 'ko' ? '이메일을 확인해주세요' : 'Check your email'}</h1>

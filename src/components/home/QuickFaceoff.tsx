@@ -6,6 +6,7 @@ import { Swords } from 'lucide-react'
 
 import { getCategoryColor } from '@/lib/utils/category-colors'
 import { CategoryIcon } from '@/lib/icons'
+import { proxyImageUrl } from '@/lib/utils/image-proxy'
 
 interface FaceoffSubject {
   id: string
@@ -91,7 +92,7 @@ export default function QuickFaceoff({ subjects, locale }: QuickFaceoffProps) {
                 <div className="h-28 relative overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={subject.image_url}
+                    src={proxyImageUrl(subject.image_url) ?? ''}
                     alt={name}
                     className="w-full h-full object-cover"
                     onError={(e) => { e.currentTarget.style.display = 'none' }}

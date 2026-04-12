@@ -1,3 +1,4 @@
+// TODO: extract metadata to server component wrapper
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -362,7 +363,7 @@ export default function RankingsPage() {
               {topReviews.map((review, index) => {
                 const profile = pickRelation(review.public_profiles)
                 const podiumStyle = index < 3 ? podiumStyles[index] : 'bg-card border border-border'
-                const badgeStyle = index < 3 ? badgeStyles[index] : 'bg-yellow-100 text-yellow-700'
+                const badgeStyle = index < 3 ? badgeStyles[index] : 'bg-yellow-100 dark:bg-yellow-950/30 text-yellow-700 dark:text-yellow-300'
                 return (
                   <li
                     key={review.id}

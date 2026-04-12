@@ -1,5 +1,16 @@
+import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import dynamic from 'next/dynamic'
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  return {
+    title: locale === 'ko' ? '하이라이트 — Do! Ratings!' : 'Highlights — Do! Ratings!',
+    description: locale === 'ko'
+      ? '최고의 리뷰, 이번 주의 왕관, 그리고 전 세계 리뷰 지도.'
+      : 'Top reviews, weekly crown, and a global review map.',
+  }
+}
 
 const ReviewTheater = dynamic(() => import('@/components/home/ReviewTheater'))
 const WeeklyCrown = dynamic(() => import('@/components/home/WeeklyCrown'))

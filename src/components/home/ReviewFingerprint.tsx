@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/hooks/useAuth'
 import ShareableFingerprint from '@/components/user/ShareableFingerprint'
+import { displayRating } from '@/lib/utils/rating'
 
 interface ReviewFingerprintProps {
   locale: string
@@ -141,7 +142,7 @@ export default function ReviewFingerprint({ locale }: ReviewFingerprintProps) {
           <div className="space-y-1 mt-2">
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">{locale === 'ko' ? '평균 점수' : 'Avg Score'}</span>
-              <span className="font-mono font-bold text-primary">★ {profile.avgRating.toFixed(1)}</span>
+              <span className="font-mono font-bold text-primary">★ {displayRating(profile.avgRating)}</span>
             </div>
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">{locale === 'ko' ? '리뷰 수' : 'Reviews'}</span>
