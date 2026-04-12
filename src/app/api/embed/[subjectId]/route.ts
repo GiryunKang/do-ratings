@@ -28,40 +28,41 @@ export async function GET(
     return new NextResponse('Rate limit exceeded', { status: 429 })
   }
 
-  const { subjectId } = await params
-  const { searchParams } = new URL(request.url)
-  const size = searchParams.get('size') ?? 'md'
+  try {
+    const { subjectId } = await params
+    const { searchParams } = new URL(request.url)
+    const size = searchParams.get('size') ?? 'md'
 
-  const supabase = await createClient()
-  const { data: subject } = await supabase
-    .from('subjects')
-    .select('name, avg_rating, review_count')
-    .eq('id', subjectId)
-    .single()
+    const supabase = await createClient()
+    const { data: subject } = await supabase
+      .from('subjects')
+      .select('name, avg_rating, review_count')
+      .eq('id', subjectId)
+      .single()
 
-  if (!subject) return new NextResponse('Not found', { status: 404 })
+    if (!subject) return new NextResponse('Not found', { status: 404 })
 
-  const rawName =
-    typeof subject.name === 'object'
-      ? ((subject.name as Record<string, string>).en ??
-        (subject.name as Record<string, string>).ko)
-      : String(subject.name)
+    const rawName =
+      typeof subject.name === 'object'
+        ? ((subject.name as Record<string, string>).en ??
+          (subject.name as Record<string, string>).ko)
+        : String(subject.name)
 
-  const name = escapeHtml(rawName ?? '')
-  const rating = subject.avg_rating ? Number(subject.avg_rating).toFixed(1) : '—'
-  const safeRating = escapeHtml(rating)
-  const roundedRating = Math.round(Number(subject.avg_rating ?? 0))
-  const stars = '★'.repeat(roundedRating) + '☆'.repeat(5 - roundedRating)
-  const reviewCount = Number(subject.review_count ?? 0)
+    const name = escapeHtml(rawName ?? '')
+    const rating = subject.avg_rating ? Number(subject.avg_rating).toFixed(1) : '—'
+    const safeRating = escapeHtml(rating)
+    const roundedRating = Math.round(Number(subject.avg_rating ?? 0))
+    const stars = '★'.repeat(roundedRating) + '☆'.repeat(5 - roundedRating)
+    const reviewCount = Number(subject.review_count ?? 0)
 
-  const nameFontSize = size === 'sm' ? '12px' : size === 'lg' ? '16px' : '14px'
-  const starFontSize = size === 'sm' ? '12px' : size === 'lg' ? '18px' : '14px'
-  const metaFontSize = size === 'sm' ? '10px' : '12px'
+    const nameFontSize = size === 'sm' ? '12px' : size === 'lg' ? '16px' : '14px'
+    const starFontSize = size === 'sm' ? '12px' : size === 'lg' ? '18px' : '14px'
+    const metaFontSize = size === 'sm' ? '10px' : '12px'
 
-  const baseUrl = request.url.split('/api')[0]
-  const safeSubjectId = escapeHtml(subjectId)
+    const baseUrl = request.url.split('/api')[0]
+    const safeSubjectId = escapeHtml(subjectId)
 
-  const html = `<!DOCTYPE html>
+    const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -105,11 +106,15 @@ export async function GET(
 </body>
 </html>`
 
-  return new NextResponse(html, {
-    headers: {
-      'Content-Type': 'text/html; charset=utf-8',
-      'X-Frame-Options': 'ALLOWALL',
-      'Cache-Control': 'public, max-age=60, stale-while-revalidate=300',
-    },
-  })
+    return new NextResponse(html, {
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'X-Frame-Options': 'ALLOWALL',
+        'Cache-Control': 'public, max-age=60, stale-while-revalidate=300',
+      },
+    })
+  } catch (error) {
+    console.error('[embed] error:', error instanceof Error ? error.message : error)
+    return new NextResponse('Internal server error', { status: 500 })
+  }
 }

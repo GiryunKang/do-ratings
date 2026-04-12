@@ -52,70 +52,76 @@ export async function GET(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for') ?? 'unknown'
   if (!checkRateLimit(ip)) return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
   if (!checkDailyLimit()) return NextResponse.json({ error: 'Daily API limit reached. Please try again tomorrow.' }, { status: 429 })
-  const { searchParams } = new URL(request.url)
-  const query = searchParams.get('q') ?? ''
-  const type = searchParams.get('type') ?? '' // 'restaurant' or empty for general places
 
-  if (!query || query.length < 2) {
-    return NextResponse.json({ results: [] })
-  }
+  try {
+    const { searchParams } = new URL(request.url)
+    const query = searchParams.get('q') ?? ''
+    const type = searchParams.get('type') ?? '' // 'restaurant' or empty for general places
 
-  if (query.length > 200) {
-    return NextResponse.json({ error: 'Query too long' }, { status: 400 })
-  }
+    if (!query || query.length < 2) {
+      return NextResponse.json({ results: [] })
+    }
 
-  const apiKey = process.env.GOOGLE_PLACES_API_KEY
-  if (!apiKey) {
-    return NextResponse.json({ error: 'API key not configured' }, { status: 500 })
-  }
+    if (query.length > 200) {
+      return NextResponse.json({ error: 'Query too long' }, { status: 400 })
+    }
 
-  // Use Google Places API (New) - Text Search
-  const url = `https://places.googleapis.com/v1/places:searchText`
+    const apiKey = process.env.GOOGLE_PLACES_API_KEY
+    if (!apiKey) {
+      return NextResponse.json({ error: 'API key not configured' }, { status: 500 })
+    }
 
-  // For restaurants, append 맛집/음식점 for better Korean local search
-  const enhancedQuery = type === 'restaurant' ? `${query} 음식점` : query
+    // Use Google Places API (New) - Text Search
+    const url = `https://places.googleapis.com/v1/places:searchText`
 
-  const body: Record<string, unknown> = {
-    textQuery: enhancedQuery,
-    languageCode: 'ko',
-    maxResultCount: 10,
-    locationBias: {
-      rectangle: {
-        low: { latitude: 33.0, longitude: 124.5 },
-        high: { latitude: 38.6, longitude: 131.9 },
+    // For restaurants, append 맛집/음식점 for better Korean local search
+    const enhancedQuery = type === 'restaurant' ? `${query} 음식점` : query
+
+    const body: Record<string, unknown> = {
+      textQuery: enhancedQuery,
+      languageCode: 'ko',
+      maxResultCount: 10,
+      locationBias: {
+        rectangle: {
+          low: { latitude: 33.0, longitude: 124.5 },
+          high: { latitude: 38.6, longitude: 131.9 },
+        },
       },
-    },
+    }
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': apiKey,
+        'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.types,places.location,places.photos',
+      },
+      body: JSON.stringify(body),
+    })
+
+    if (!response.ok) {
+      const error = await response.text()
+      console.error('Google Places API error:', error)
+      return NextResponse.json({ error: 'Failed to search places' }, { status: 500 })
+    }
+
+    const data = (await response.json()) as GooglePlacesSearchResponse
+
+    const results = (data.places ?? []).map((place) => ({
+      google_place_id: place.id,
+      name: place.displayName?.text ?? '',
+      address: place.formattedAddress ?? '',
+      rating: place.rating ?? null,
+      user_ratings_total: place.userRatingCount ?? 0,
+      types: place.types ?? [],
+      lat: place.location?.latitude ?? null,
+      lng: place.location?.longitude ?? null,
+      photo_reference: place.photos?.[0]?.name ?? null,
+    }))
+
+    return NextResponse.json({ results })
+  } catch (error) {
+    console.error('[places/search] error:', error instanceof Error ? error.message : error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Goog-Api-Key': apiKey,
-      'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.rating,places.userRatingCount,places.types,places.location,places.photos',
-    },
-    body: JSON.stringify(body),
-  })
-
-  if (!response.ok) {
-    const error = await response.text()
-    console.error('Google Places API error:', error)
-    return NextResponse.json({ error: 'Failed to search places' }, { status: 500 })
-  }
-
-  const data = (await response.json()) as GooglePlacesSearchResponse
-
-  const results = (data.places ?? []).map((place) => ({
-    google_place_id: place.id,
-    name: place.displayName?.text ?? '',
-    address: place.formattedAddress ?? '',
-    rating: place.rating ?? null,
-    user_ratings_total: place.userRatingCount ?? 0,
-    types: place.types ?? [],
-    lat: place.location?.latitude ?? null,
-    lng: place.location?.longitude ?? null,
-    photo_reference: place.photos?.[0]?.name ?? null,
-  }))
-
-  return NextResponse.json({ results })
 }

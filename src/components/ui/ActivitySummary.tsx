@@ -123,14 +123,14 @@ export default function ActivitySummary({ locale }: { locale: string }) {
                   {ko ? '작성 리뷰' : 'Reviews'}
                 </p>
               </div>
-              <div className="text-center p-3 bg-green-500/5 rounded-xl">
-                <p className="text-xl font-bold text-green-600">{data.helpfulCount}</p>
+              <div className="text-center p-3 bg-green-500/5 dark:bg-green-500/10 rounded-xl">
+                <p className="text-xl font-bold text-green-600 dark:text-green-400">{data.helpfulCount}</p>
                 <p className="text-[11px] text-muted-foreground mt-1">
                   {ko ? '도움이 됐어요' : 'Helpful'}
                 </p>
               </div>
-              <div className="text-center p-3 bg-blue-500/5 rounded-xl">
-                <p className="text-xl font-bold text-blue-600">{data.commentCount}</p>
+              <div className="text-center p-3 bg-blue-500/5 dark:bg-blue-500/10 rounded-xl">
+                <p className="text-xl font-bold text-blue-600 dark:text-blue-400">{data.commentCount}</p>
                 <p className="text-[11px] text-muted-foreground mt-1">
                   {ko ? '받은 댓글' : 'Comments'}
                 </p>

@@ -19,6 +19,11 @@ export async function GET(request: NextRequest) {
   if (!checkRateLimit(ip)) {
     return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
   }
-  const country = request.headers.get('x-vercel-ip-country') ?? 'XX'
-  return NextResponse.json({ country })
+  try {
+    const country = request.headers.get('x-vercel-ip-country') ?? 'XX'
+    return NextResponse.json({ country })
+  } catch (error) {
+    console.error('[geo] error:', error instanceof Error ? error.message : error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }

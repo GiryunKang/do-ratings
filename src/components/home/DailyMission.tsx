@@ -41,8 +41,9 @@ export default function DailyMission({ locale }: DailyMissionProps) {
 
     async function checkCompletion() {
       const supabase = createClient()
+      // Use UTC midnight to match DB timestamps; avoids timezone mismatch with server
       const todayStart = new Date()
-      todayStart.setHours(0, 0, 0, 0)
+      todayStart.setUTCHours(0, 0, 0, 0)
 
       // Check if user has reviewed any subject in the mission category today
       const { data: todayReviews, error } = await supabase
