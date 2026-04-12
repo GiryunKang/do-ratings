@@ -278,7 +278,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             url: 'https://do-ratings.com',
             description: locale === 'ko' ? '세상 모든 것을 평가하는 글로벌 리뷰 플랫폼' : 'A global review platform to rate everything',
             potentialAction: { '@type': 'SearchAction', target: `https://do-ratings.com/${locale}/explore?q={search_term_string}`, 'query-input': 'required name=search_term_string' },
-          }),
+          }).replace(/</g, '\\u003c'),
         }}
       />
 
@@ -769,7 +769,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
           <Link
             href={`/${locale}/explore`}
-            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white dark:bg-white/90 flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity"
           >
             <span className="text-primary text-lg sm:text-xl">→</span>
           </Link>
