@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ReviewList from '@/components/review/ReviewList'
 import ImageGallery from '@/components/review/ImageGallery'
-import TrendChart from '@/components/analytics/TrendChart'
+import dynamic from 'next/dynamic'
+const TrendChart = dynamic(() => import('@/components/analytics/TrendChart'), { ssr: false })
 import AISummary from '@/components/analytics/AISummary'
 import EmbedWidget from '@/components/embed/EmbedWidget'
 

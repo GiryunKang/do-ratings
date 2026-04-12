@@ -8,9 +8,9 @@ interface CategoryRankingProps {
 }
 
 const medalRowConfig = [
-  { className: 'bg-gradient-to-r from-yellow-50 to-amber-50 border border-yellow-200' },
-  { className: 'bg-gradient-to-r from-gray-50 to-slate-50 border border-border' },
-  { className: 'bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200' },
+  { className: 'bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-950/30 dark:to-amber-950/20 border border-yellow-200 dark:border-yellow-800' },
+  { className: 'bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-800/40 dark:to-slate-800/40 border border-border' },
+  { className: 'bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/20 border border-orange-200 dark:border-orange-800' },
 ]
 
 export default async function CategoryRanking({ locale }: CategoryRankingProps) {

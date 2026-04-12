@@ -35,14 +35,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const body = await request.json()
-  const { google_place_id, name, address, rating, category_slug, lat, lng } = body
+  let body: Record<string, unknown>
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+  }
+  const { google_place_id, name, address, rating, category_slug, lat, lng } = body as Record<string, string>
 
   if (!google_place_id || !name || !category_slug) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
-  if (name.length > 500) return NextResponse.json({ error: 'name too long' }, { status: 400 })
+  if (String(name).length > 500) return NextResponse.json({ error: 'name too long' }, { status: 400 })
 
   // Get category ID
   const { data: category } = await supabase

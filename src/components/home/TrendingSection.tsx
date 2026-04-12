@@ -47,6 +47,8 @@ export default function TrendingSection({ locale, initialItems }: TrendingSectio
       return
     }
 
+    let cancelled = false
+
     async function fetchTrending() {
       setLoading(true)
       const supabase = createClient()
@@ -58,6 +60,8 @@ export default function TrendingSection({ locale, initialItems }: TrendingSectio
         .gte('created_at', since)
         .order('created_at', { ascending: false })
         .limit(50)
+
+      if (cancelled) return
 
       const map = new Map<string, TrendingItem>()
       for (const r of data ?? []) {
@@ -78,11 +82,15 @@ export default function TrendingSection({ locale, initialItems }: TrendingSectio
         }
       }
 
+      if (cancelled) return
       setItems([...map.values()].sort((a, b) => b.recentCount - a.recentCount).slice(0, 6))
+      if (cancelled) return
       setLoading(false)
     }
 
     fetchTrending()
+
+    return () => { cancelled = true }
   }, [period])
 
   return (

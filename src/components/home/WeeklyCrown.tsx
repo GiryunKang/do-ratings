@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Crown } from 'lucide-react'
+import DOMPurify from 'dompurify'
 
 interface CrownReview {
   id: string
@@ -62,7 +63,7 @@ export default function WeeklyCrown({ locale, initialCrown }: WeeklyCrownProps) 
               animate={{ rotate: [0, -3, 3, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               className="w-16 h-16"
-              dangerouslySetInnerHTML={{ __html: crown.trophySvg ?? TROPHY_FALLBACK }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(crown.trophySvg ?? TROPHY_FALLBACK, { USE_PROFILES: { svg: true, svgFilters: true } }) }}
             />
           </div>
 

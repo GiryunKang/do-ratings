@@ -48,6 +48,8 @@ export default function PopularReviewsSection({ locale, initialReviews }: Popula
       return
     }
 
+    let cancelled = false
+
     async function fetchPopular() {
       setLoading(true)
       const supabase = createClient()
@@ -59,6 +61,8 @@ export default function PopularReviewsSection({ locale, initialReviews }: Popula
         .gte('created_at', since)
         .order('helpful_count', { ascending: false })
         .limit(5)
+
+      if (cancelled) return
 
       const mapped = (data ?? []).map(r => {
         const subject = Array.isArray(r.subjects) ? r.subjects[0] : r.subjects
@@ -76,11 +80,15 @@ export default function PopularReviewsSection({ locale, initialReviews }: Popula
         }
       })
 
+      if (cancelled) return
       setReviews(mapped)
+      if (cancelled) return
       setLoading(false)
     }
 
     fetchPopular()
+
+    return () => { cancelled = true }
   }, [period])
 
   return (

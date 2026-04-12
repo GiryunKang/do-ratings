@@ -39,8 +39,8 @@ export async function GET(request: NextRequest) {
     let query = supabase.from('subjects').select('*, categories(name, slug)')
 
     if (q) {
-      // JSONB fields need cast to text for ILIKE
-      query = query.or(`name->>ko.ilike.%${q}%,name->>en.ilike.%${q}%`)
+      const escaped = q.replace(/[%_\\(),.*]/g, (c) => `\\${c}`)
+      query = query.or(`name->>ko.ilike.%${escaped}%,name->>en.ilike.%${escaped}%`)
     }
 
     if (category) {
@@ -55,7 +55,10 @@ export async function GET(request: NextRequest) {
       .order('avg_rating', { ascending: false, nullsFirst: false })
       .limit(20)
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('[search] query error:', error.message)
+      return NextResponse.json({ error: 'Search failed' }, { status: 500 })
+    }
     return NextResponse.json(data)
   } catch (error) {
     console.error('[search] error:', error instanceof Error ? error.message : error)

@@ -12,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html className={cn(outfit.variable, plusJakartaSans.variable, ibmPlexMono.variable, "h-full antialiased")} suppressHydrationWarning>
+    <html lang="ko" className={cn(outfit.variable, plusJakartaSans.variable, ibmPlexMono.variable, "h-full antialiased")} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{

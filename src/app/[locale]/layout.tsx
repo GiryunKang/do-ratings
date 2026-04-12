@@ -10,9 +10,9 @@ import Sidebar from '@/components/layout/Sidebar'
 import AdBanner from '@/components/layout/AdBanner'
 import { ThemeProvider } from '@/components/ui/ThemeProvider'
 import OnboardingTrigger from '@/components/onboarding/OnboardingTrigger'
-import PossessionMode from '@/components/ui/PossessionMode'
 import SignupFloatingBar from '@/components/layout/SignupFloatingBar'
 import ActivitySummary from '@/components/ui/ActivitySummary'
+import PossessionMode from '@/components/ui/PossessionMode'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params

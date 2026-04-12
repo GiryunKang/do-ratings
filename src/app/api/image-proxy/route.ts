@@ -40,6 +40,9 @@ export async function GET(request: NextRequest) {
     }
 
     const contentType = res.headers.get('content-type') ?? 'image/png'
+    if (!contentType.startsWith('image/')) {
+      return NextResponse.json({ error: 'Invalid content type' }, { status: 400 })
+    }
     const buffer = await res.arrayBuffer()
 
     return new NextResponse(buffer, {

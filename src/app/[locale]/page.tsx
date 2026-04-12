@@ -285,9 +285,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {/* SECTION 1: "무엇이든 평가하세요" Search Module */}
       <section className="px-4 sm:px-6 pt-8">
         <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
-          <h2 className="font-display text-2xl font-black tracking-tight text-foreground mb-4">
+          <h1 className="font-display text-2xl font-black tracking-tight text-foreground mb-4">
             {locale === 'ko' ? '무엇이든 평가하세요' : 'Rate Anything'}
-          </h2>
+          </h1>
           <div className="relative mb-4">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input

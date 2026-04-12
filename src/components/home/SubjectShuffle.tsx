@@ -148,7 +148,7 @@ export default function SubjectShuffle({ subjects, locale }: SubjectShuffleProps
 
                   {/* Hover CTA overlay */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 backdrop-blur-[1px]">
-                    <span className="bg-white text-foreground font-semibold text-sm px-5 py-2 rounded-full shadow-lg">
+                    <span className="bg-white dark:bg-zinc-900 text-foreground font-semibold text-sm px-5 py-2 rounded-full shadow-lg">
                       {locale === 'ko' ? '평가하기 →' : 'Rate now →'}
                     </span>
                   </div>
