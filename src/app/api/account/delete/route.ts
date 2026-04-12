@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 const rateLimit = new Map<string, { count: number; resetAt: number }>()
 function checkRateLimit(ip: string, limit: number, windowMs: number): boolean {
@@ -67,6 +68,15 @@ export async function DELETE(request: NextRequest) {
     // Delete reviews
     const { error: errReviews } = await supabase.from('reviews').delete().eq('user_id', userId)
     if (errReviews) console.error('[AccountDelete] reviews delete error:', errReviews.message)
+
+    // Delete auth record permanently
+    try {
+      const adminClient = createAdminClient()
+      const { error: deleteAuthError } = await adminClient.auth.admin.deleteUser(userId)
+      if (deleteAuthError) console.error('[AccountDelete] auth.admin.deleteUser error:', deleteAuthError.message)
+    } catch (adminErr) {
+      console.error('[AccountDelete] admin client error (SUPABASE_SERVICE_ROLE_KEY may be missing):', adminErr)
+    }
 
     // Sign out
     await supabase.auth.signOut()

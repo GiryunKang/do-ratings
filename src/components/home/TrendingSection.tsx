@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { TrendingUp } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
@@ -133,8 +134,7 @@ export default function TrendingSection({ locale, initialItems }: TrendingSectio
                 className="bg-card rounded-xl shadow-sm ring-1 ring-foreground/[0.06] overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all group">
                 {item.image_url ? (
                   <div className="h-24 relative overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={proxyImageUrl(item.image_url) ?? ''} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" onError={(e) => { e.currentTarget.style.display = 'none'; }} referrerPolicy="no-referrer" />
+                    <Image src={proxyImageUrl(item.image_url) ?? ''} alt={name} fill className="object-cover group-hover:scale-105 transition-transform" sizes="(max-width: 640px) 50vw, 33vw" unoptimized />
                     <div className="absolute top-2 left-2 bg-foreground text-background text-[10px] font-bold px-2 py-0.5 rounded-full">
                       {index + 1}
                     </div>

@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
@@ -96,16 +97,13 @@ export default function SubjectShuffle({ subjects, locale }: SubjectShuffleProps
                   {/* Image or gradient */}
                   {subject.image_url ? (
                     <div className="h-32 relative overflow-hidden">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                      <Image
                         src={proxyImageUrl(subject.image_url) ?? ''}
                         alt={name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none'
-                          e.currentTarget.parentElement?.classList.add(color.replace('bg-', 'bg-'), 'flex', 'items-center', 'justify-center')
-                        }}
-                        referrerPolicy="no-referrer"
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                        sizes="(max-width: 640px) 100vw, 33vw"
+                        unoptimized
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
 

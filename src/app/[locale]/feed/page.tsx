@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/hooks/useAuth'
@@ -229,7 +230,7 @@ function FeedContent({ userId, locale }: { userId: string; locale: string }) {
                 <div key={reviewer.id} className="flex items-center gap-3 bg-card rounded-xl border border-border px-4 py-3">
                   <Link href={`/${locale}/user/${reviewer.id}`} className="shrink-0">
                     {reviewer.avatar_url ? (
-                      <img src={reviewer.avatar_url} alt={reviewer.nickname} className="w-10 h-10 rounded-full object-cover" referrerPolicy="no-referrer" />
+                      <Image src={reviewer.avatar_url} alt={reviewer.nickname} width={40} height={40} className="rounded-full object-cover" unoptimized />
                     ) : (
                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
                         {reviewer.nickname.charAt(0).toUpperCase()}

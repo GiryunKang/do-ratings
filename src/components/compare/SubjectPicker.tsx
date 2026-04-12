@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
 import { displayRating } from '@/lib/utils/rating'
@@ -178,11 +179,13 @@ export default function SubjectPicker({
                     >
                       {/* Thumbnail or placeholder */}
                       {subject.image_url ? (
-                        <img
+                        <Image
                           src={proxyImageUrl(subject.image_url) ?? ''}
                           alt={displayName}
-                          className="w-10 h-10 rounded-md object-cover shrink-0"
-                          referrerPolicy="no-referrer"
+                          width={40}
+                          height={40}
+                          className="rounded-md object-cover shrink-0"
+                          unoptimized
                         />
                       ) : (
                         <div className="w-10 h-10 rounded-md bg-muted flex items-center justify-center text-foreground text-base font-bold shrink-0 select-none">

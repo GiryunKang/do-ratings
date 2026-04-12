@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Swords } from 'lucide-react'
+import Image from 'next/image'
 
 import { getCategoryColor } from '@/lib/utils/category-colors'
 import { CategoryIcon } from '@/lib/icons'
@@ -91,13 +92,13 @@ export default function QuickFaceoff({ subjects, locale }: QuickFaceoffProps) {
               {/* Image or color header */}
               {subject.image_url ? (
                 <div className="h-28 relative overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     src={proxyImageUrl(subject.image_url) ?? ''}
                     alt={name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => { e.currentTarget.style.display = 'none' }}
-                    referrerPolicy="no-referrer"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 50vw, 300px"
+                    unoptimized
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 </div>

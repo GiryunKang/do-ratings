@@ -40,7 +40,6 @@ interface SubjectCategoryRecord {
 interface SubjectRecord {
   id: string
   name: LocalizedText
-  description: LocalizedText | null
   avg_rating: number | null
   review_count: number
   category_id: string
@@ -92,7 +91,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     { data: topReviewersData, error: e10 },
   ] = await Promise.all([
     supabase.from('categories').select('*'),
-    supabase.from('subjects').select('id, name, avg_rating, review_count, description, category_id, image_url, categories(slug, name, icon)').limit(200),
+    supabase.from('subjects').select('id, name, avg_rating, review_count, category_id, image_url, categories(slug, name, icon)').limit(200),
     supabase.from('reviews').select('subject_id, subjects(id, name, image_url, avg_rating, review_count, categories(slug, name, icon))').gte('created_at', sevenDaysAgo).order('created_at', { ascending: false }).limit(50),
     supabase.from('reviews').select('id', { count: 'exact', head: true }),
     supabase.from('users').select('id', { count: 'exact', head: true }),
@@ -100,7 +99,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     supabase.from('reviews').select('subject_id, subjects(id, name, image_url, avg_rating, review_count)').gte('created_at', oneDayAgo).order('created_at', { ascending: false }).limit(50),
     supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, created_at, subject_id, subjects(name), public_profiles!reviews_user_id_fkey(nickname)').gte('created_at', oneDayAgo).order('helpful_count', { ascending: false }).limit(5),
     supabase.from('daily_votes').select('*').eq('is_active', true).gte('ends_at', new Date().toISOString()).order('starts_at', { ascending: false }).limit(1),
-    supabase.from('daily_vote_counts').select('*'),
+    supabase.from('daily_vote_counts').select('vote_id, option_id, count'),
     supabase.from('reviews').select('id, title, content, overall_rating, helpful_count, subject_id, subjects(name, categories(slug, name)), public_profiles!reviews_user_id_fkey(nickname)').gt('helpful_count', 0).order('helpful_count', { ascending: false }).limit(3),
     supabase.from('public_profiles').select('id, nickname, review_count').order('review_count', { ascending: false }).limit(3),
   ])
@@ -123,7 +122,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     return {
       id: subject.id,
       name: subject.name,
-      description: subject.description,
       avg_rating: subject.avg_rating,
       review_count: subject.review_count,
       category_id: subject.category_id,

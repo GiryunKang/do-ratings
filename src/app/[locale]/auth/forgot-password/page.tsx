@@ -45,8 +45,9 @@ export default function ForgotPasswordPage() {
       <h1 className="text-xl font-bold text-center mb-6">{locale === 'ko' ? '비밀번호 재설정' : 'Reset Password'}</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="text-sm font-medium">{locale === 'ko' ? '이메일' : 'Email'}</label>
-          <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
+          <label htmlFor="forgot-email" className="text-sm font-medium">{locale === 'ko' ? '이메일' : 'Email'}</label>
+          <input id="forgot-email" type="email" value={email} onChange={e => setEmail(e.target.value)} required
+            aria-label="Email"
             className="w-full mt-1 px-3 py-2 border border-border rounded-lg text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary" />
         </div>
         {error && <p className="text-sm text-red-500">{error}</p>}

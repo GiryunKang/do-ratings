@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Shuffle, ArrowRight } from 'lucide-react'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
@@ -133,13 +134,13 @@ export default function RatingRoulette({ subjects, locale }: RatingRouletteProps
         {/* Subject display area */}
         <div className="relative h-48 bg-muted overflow-hidden">
           {display.image_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={proxyImageUrl(display.image_url) ?? ''}
               alt={name}
-              className={`w-full h-full object-cover transition-all duration-150 ${picking ? 'blur-sm scale-105' : ''}`}
-              referrerPolicy="no-referrer"
-              onError={(e) => { e.currentTarget.style.display = 'none' }}
+              fill
+              className={`object-cover transition-all duration-150 ${picking ? 'blur-sm scale-105' : ''}`}
+              sizes="(max-width: 768px) 100vw, 672px"
+              unoptimized
             />
           ) : (
             <div className={`w-full h-full flex items-center justify-center transition-all duration-150 ${picking ? 'scale-105' : ''}`}>

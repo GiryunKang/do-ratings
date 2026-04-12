@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { CategoryIcon } from '@/lib/icons'
 import { getCategoryColor } from '@/lib/utils/category-colors'
@@ -97,13 +98,13 @@ export default function AutoScrollRow({
             {/* Image or category color header */}
             {subject.image_url ? (
               <div className="h-24 relative overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={proxyImageUrl(subject.image_url) ?? ''}
                   alt={name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement?.classList.add(color, 'flex', 'items-center', 'justify-center'); }}
-                  referrerPolicy="no-referrer"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  sizes="176px"
+                  unoptimized
                 />
                 {originalIndex < 3 && (
                   <span className={`absolute top-2 right-2 w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center ${

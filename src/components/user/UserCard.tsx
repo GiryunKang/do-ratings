@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import UserBadge from '@/components/user/UserBadge'
 
@@ -24,12 +25,13 @@ export default function UserCard({ profile }: UserCardProps) {
         {/* Avatar */}
         <div className="shrink-0">
           {profile.avatar_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={profile.avatar_url}
               alt={profile.nickname}
-              className="w-20 h-20 rounded-full object-cover border-2 border-border"
-              referrerPolicy="no-referrer"
+              width={80}
+              height={80}
+              className="rounded-full object-cover border-2 border-border"
+              unoptimized
             />
           ) : (
             <span className="w-20 h-20 rounded-full bg-primary/10 text-primary text-2xl font-bold flex items-center justify-center">

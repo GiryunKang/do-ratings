@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { getCategoryColor } from '@/lib/utils/category-colors'
 import { CategoryIcon } from '@/lib/icons'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
@@ -72,12 +73,13 @@ export default function FeaturedCarousel({
                 {/* Image */}
                 {subject.image_url ? (
                   <div className="absolute inset-0">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src={proxyImageUrl(subject.image_url) ?? ''}
                       alt={subjectName}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      referrerPolicy="no-referrer"
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 640px) 240px, (max-width: 768px) 280px, 320px"
+                      unoptimized
                     />
                     <div
                       className="absolute inset-0"

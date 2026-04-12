@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { CategoryIcon } from '@/lib/icons'
@@ -84,12 +85,13 @@ export default async function RightSidebar({ locale }: RightSidebarProps) {
               return (
                 <li key={reviewer.id} className="flex items-center gap-3 py-1.5">
                   {avatarUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={avatarUrl}
                       alt={nickname}
-                      className="w-8 h-8 rounded-full object-cover border border-border shrink-0"
-                      referrerPolicy="no-referrer"
+                      width={32}
+                      height={32}
+                      className="rounded-full object-cover border border-border shrink-0"
+                      unoptimized
                     />
                   ) : (
                     <span className="w-8 h-8 rounded-full bg-primary/10 text-primary text-sm font-semibold flex items-center justify-center shrink-0">

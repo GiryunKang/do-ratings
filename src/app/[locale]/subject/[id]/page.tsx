@@ -1,6 +1,7 @@
 import { cache } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { displayRating } from '@/lib/utils/rating'
@@ -74,11 +75,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: 'website',
       url: `https://do-ratings.com/${locale}/subject/${id}`,
       siteName: 'Do! Ratings!',
+      images: subject.image_url
+        ? [{ url: subject.image_url as string, width: 1200, height: 630, alt: name }]
+        : [{ url: 'https://do-ratings.com/og-default.png', width: 1200, height: 630, alt: name }],
     },
     twitter: {
       card: 'summary_large_image',
       title: isPersonMeta ? `${name} — ${rating}` : `${name} — ${rating} ★`,
       description: desc,
+      images: subject.image_url
+        ? [subject.image_url as string]
+        : ['https://do-ratings.com/og-default.png'],
     },
     alternates: {
       canonical: `https://do-ratings.com/${locale}/subject/${id}`,
@@ -120,39 +127,68 @@ export default async function SubjectPage({ params }: PageProps) {
   const criteria: Array<{ key: string; ko: string; en: string }> =
     Array.isArray(category?.sub_rating_criteria) ? category.sub_rating_criteria : []
 
+  // Parallel fetch: sub_ratings, review_images, rank counts, auth — all independent
+  const [subRatingsResult, imagesResult, rankResults, authResult] = await Promise.all([
+    // 1. sub_ratings for chart (only if criteria exist)
+    criteria.length > 0
+      ? supabase.from('reviews').select('sub_ratings').eq('subject_id', id)
+      : Promise.resolve({ data: null, error: null }),
+    // 2. review images for gallery
+    supabase
+      .from('reviews')
+      .select('review_images(id, storage_path, display_order)')
+      .eq('subject_id', id)
+      .limit(20),
+    // 3. rank counts (nested Promise.all for two independent count queries)
+    Promise.all([
+      supabase
+        .from('subjects')
+        .select('id', { count: 'exact', head: true })
+        .eq('category_id', subject.category_id)
+        .gt('avg_rating', subject.avg_rating ?? 0),
+      supabase
+        .from('subjects')
+        .select('id', { count: 'exact', head: true })
+        .eq('category_id', subject.category_id)
+        .not('avg_rating', 'is', null),
+    ]),
+    // 4. auth session
+    supabase.auth.getUser(),
+  ])
+
+  // Destructure results
+  const { data: subRatingsData, error: subRatingsError } = subRatingsResult
+  if (subRatingsError) console.error('[SubjectPage] sub_ratings query error:', subRatingsError.message)
+
+  const { data: reviewsWithImages, error: reviewImagesError } = imagesResult
+  if (reviewImagesError) console.error('[SubjectPage] review_images query error:', reviewImagesError.message)
+
+  const [higherCountResult, totalCountResult] = rankResults
+  const { count: higherCount, error: higherCountError } = higherCountResult
+  if (higherCountError) console.error('[SubjectPage] higher count query error:', higherCountError.message)
+  const { count: totalInCategory, error: totalCountError } = totalCountResult
+  if (totalCountError) console.error('[SubjectPage] total count query error:', totalCountError.message)
+
+  const { data: { user } } = authResult
+
   // Compute average sub_ratings server-side
   const avgSubRatings: Record<string, number> = {}
-  if (criteria.length > 0) {
-    const { data: reviews, error: subRatingsError } = await supabase
-      .from('reviews')
-      .select('sub_ratings')
-      .eq('subject_id', id)
-    if (subRatingsError) console.error('[SubjectPage] sub_ratings query error:', subRatingsError.message)
-
-    if (reviews && reviews.length > 0) {
-      const sums: Record<string, number> = {}
-      const counts: Record<string, number> = {}
-      for (const review of reviews) {
-        const sr = review.sub_ratings as Record<string, number> | null
-        if (!sr) continue
-        for (const key of Object.keys(sr)) {
-          sums[key] = (sums[key] ?? 0) + sr[key]
-          counts[key] = (counts[key] ?? 0) + 1
-        }
-      }
-      for (const key of Object.keys(sums)) {
-        avgSubRatings[key] = Math.round((sums[key] / counts[key]) * 10) / 10
+  const reviews = subRatingsData
+  if (reviews && reviews.length > 0) {
+    const sums: Record<string, number> = {}
+    const counts: Record<string, number> = {}
+    for (const review of reviews) {
+      const sr = review.sub_ratings as Record<string, number> | null
+      if (!sr) continue
+      for (const key of Object.keys(sr)) {
+        sums[key] = (sums[key] ?? 0) + sr[key]
+        counts[key] = (counts[key] ?? 0) + 1
       }
     }
+    for (const key of Object.keys(sums)) {
+      avgSubRatings[key] = Math.round((sums[key] / counts[key]) * 10) / 10
+    }
   }
-
-  // Fetch review photos for gallery
-  const { data: reviewsWithImages, error: reviewImagesError } = await supabase
-    .from('reviews')
-    .select('review_images(id, storage_path, display_order)')
-    .eq('subject_id', id)
-    .limit(20)
-  if (reviewImagesError) console.error('[SubjectPage] review_images query error:', reviewImagesError.message)
 
   type ReviewImageRow = { id: string; storage_path: string; display_order: number }
   const storageBase = process.env.NEXT_PUBLIC_SUPABASE_URL + '/storage/v1/object/public/review-images/'
@@ -161,27 +197,11 @@ export default async function SubjectPage({ params }: PageProps) {
     .slice(0, 12)
     .map((img) => ({ id: img.id, url: storageBase + img.storage_path }))
 
-  // Calculate rank/percentile within category
-  const { count: higherCount, error: higherCountError } = await supabase
-    .from('subjects')
-    .select('id', { count: 'exact', head: true })
-    .eq('category_id', subject.category_id)
-    .gt('avg_rating', subject.avg_rating ?? 0)
-  if (higherCountError) console.error('[SubjectPage] higher count query error:', higherCountError.message)
-
-  const { count: totalInCategory, error: totalCountError } = await supabase
-    .from('subjects')
-    .select('id', { count: 'exact', head: true })
-    .eq('category_id', subject.category_id)
-    .not('avg_rating', 'is', null)
-  if (totalCountError) console.error('[SubjectPage] total count query error:', totalCountError.message)
-
   const rank = (higherCount ?? 0) + 1
   const total = totalInCategory ?? 1
   const percentile = Math.round((1 - (rank - 1) / total) * 100)
 
-  // Check if current user already reviewed (server-side via cookie session)
-  const { data: { user } } = await supabase.auth.getUser()
+  // Check if current user already reviewed (depends on auth result above)
   let existingReviewId: string | null = null
   if (user) {
     const { data: existingReview, error: existingReviewError } = await supabase
@@ -232,12 +252,13 @@ export default async function SubjectPage({ params }: PageProps) {
           <div className="flex gap-4">
             <div className="shrink-0">
               {subject.image_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   src={proxyImageUrl(subject.image_url as string) ?? ''}
                   alt={subjectName}
-                  className="w-20 h-20 rounded-lg object-cover"
-                  referrerPolicy="no-referrer"
+                  width={80}
+                  height={80}
+                  className="rounded-lg object-cover"
+                  unoptimized
                 />
               ) : (
                 <div className={`w-20 h-20 rounded-lg ${isPeople ? 'bg-foreground/80' : 'bg-primary'} flex items-center justify-center`}>

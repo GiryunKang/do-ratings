@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { proxyImageUrl } from '@/lib/utils/image-proxy'
 import { displayRating } from '@/lib/utils/rating'
 
@@ -55,11 +56,13 @@ export default function CompareCard({
       {/* Subject image or placeholder */}
       <div className="flex justify-center">
         {subject.image_url ? (
-          <img
+          <Image
             src={proxyImageUrl(subject.image_url) ?? ''}
             alt={displayName}
-            className="w-20 h-20 rounded-lg object-cover"
-            referrerPolicy="no-referrer"
+            width={80}
+            height={80}
+            className="rounded-lg object-cover"
+            unoptimized
           />
         ) : (
           <div className="w-20 h-20 rounded-lg bg-muted flex items-center justify-center text-foreground text-2xl font-bold select-none">

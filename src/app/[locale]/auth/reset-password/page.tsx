@@ -29,13 +29,15 @@ export default function ResetPasswordPage() {
       <h1 className="text-xl font-bold text-center mb-6">{locale === 'ko' ? '새 비밀번호 설정' : 'Set New Password'}</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="text-sm font-medium">{locale === 'ko' ? '새 비밀번호' : 'New Password'}</label>
-          <input type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6}
+          <label htmlFor="reset-password" className="text-sm font-medium">{locale === 'ko' ? '새 비밀번호' : 'New Password'}</label>
+          <input id="reset-password" type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6}
+            aria-label="New Password"
             className="w-full mt-1 px-3 py-2 border border-border rounded-lg text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary" />
         </div>
         <div>
-          <label className="text-sm font-medium">{locale === 'ko' ? '비밀번호 확인' : 'Confirm Password'}</label>
-          <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} required
+          <label htmlFor="reset-confirm" className="text-sm font-medium">{locale === 'ko' ? '비밀번호 확인' : 'Confirm Password'}</label>
+          <input id="reset-confirm" type="password" value={confirm} onChange={e => setConfirm(e.target.value)} required
+            aria-label="Confirm Password"
             className="w-full mt-1 px-3 py-2 border border-border rounded-lg text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary" />
         </div>
         {error && <p className="text-sm text-red-500">{error}</p>}

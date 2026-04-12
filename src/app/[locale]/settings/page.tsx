@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import Image from 'next/image'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { createClient } from '@/lib/supabase/client'
 
@@ -143,13 +144,13 @@ export default function SettingsPage() {
               : 'Enter an image URL. Free image hosting: imgur.com'}
           </p>
           {avatarUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={avatarUrl}
               alt="Avatar preview"
-              className="mt-3 w-16 h-16 rounded-full object-cover border border-border"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-              referrerPolicy="no-referrer"
+              width={64}
+              height={64}
+              className="mt-3 rounded-full object-cover border border-border"
+              unoptimized
             />
           )}
         </div>

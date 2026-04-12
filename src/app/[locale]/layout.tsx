@@ -9,6 +9,7 @@ import BottomNav from '@/components/layout/BottomNav'
 import Sidebar from '@/components/layout/Sidebar'
 import AdBanner from '@/components/layout/AdBanner'
 import { ThemeProvider } from '@/components/ui/ThemeProvider'
+import { AuthProvider } from '@/lib/hooks/AuthProvider'
 import OnboardingTrigger from '@/components/onboarding/OnboardingTrigger'
 import SignupFloatingBar from '@/components/layout/SignupFloatingBar'
 import ActivitySummary from '@/components/ui/ActivitySummary'
@@ -24,8 +25,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     title: { default: title, template: '%s — Do! Ratings!' },
     description,
     keywords: locale === 'ko' ? ['평점', '리뷰', '별점', '평가', '랭킹'] : ['ratings', 'reviews', 'stars', 'ranking', 'rate'],
-    openGraph: { title, description, url: `https://do-ratings.com/${locale}`, siteName: 'Do! Ratings!', type: 'website', locale: locale === 'ko' ? 'ko_KR' : 'en_US' },
-    twitter: { card: 'summary_large_image', title, description },
+    openGraph: { title, description, url: `https://do-ratings.com/${locale}`, siteName: 'Do! Ratings!', type: 'website', locale: locale === 'ko' ? 'ko_KR' : 'en_US', images: [{ url: 'https://do-ratings.com/og-default.png', width: 1200, height: 630, alt: 'Do! Ratings!' }] },
+    twitter: { card: 'summary_large_image', title, description, images: ['https://do-ratings.com/og-default.png'] },
     alternates: { canonical: `https://do-ratings.com/${locale}`, languages: { ko: 'https://do-ratings.com/ko', en: 'https://do-ratings.com/en' } },
     robots: { index: true, follow: true },
   }
@@ -46,22 +47,24 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider messages={messages}>
       <ThemeProvider>
-        <ActivitySummary locale={locale} />
-        <ScrollProgressBar />
-        <Header />
-        <div className="flex">
-          <div className="hidden md:block w-64 shrink-0">
-            <Sidebar locale={locale} />
+        <AuthProvider>
+          <ActivitySummary locale={locale} />
+          <ScrollProgressBar />
+          <Header />
+          <div className="flex">
+            <div className="hidden md:block w-64 shrink-0">
+              <Sidebar locale={locale} />
+            </div>
+            <main className="flex-1 min-w-0 min-h-[100dvh] pb-20 md:pb-0 bg-background max-w-4xl mx-auto overflow-x-hidden">
+              {children}
+            </main>
           </div>
-          <main className="flex-1 min-w-0 min-h-[100dvh] pb-20 md:pb-0 bg-background max-w-4xl mx-auto overflow-x-hidden">
-            {children}
-          </main>
-        </div>
-        <AdBanner />
-        <BottomNav />
-        <SignupFloatingBar />
-        <OnboardingTrigger />
-        <PossessionMode locale={locale} />
+          <AdBanner />
+          <BottomNav />
+          <SignupFloatingBar />
+          <OnboardingTrigger />
+          <PossessionMode locale={locale} />
+        </AuthProvider>
       </ThemeProvider>
     </NextIntlClientProvider>
   )

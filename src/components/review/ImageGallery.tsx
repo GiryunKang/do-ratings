@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
+import Image from 'next/image'
 
 interface GalleryImage {
   id: string
@@ -70,48 +71,58 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
       {/* Grid Display */}
       <div className="w-full">
         {count === 1 && (
-          <img
-            src={displayed[0].url}
-            alt="Review photo"
-            className="w-full max-h-64 object-cover rounded-lg cursor-pointer"
-            onClick={() => openLightbox(0)}
-            referrerPolicy="no-referrer"
-          />
+          <div className="relative w-full max-h-64 aspect-video rounded-lg overflow-hidden cursor-pointer" onClick={() => openLightbox(0)}>
+            <Image
+              src={displayed[0].url}
+              alt="Review photo"
+              fill
+              className="object-cover rounded-lg"
+              sizes="(max-width: 768px) 100vw, 672px"
+              unoptimized
+            />
+          </div>
         )}
 
         {count === 2 && (
           <div className="grid grid-cols-2 gap-1">
             {displayed.map((img, i) => (
-              <img
-                key={img.id}
-                src={img.url}
-                alt={`Review photo ${i + 1}`}
-                className="w-full h-48 object-cover rounded-lg cursor-pointer"
-                onClick={() => openLightbox(i)}
-                referrerPolicy="no-referrer"
-              />
+              <div key={img.id} className="relative h-48 rounded-lg overflow-hidden cursor-pointer" onClick={() => openLightbox(i)}>
+                <Image
+                  src={img.url}
+                  alt={`Review photo ${i + 1}`}
+                  fill
+                  className="object-cover rounded-lg"
+                  sizes="50vw"
+                  unoptimized
+                />
+              </div>
             ))}
           </div>
         )}
 
         {count === 3 && (
           <div className="grid grid-cols-2 gap-1">
-            <img
-              src={displayed[0].url}
-              alt="Review photo 1"
-              className="row-span-2 w-full h-full max-h-64 object-cover rounded-lg cursor-pointer"
-              onClick={() => openLightbox(0)}
-              referrerPolicy="no-referrer"
-            />
-            {displayed.slice(1).map((img, i) => (
-              <img
-                key={img.id}
-                src={img.url}
-                alt={`Review photo ${i + 2}`}
-                className="w-full h-32 object-cover rounded-lg cursor-pointer"
-                onClick={() => openLightbox(i + 1)}
-                referrerPolicy="no-referrer"
+            <div className="relative row-span-2 max-h-64 rounded-lg overflow-hidden cursor-pointer" onClick={() => openLightbox(0)}>
+              <Image
+                src={displayed[0].url}
+                alt="Review photo 1"
+                fill
+                className="object-cover rounded-lg"
+                sizes="50vw"
+                unoptimized
               />
+            </div>
+            {displayed.slice(1).map((img, i) => (
+              <div key={img.id} className="relative h-32 rounded-lg overflow-hidden cursor-pointer" onClick={() => openLightbox(i + 1)}>
+                <Image
+                  src={img.url}
+                  alt={`Review photo ${i + 2}`}
+                  fill
+                  className="object-cover rounded-lg"
+                  sizes="50vw"
+                  unoptimized
+                />
+              </div>
             ))}
           </div>
         )}
@@ -120,13 +131,16 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
           <div className="grid grid-cols-2 gap-1">
             {displayed.slice(0, 4).map((img, i) => (
               <div key={img.id} className="relative">
-                <img
-                  src={img.url}
-                  alt={`Review photo ${i + 1}`}
-                  className="w-full h-32 object-cover rounded-lg cursor-pointer"
-                  onClick={() => openLightbox(i)}
-                  referrerPolicy="no-referrer"
-                />
+                <div className="relative h-32 rounded-lg overflow-hidden cursor-pointer" onClick={() => openLightbox(i)}>
+                  <Image
+                    src={img.url}
+                    alt={`Review photo ${i + 1}`}
+                    fill
+                    className="object-cover rounded-lg"
+                    sizes="50vw"
+                    unoptimized
+                  />
+                </div>
                 {i === 3 && count > 4 && (
                   <div
                     className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg cursor-pointer text-white text-2xl font-bold"
@@ -168,14 +182,17 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
           )}
 
           {/* Image */}
-          <img
+          <Image
             src={images[lightboxIndex].url}
             alt={`Photo ${lightboxIndex + 1}`}
+            width={1200}
+            height={900}
             className="max-h-[85vh] max-w-[90vw] object-contain rounded"
+            style={{ width: 'auto', height: 'auto' }}
             onClick={(e) => e.stopPropagation()}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
-            referrerPolicy="no-referrer"
+            unoptimized
           />
 
           {/* Right arrow */}

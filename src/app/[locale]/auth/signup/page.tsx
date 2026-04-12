@@ -92,6 +92,7 @@ export default function SignupPage() {
             placeholder={t('nickname')}
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
+            aria-label="Nickname"
             className="w-full rounded-lg p-3 focus:ring-2 focus:ring-white/50 focus:border-transparent focus:outline-none placeholder-white/40 text-white"
             style={glassInputStyle}
             required
@@ -101,6 +102,7 @@ export default function SignupPage() {
             placeholder={t('email')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            aria-label="Email"
             className="w-full rounded-lg p-3 focus:ring-2 focus:ring-white/50 focus:border-transparent focus:outline-none placeholder-white/40 text-white"
             style={glassInputStyle}
             required
@@ -110,6 +112,7 @@ export default function SignupPage() {
             placeholder={t('password')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            aria-label="Password"
             className="w-full rounded-lg p-3 focus:ring-2 focus:ring-white/50 focus:border-transparent focus:outline-none placeholder-white/40 text-white"
             style={glassInputStyle}
             required

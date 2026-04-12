@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState, useEffect, useCallback } from 'react'
+import Image from 'next/image'
 import imageCompression from 'browser-image-compression'
 
 export interface ImageFile {
@@ -180,12 +181,13 @@ export default function ImageUpload({
         <div className="flex flex-wrap gap-2">
           {images.map((img) => (
             <div key={img.id} className="relative w-20 h-20 rounded-lg overflow-hidden group">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={img.previewUrl}
                 alt="preview"
-                className="w-full h-full object-cover"
-                referrerPolicy="no-referrer"
+                fill
+                className="object-cover"
+                sizes="80px"
+                unoptimized
               />
               {/* Remove button */}
               <button

@@ -85,9 +85,11 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <input type="email" placeholder={t('email')} value={email} onChange={(e) => setEmail(e.target.value)} required
+            aria-label="Email"
             className="w-full rounded-lg p-3 focus:ring-2 focus:ring-white/50 focus:border-transparent focus:outline-none placeholder-white/40 text-white"
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)' }} />
           <input type="password" placeholder={t('password')} value={password} onChange={(e) => setPassword(e.target.value)} required
+            aria-label="Password"
             className="w-full rounded-lg p-3 focus:ring-2 focus:ring-white/50 focus:border-transparent focus:outline-none placeholder-white/40 text-white"
             style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)' }} />
           {error && <p className="text-red-300 text-sm">{error}</p>}

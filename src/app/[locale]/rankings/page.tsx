@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
@@ -426,12 +427,13 @@ export default function RankingsPage() {
                         {index + 1}
                       </span>
                       {reviewer.avatar_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
+                        <Image
                           src={reviewer.avatar_url}
                           alt={reviewer.nickname}
-                          className="w-8 h-8 rounded-full object-cover border border-border shrink-0"
-                          referrerPolicy="no-referrer"
+                          width={32}
+                          height={32}
+                          className="rounded-full object-cover border border-border shrink-0"
+                          unoptimized
                         />
                       ) : (
                         <span className="w-8 h-8 rounded-full bg-muted text-muted-foreground text-sm font-semibold flex items-center justify-center shrink-0">
