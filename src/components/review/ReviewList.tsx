@@ -16,6 +16,7 @@ import SortSelect from '@/components/search/SortSelect'
 
 interface ReviewListProps {
   subjectId?: string
+  categoryId?: string
   userId?: string
   isPeople?: boolean
 }
@@ -37,7 +38,7 @@ interface ReviewRow {
 
 const PAGE_SIZE = 10
 
-export default function ReviewList({ subjectId, userId, isPeople }: ReviewListProps) {
+export default function ReviewList({ subjectId, categoryId, userId, isPeople }: ReviewListProps) {
   const { user: currentUser } = useAuth()
   const pathname = usePathname()
   const locale = pathname?.startsWith('/en') ? 'en' : 'ko'
@@ -47,9 +48,7 @@ export default function ReviewList({ subjectId, userId, isPeople }: ReviewListPr
     async (cursor: string | null) => {
       const supabase = createClient()
 
-      let query = supabase
-        .from('reviews')
-        .select(`
+      const reviewSelect = `
           id,
           overall_rating,
           title,
@@ -60,11 +59,17 @@ export default function ReviewList({ subjectId, userId, isPeople }: ReviewListPr
           subject_id,
           user_id,
           country_code,
+          ${categoryId ? 'subjects!inner(category_id),' : ''}
           public_profiles!reviews_user_id_fkey(id, nickname, level, avatar_url)
-        `)
+        `
+
+      let query = supabase
+        .from('reviews')
+        .select(reviewSelect)
         .limit(PAGE_SIZE)
 
       if (subjectId) query = query.eq('subject_id', subjectId)
+      if (categoryId) query = query.eq('subjects.category_id', categoryId)
       if (userId) query = query.eq('user_id', userId)
 
       if (cursor) {
@@ -89,14 +94,15 @@ export default function ReviewList({ subjectId, userId, isPeople }: ReviewListPr
       }
 
       const { data } = await query
+      const rows = (data ?? []) as unknown as ReviewRow[]
 
-      if (!data || data.length === 0) return { data: [], nextCursor: null }
+      if (rows.length === 0) return { data: [], nextCursor: null }
 
       // Check helpful / not_helpful votes for current user
       let helpfulSet = new Set<string>()
       let notHelpfulSet = new Set<string>()
       if (currentUser) {
-        const reviewIds = data.map((r) => r.id)
+        const reviewIds = rows.map((r) => r.id)
         const [{ data: helpfulVotes }, { data: notHelpfulVotes }] = await Promise.all([
           supabase
             .from('helpful_votes')
@@ -113,7 +119,7 @@ export default function ReviewList({ subjectId, userId, isPeople }: ReviewListPr
         if (notHelpfulVotes) notHelpfulSet = new Set(notHelpfulVotes.map((v) => v.review_id))
       }
 
-      const mapped = (data as ReviewRow[]).map((r) => {
+      const mapped = rows.map((r) => {
         const profileRaw = r.public_profiles
         const profile = Array.isArray(profileRaw) ? profileRaw[0] : profileRaw
         return {
@@ -137,9 +143,9 @@ export default function ReviewList({ subjectId, userId, isPeople }: ReviewListPr
         }
       })
 
-      const last = data[data.length - 1]
+      const last = rows[rows.length - 1]
       let nextCursor: string | null = null
-      if (data.length === PAGE_SIZE) {
+      if (rows.length === PAGE_SIZE) {
         if (sort === 'latest') {
           nextCursor = encodeCursor(last.created_at, last.id)
         } else if (sort === 'helpful') {
@@ -151,7 +157,7 @@ export default function ReviewList({ subjectId, userId, isPeople }: ReviewListPr
 
       return { data: mapped, nextCursor }
     },
-    [subjectId, userId, sort, currentUser]
+    [subjectId, categoryId, userId, sort, currentUser]
   )
 
   const { items, loading, hasMore, loadMore, reset } = useInfiniteScroll(fetchReviews)

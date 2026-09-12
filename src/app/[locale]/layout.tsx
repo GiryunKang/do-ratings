@@ -4,17 +4,12 @@ import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import type { Metadata } from 'next'
 import Header from '@/components/layout/Header'
-import ScrollProgressBar from '@/components/ui/ScrollProgressBar'
 import BottomNav from '@/components/layout/BottomNav'
 import Sidebar from '@/components/layout/Sidebar'
-import AdBanner from '@/components/layout/AdBanner'
 import { ThemeProvider } from '@/components/ui/ThemeProvider'
 import { AuthProvider } from '@/lib/hooks/AuthProvider'
-import OnboardingTrigger from '@/components/onboarding/OnboardingTrigger'
-import SignupFloatingBar from '@/components/layout/SignupFloatingBar'
-import ActivitySummary from '@/components/ui/ActivitySummary'
-import PossessionMode from '@/components/ui/PossessionMode'
-
+import Link from 'next/link'
+import LocaleAttributes from '@/components/layout/LocaleAttributes'
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const title = locale === 'ko' ? 'Do! Ratings! — 세상 모든 것에 별점을' : 'Do! Ratings! — Rate Everything in the World'
@@ -48,22 +43,18 @@ export default async function LocaleLayout({
     <NextIntlClientProvider messages={messages}>
       <ThemeProvider>
         <AuthProvider>
-          <ActivitySummary locale={locale} />
-          <ScrollProgressBar />
+          <LocaleAttributes locale={locale} />
+          <a href="#main-content" className="skip-link">{locale === 'ko' ? '본문으로 이동' : 'Skip to content'}</a>
           <Header />
-          <div className="flex">
-            <div className="hidden md:block w-64 shrink-0">
-              <Sidebar locale={locale} />
-            </div>
-            <main className="flex-1 min-w-0 min-h-[100dvh] pb-20 md:pb-0 bg-background max-w-4xl mx-auto overflow-x-hidden">
-              {children}
-            </main>
+          <Sidebar locale={locale} />
+          <div className="min-w-0 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:ml-56 lg:pb-0">
+            <main id="main-content" tabIndex={-1} className="app-canvas min-h-[calc(100dvh-4rem)] outline-none">{children}</main>
+            <footer className="app-canvas flex flex-wrap items-center gap-x-5 border-t border-border px-5 py-6 text-xs text-muted-foreground">
+              <span className="mr-auto py-3">DO! RATINGS!</span>
+              {[['about', '서비스 소개', 'About'], ['terms', '이용약관', 'Terms'], ['privacy', '개인정보처리방침', 'Privacy']].map(([route, ko, en]) => <Link key={route} href={`/${locale}/${route}`} className="flex min-h-11 items-center hover:text-foreground">{locale === 'ko' ? ko : en}</Link>)}
+            </footer>
           </div>
-          <AdBanner />
           <BottomNav />
-          <SignupFloatingBar />
-          <OnboardingTrigger />
-          <PossessionMode locale={locale} />
         </AuthProvider>
       </ThemeProvider>
     </NextIntlClientProvider>

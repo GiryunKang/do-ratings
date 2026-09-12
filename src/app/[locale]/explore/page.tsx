@@ -1,314 +1,80 @@
 'use client'
-
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams, usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { useTranslations } from 'next-intl'
+import { Compass, Plus, RefreshCw, SlidersHorizontal, Star } from 'lucide-react'
 import SearchBar from '@/components/search/SearchBar'
 import FilterPanel from '@/components/search/FilterPanel'
 import AddSubjectModal from '@/components/subject/AddSubjectModal'
+import SubjectImage from '@/components/subject/SubjectImage'
 import { createClient } from '@/lib/supabase/client'
+import { useAuth } from '@/lib/hooks/useAuth'
 import { displayRating } from '@/lib/utils/rating'
 
-interface Subject {
-  id: string
-  name: Record<string, string>
-  avg_rating: number | null
-  review_count: number
-  categories: { id: string; name: Record<string, string>; slug: string } | null
-}
-
-interface Category {
-  id: string
-  name: Record<string, string>
-  slug: string
-}
-
-interface FilterState {
-  category: string | null
-  ratingMin: number | null
-}
-
-// Rotate through accent colors based on category slug
-const categoryAccents: Record<string, string> = {
-  food: 'border-orange-400',
-  restaurant: 'border-orange-400',
-  hotel: 'border-blue-400',
-  travel: 'border-cyan-400',
-  attraction: 'border-green-400',
-  beauty: 'border-pink-400',
-  shopping: 'border-violet-400',
-  entertainment: 'border-yellow-400',
-  health: 'border-red-400',
-  education: 'border-primary/40',
-}
-
-const accentFallbacks = [
-  'border-primary/40',
-  'border-violet-400',
-  'border-pink-400',
-  'border-orange-400',
-  'border-teal-400',
-  'border-cyan-400',
-]
-
-function getCategoryAccent(slug: string | undefined, index: number): string {
-  if (slug && categoryAccents[slug]) return categoryAccents[slug]
-  return accentFallbacks[index % accentFallbacks.length]
-}
+type Subject = { id: string; name: Record<string, string>; image_url: string | null; avg_rating: number | null; review_count: number; categories: { name: Record<string, string>; slug: string } | null }
+type Category = { id: string; name: Record<string, string>; slug: string }
+type Filters = { category: string | null; ratingMin: number | null }
 
 export default function ExplorePage() {
-  const t = useTranslations('common')
-  const searchParams = useSearchParams()
-  const pathname = usePathname()
-  const currentLocale = pathname.startsWith('/en') ? 'en' : 'ko'
-
-  const initialQ = searchParams.get('q') ?? ''
-
+  const params = useSearchParams()
+  const locale = usePathname().startsWith('/en') ? 'en' : 'ko'
+  const ko = locale === 'ko'
+  const query = params.get('q') ?? ''
+  const { user } = useAuth()
   const [subjects, setSubjects] = useState<Subject[]>([])
-  const [popularSubjects, setPopularSubjects] = useState<Subject[]>([])
   const [categories, setCategories] = useState<Category[]>([])
-  const [loading, setLoading] = useState(false)
-  const [filters, setFilters] = useState<FilterState>({ category: null, ratingMin: null })
+  const [categoryError, setCategoryError] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+  const [retry, setRetry] = useState(0)
+  const [filters, setFilters] = useState<Filters>({ category: null, ratingMin: null })
   const [showFilters, setShowFilters] = useState(false)
-  const [showAddModal, setShowAddModal] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-
-  // Load categories, auth state, and popular subjects once
+  const [showAdd, setShowAdd] = useState(false)
   useEffect(() => {
-    async function loadData() {
-      const supabase = createClient()
-      const [{ data: catData }, { data: { user } }, { data: popularData }] = await Promise.all([
-        supabase.from('categories').select('id, name, slug').order('slug'),
-        supabase.auth.getUser(),
-        supabase
-          .from('subjects')
-          .select('id, name, avg_rating, review_count, categories(id, name, slug)')
-          .order('review_count', { ascending: false })
-          .limit(12),
-      ])
-      if (catData) setCategories(catData)
-      setIsLoggedIn(!!user)
-      if (popularData) setPopularSubjects(popularData as unknown as Subject[])
-    }
-    loadData()
-  }, [])
-
-  const fetchSubjects = useCallback(async (q: string, f: FilterState) => {
-    setLoading(true)
-    try {
-      const params = new URLSearchParams()
-      if (q) params.set('q', q)
-      if (f.category) params.set('category', f.category)
-      if (f.ratingMin) params.set('rating_min', String(f.ratingMin))
-      const res = await fetch(`/api/search?${params.toString()}`)
-      if (res.ok) {
-        const data = await res.json()
-        setSubjects(data ?? [])
+    let cancelled = false
+    createClient().from('categories').select('id,name,slug').order('slug').then(({ data, error }) => {
+      if (!cancelled) { setCategories(data ?? []); setCategoryError(!!error) }
+    })
+    return () => { cancelled = true }
+  }, [retry])
+  useEffect(() => {
+    const controller = new AbortController()
+    async function load() {
+      setLoading(true)
+      setError(false)
+      const search = new URLSearchParams()
+      if (query) search.set('q', query)
+      if (filters.category) search.set('category', filters.category)
+      if (filters.ratingMin) search.set('rating_min', String(filters.ratingMin))
+      try {
+        const response = await fetch(`/api/search?${search}`, { signal: controller.signal })
+        if (!response.ok) throw new Error('Search failed')
+        const data: unknown = await response.json()
+        if (!Array.isArray(data)) throw new Error('Invalid results')
+        if (!controller.signal.aborted) setSubjects(data)
+      } catch {
+        if (!controller.signal.aborted) { setError(true); setSubjects([]) }
+      } finally {
+        if (!controller.signal.aborted) setLoading(false)
       }
-    } catch {
-      setSubjects([])
-    } finally {
-      setLoading(false)
     }
-  }, [])
-
-  // Fetch on mount and when filters/q change
-  useEffect(() => {
-    fetchSubjects(initialQ, filters)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters])
-
-  // Fetch when URL q param changes (navigating from header search)
-  useEffect(() => {
-    fetchSubjects(initialQ, filters)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialQ])
-
-  function getSubjectName(subject: Subject): string {
-    return subject.name?.[currentLocale] ?? subject.name?.ko ?? subject.name?.en ?? ''
-  }
-
-  function getCategoryName(subject: Subject): string {
-    if (!subject.categories) return ''
-    return subject.categories.name?.[currentLocale] ?? subject.categories.name?.ko ?? ''
-  }
-
-  return (
-    <div className="max-w-6xl mx-auto px-4 py-6">
-      {/* Add Subject Modal */}
-      {showAddModal && (
-        <AddSubjectModal
-          onClose={() => setShowAddModal(false)}
-          defaultCategorySlug={filters.category ?? undefined}
-        />
-      )}
-
-      {/* Page header */}
-      <div className="mb-6 space-y-3">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-foreground">
-            {t('explore') ?? 'Explore'}
-          </h1>
-          {isLoggedIn && (
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="hidden md:flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary/90 active:bg-primary/80 transition-colors"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              {currentLocale === 'ko' ? '항목 추가' : 'Add Subject'}
-            </button>
-          )}
-        </div>
-        <SearchBar className="max-w-xl" />
-
-        {/* Mobile filter toggle */}
-        <button
-          onClick={() => setShowFilters((v) => !v)}
-          className="md:hidden flex items-center gap-1.5 text-sm text-primary font-medium"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
-          </svg>
-          {t('filter') ?? 'Filters'}
-          {(filters.category || filters.ratingMin) && (
-            <span className="ml-1 bg-primary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-              {[filters.category, filters.ratingMin].filter(Boolean).length}
-            </span>
-          )}
-        </button>
-      </div>
-
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* FilterPanel — desktop always visible, mobile collapsible */}
-        <div className={`${showFilters ? 'block' : 'hidden'} md:block`}>
-          <FilterPanel
-            categories={categories}
-            selectedCategory={filters.category}
-            ratingMin={filters.ratingMin}
-            onFilterChange={setFilters}
-          />
-        </div>
-
-        {/* Results */}
-        <div className="flex-1">
-          {initialQ && (
-            <p className="text-sm text-muted-foreground mb-4">
-              {loading ? '' : `${subjects.length} ${t('results') ?? 'results'} for "${initialQ}"`}
-            </p>
-          )}
-
-          {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="bg-card rounded-xl border border-border h-28 animate-pulse" />
-              ))}
-            </div>
-          ) : !initialQ && !filters.category && !filters.ratingMin ? (
-            /* No search active — show popular subjects */
-            <div>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-                {currentLocale === 'ko' ? '인기 항목' : 'Popular'}
-              </p>
-              {popularSubjects.length === 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="bg-card rounded-xl border border-border h-28 animate-pulse" />
-                  ))}
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {popularSubjects.map((subject, index) => {
-                    const accentClass = getCategoryAccent(subject.categories?.slug, index)
-                    return (
-                      <Link
-                        key={subject.id}
-                        href={`/${currentLocale}/subject/${subject.id}`}
-                        className={`bg-card rounded-xl border-l-4 border border-border p-4 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ${accentClass}`}
-                      >
-                        <p className="font-semibold text-foreground text-sm line-clamp-2 mb-2">
-                          {getSubjectName(subject)}
-                        </p>
-                        {getCategoryName(subject) && (
-                          <p className="text-xs text-muted-foreground mb-1">{getCategoryName(subject)}</p>
-                        )}
-                        <div className="flex items-center gap-1.5 mt-auto">
-                          {subject.avg_rating != null ? (
-                            <>
-                              <span className="text-primary text-sm">★</span>
-                              <span className="text-sm font-bold text-foreground">{displayRating(subject.avg_rating)}</span>
-                              <span className="text-xs text-muted-foreground">({subject.review_count})</span>
-                            </>
-                          ) : (
-                            <span className="text-xs text-muted-foreground">{t('noReviews') ?? 'No reviews'}</span>
-                          )}
-                        </div>
-                      </Link>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
-          ) : subjects.length === 0 ? (
-            <div className="bg-card rounded-xl border border-border p-12 text-center">
-              <svg className="w-16 h-16 mx-auto mb-4" viewBox="0 0 64 64" fill="none">
-                <circle cx="28" cy="28" r="18" stroke="#fed7aa" strokeWidth="3" />
-                <circle cx="28" cy="28" r="10" fill="#ffedd5" />
-                <path d="M41 41l10 10" stroke="#FF6B35" strokeWidth="3" strokeLinecap="round" />
-                <path d="M24 24h8M24 30h5" stroke="#fb923c" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-              <p className="text-sm font-medium text-muted-foreground mb-1">{t('noResults') ?? 'No results found'}</p>
-              <p className="text-xs text-muted-foreground">{currentLocale === 'ko' ? '필터 또는 검색어를 조정해보세요' : 'Try adjusting your filters or search term'}</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {subjects.map((subject, index) => {
-                const accentClass = getCategoryAccent(subject.categories?.slug, index)
-                return (
-                  <Link
-                    key={subject.id}
-                    href={`/${currentLocale}/subject/${subject.id}`}
-                    className={`bg-card rounded-xl border-l-4 border border-border p-4 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ${accentClass}`}
-                  >
-                    <p className="font-semibold text-foreground text-sm line-clamp-2 mb-2">
-                      {getSubjectName(subject)}
-                    </p>
-                    {getCategoryName(subject) && (
-                      <p className="text-xs text-muted-foreground mb-1">{getCategoryName(subject)}</p>
-                    )}
-                    <div className="flex items-center gap-1.5 mt-auto">
-                      {subject.avg_rating != null ? (
-                        <>
-                          <span className="text-primary text-sm">★</span>
-                          <span className="text-sm font-bold text-foreground">{displayRating(subject.avg_rating)}</span>
-                          <span className="text-xs text-muted-foreground">({subject.review_count})</span>
-                        </>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">{t('noReviews') ?? 'No reviews'}</span>
-                      )}
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Floating "+" button — mobile only, logged-in users */}
-      {isLoggedIn && (
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="md:hidden fixed bottom-20 right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg text-white hover:bg-primary/90 active:bg-primary/80 transition-colors"
-          aria-label={currentLocale === 'ko' ? '항목 추가' : 'Add Subject'}
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-        </button>
-      )}
+    void load()
+    return () => controller.abort()
+  }, [query, filters.category, filters.ratingMin, retry])
+  const selected = categories.find(category => category.id === filters.category)
+  const name = (value: Record<string, string>) => value[locale] || value.ko || value.en || ''
+  return <div className="page-pad">
+    {showAdd && <AddSubjectModal onClose={() => setShowAdd(false)} defaultCategorySlug={selected?.slug} />}
+    <div className="section-heading"><div><p className="mb-2 text-xs font-semibold tracking-[.12em] text-secondary">EXPLORE</p><h1 className="font-display text-3xl">{ko ? '호기심 따라 둘러보기' : 'Follow your curiosity'}</h1><p className="mt-3 text-sm leading-6 text-muted-foreground">{ko ? '아는 대상을 평가하거나, 다른 사람들의 생각을 살펴보세요.' : 'Rate something you know, or discover how others see it.'}</p></div><Link href={`/${locale}/play`} className="action-link action-secondary"><Compass size={17} />{ko ? '뜻밖의 탐험' : 'Surprise me'}</Link></div>
+    <SearchBar key={query} prominent initialQuery={query} className="mb-6 max-w-2xl" />
+    <button type="button" aria-expanded={showFilters} aria-controls="explore-filters" onClick={() => setShowFilters(value => !value)} className="action-link action-secondary mb-4 md:hidden"><SlidersHorizontal size={17} />{ko ? '필터 보기' : 'Filters'}{(filters.category || filters.ratingMin) && <span className="text-secondary">({[filters.category, filters.ratingMin].filter(Boolean).length})</span>}</button>
+    <div className="flex flex-col gap-6 md:flex-row">
+      <div id="explore-filters" className={`${showFilters ? 'block' : 'hidden'} md:block`}><FilterPanel categories={categories} selectedCategory={filters.category} ratingMin={filters.ratingMin} onFilterChange={setFilters} />{categoryError && <div role="alert" className="mt-2 text-sm text-muted-foreground"><p>{ko ? '카테고리 필터를 불러오지 못했어요.' : 'Category filters could not load.'}</p><button type="button" className="action-link underline" onClick={() => setRetry(value => value + 1)}>{ko ? '다시 시도' : 'Try again'}</button></div>}</div>
+      <section className="min-w-0 flex-1" aria-label={ko ? '검색 결과' : 'Search results'} aria-busy={loading}>
+        <div role="status" className="mb-4 text-sm leading-6 text-muted-foreground">{loading ? (ko ? '대상을 찾고 있어요' : 'Finding topics?') : error ? '' : query ? (ko ? `‘${query}’ 검색 결과 ${subjects.length}개` : `${subjects.length} results for “${query}”`) : (ko ? '둘러볼 대상' : 'Topics to explore')}{!loading && !error && subjects.length === 20 && <p className="text-xs">{ko ? '최대 20개를 보여줍니다. 이름이나 필터로 더 좁혀보세요.' : 'Showing up to 20 topics. Narrow your search with a name or filter.'}</p>}</div>
+        {loading ? <div className="grid grid-cols-2 gap-4 xl:grid-cols-3" aria-hidden="true">{[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="h-52 animate-pulse rounded-xl border border-border bg-muted" />)}</div> : error ? <div role="alert" className="rounded-xl border border-border bg-card p-6"><h2 className="font-semibold">{ko ? '검색 결과를 불러오지 못했어요' : 'Search results could not load'}</h2><p className="mt-2 text-sm text-muted-foreground">{ko ? '잠시 후 다시 시도해주세요. 검색어와 필터는 그대로 유지됩니다.' : 'Please try again. Your search is still here.'}</p><button type="button" onClick={() => setRetry(value => value + 1)} className="action-link action-secondary mt-4"><RefreshCw size={16} />{ko ? '다시 시도' : 'Try again'}</button></div> : subjects.length === 0 ? <div className="rounded-xl border border-border bg-card p-6"><h2 className="font-semibold">{ko ? '일치하는 대상이 없어요' : 'No matching topics'}</h2><p className="mt-2 text-sm leading-6 text-muted-foreground">{ko ? '다른 이름을 입력하거나 필터를 줄여보세요. 아래에서 새 대상을 제안할 수도 있어요.' : 'Try another name or fewer filters. You can also suggest a topic below.'}</p>{(filters.category || filters.ratingMin) && <button type="button" onClick={() => setFilters({ category: null, ratingMin: null })} className="action-link action-secondary mt-4">{ko ? '필터 지우기' : 'Clear filters'}</button>}</div> : <div className="grid grid-cols-2 gap-3 xl:grid-cols-3">{subjects.map(subject => <Link key={subject.id} href={`/${locale}/subject/${subject.id}`} className="subject-card overflow-hidden rounded-xl border border-border bg-card"><SubjectImage src={subject.image_url} name={name(subject.name)} className="aspect-[4/3]" sizes="(max-width: 767px) 45vw, 220px" /><div className="space-y-2 p-3"><p className="text-xs text-secondary">{subject.categories ? name(subject.categories.name) : ''}</p><h2 className="min-h-10 text-sm font-semibold leading-5 line-clamp-2">{name(subject.name)}</h2><p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-muted-foreground">{subject.avg_rating != null && subject.review_count > 0 ? <><Star size={13} className="text-primary" aria-hidden="true" /><strong className="text-foreground">{displayRating(subject.avg_rating)}</strong><span>/10 · {ko ? `리뷰 ${subject.review_count}개` : `${subject.review_count} reviews`}</span></> : <span>{ko ? '첫 평가를 기다려요' : 'Be the first to rate'}</span>}</p></div></Link>)}</div>}
+        <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-border pt-5"><p className="flex-1 text-sm text-muted-foreground">{ko ? '빠진 대상이 있나요?' : 'Missing a topic?'}</p>{user ? <button type="button" onClick={() => setShowAdd(true)} className="action-link action-secondary"><Plus size={17} />{ko ? '대상 제안' : 'Suggest a topic'}</button> : <Link href={`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/explore${query ? `?q=${encodeURIComponent(query)}` : ''}`)}`} className="action-link action-secondary">{ko ? '로그인하고 제안하기' : 'Sign in to suggest a topic'}</Link>}</div>
+      </section>
     </div>
-  )
+  </div>
 }

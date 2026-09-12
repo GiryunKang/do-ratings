@@ -1,148 +1,15 @@
-'use client'
+﻿'use client'
 
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { Flame } from 'lucide-react'
+import { usePlayerProgress } from '@/lib/game/usePlayerProgress'
 
-import { createClient } from '@/lib/supabase/client'
-import { useAuth } from '@/lib/hooks/useAuth'
-
-interface RatingStreakProps {
-  locale: string
-}
-
-export default function RatingStreak({ locale }: RatingStreakProps) {
-  const { user } = useAuth()
-  const [streak, setStreak] = useState(0)
-  const [showFlame, setShowFlame] = useState(false)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    if (!user) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setLoading(false)
-      return
-    }
-
-    let cancelled = false
-
-    async function fetchStreak() {
-      if (!user) return
-      const supabase = createClient()
-      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
-
-      const { data } = await supabase
-        .from('reviews')
-        .select('created_at')
-        .eq('user_id', user.id)
-        .gte('created_at', thirtyDaysAgo)
-        .order('created_at', { ascending: false })
-
-      if (!data || data.length === 0) return
-
-      const reviewDays = new Set(
-        data.map(r => {
-          const d = new Date(r.created_at)
-          return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
-        })
-      )
-
-      const today = new Date()
-      let currentStreak = 0
-      for (let i = 0; i < 30; i++) {
-        const day = new Date(today)
-        day.setDate(day.getDate() - i)
-        const key = `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`
-        if (reviewDays.has(key)) {
-          currentStreak++
-        } else if (i > 0) {
-          break
-        }
-      }
-
-      if (cancelled) return
-      setStreak(currentStreak)
-      if (currentStreak >= 2) {
-        setShowFlame(true)
-      }
-    }
-
-    fetchStreak().finally(() => { if (!cancelled) setLoading(false) })
-    return () => { cancelled = true }
-  }, [user])
-
-  if (!user) return null
-  if (loading) return (
-    <div className="rounded-xl bg-muted/50 border border-border px-4 py-3 animate-pulse">
-      <div className="flex items-center gap-3">
-        <div className="w-6 h-6 bg-muted rounded" />
-        <div className="flex-1 space-y-1.5">
-          <div className="h-3.5 w-32 bg-muted rounded" />
-          <div className="h-2.5 w-48 bg-muted rounded" />
-        </div>
-      </div>
-    </div>
-  )
-  if (streak === 0) return null
-
-  const flameSize = Math.min(streak, 7)
-  const flameCount = streak >= 7 ? 3 : streak >= 3 ? 2 : 1
-
-  return (
-    <AnimatePresence>
-      {showFlame && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: 10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          className="relative overflow-hidden rounded-xl bg-primary/5 border border-primary/20 px-4 py-3"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <motion.span
-                className="flex items-center"
-                animate={{
-                  scale: [1, 1.2, 1],
-                  rotate: [0, -5, 5, 0],
-                }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
-                {Array.from({ length: flameCount }).map((_, i) => (
-                  <Flame key={i} className="w-6 h-6 text-primary" />
-                ))}
-              </motion.span>
-              <div>
-                <p className="text-sm font-bold text-foreground">
-                  {locale === 'ko'
-                    ? `${streak}일 연속 평가!`
-                    : `${streak}-day rating streak!`}
-                </p>
-                <p className="text-[11px] text-muted-foreground">
-                  {locale === 'ko'
-                    ? '오늘도 리뷰를 작성하고 스트릭을 이어가세요'
-                    : 'Write a review today to keep it going'}
-                </p>
-              </div>
-            </div>
-
-            {/* Flame intensity bar */}
-            <div className="flex gap-0.5">
-              {Array.from({ length: 7 }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  className={`w-1.5 rounded-full ${
-                    i < flameSize ? 'bg-gradient-to-t from-primary to-orange-400' : 'bg-muted/40'
-                  }`}
-                  style={{ height: 8 + i * 3 }}
-                  initial={{ scaleY: 0 }}
-                  animate={{ scaleY: 1 }}
-                  transition={{ delay: i * 0.08, type: 'spring' }}
-                />
-              ))}
-            </div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  )
+export default function RatingStreak({ locale }: { locale: string }) {
+  const ko = locale === 'ko'
+  const { status, progress } = usePlayerProgress()
+  if (status !== 'ready' || !progress || progress.streak === 0) return null
+  return <div className="rounded-xl border border-border bg-card px-4 py-3">
+    <div className="flex items-center gap-2"><Flame className="size-5 shrink-0 text-primary" aria-hidden="true" /><p className="text-sm font-bold">{ko ? `${progress.streak}일 연속 평가` : `${progress.streak}-day review streak`}</p></div>
+    <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{progress.todayCount > 0 ? (ko ? '오늘의 발자국을 남겼어요.' : 'Your footprint for today is saved.') : (ko ? '오늘 경험한 대상에 평가를 남기면 이어져요.' : 'Review something you experienced today to keep going.')}</p>
+    <p className="mt-1 text-xs text-muted-foreground">{ko ? '한국시간 기준' : 'Based on Korea time'}</p>
+  </div>
 }

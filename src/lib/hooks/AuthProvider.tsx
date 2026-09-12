@@ -17,20 +17,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const supabase = createClient()
-
-    supabase.auth.getUser().then(({ data: { user: currentUser } }) => {
-      setUser(currentUser)
-      setLoading(false)
-    })
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    let cancelled = false
+    let authChanged = false
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (cancelled) return
+      authChanged = true
       setUser(session?.user ?? null)
       setLoading(false)
     })
-
-    return () => subscription.unsubscribe()
+    supabase.auth.getUser().then(({ data }) => {
+      if (cancelled || authChanged) return
+      setUser(data.user)
+      setLoading(false)
+    }).catch(() => {
+      if (!cancelled && !authChanged) { setUser(null); setLoading(false) }
+    })
+    return () => { cancelled = true; subscription.unsubscribe() }
   }, [])
 
   return (

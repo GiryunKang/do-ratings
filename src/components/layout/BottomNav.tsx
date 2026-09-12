@@ -1,102 +1,20 @@
 'use client'
-
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useTranslations } from 'next-intl'
-import { useState, useRef } from 'react'
-import { Home, BarChart2, Search, FileText, User } from 'lucide-react'
-
-const tabs = [
-  {
-    key: 'home',
-    href: '',
-    icon: <Home className="w-6 h-6" strokeWidth={1.8} />,
-  },
-  {
-    key: 'rankings',
-    href: '/rankings',
-    icon: <BarChart2 className="w-6 h-6" strokeWidth={1.8} />,
-  },
-  {
-    key: 'explore',
-    href: '/explore',
-    icon: <Search className="w-6 h-6" strokeWidth={1.8} />,
-  },
-  {
-    key: 'feed',
-    href: '/feed',
-    icon: <FileText className="w-6 h-6" strokeWidth={1.8} />,
-  },
-  {
-    key: 'profile',
-    href: '/profile',
-    icon: <User className="w-6 h-6" strokeWidth={1.8} />,
-  },
-]
-
+import { Bookmark, Compass, Flag, Home, UserRound } from 'lucide-react'
 export default function BottomNav() {
-  const t = useTranslations('nav')
   const pathname = usePathname()
-  const [ripple, setRipple] = useState<{ x: number; y: number; id: number; tabKey: string } | null>(null)
-  const rippleIdRef = useRef(0)
-
-  // Detect locale prefix
-  const localeMatch = pathname.match(/^\/(ko|en)/)
-  const locale = localeMatch ? localeMatch[1] : 'ko'
-  const basePath = `/${locale}`
-
-  function handleRipple(e: React.MouseEvent, tabKey: string) {
-    const rect = e.currentTarget.getBoundingClientRect()
-    rippleIdRef.current += 1
-    setRipple({ x: e.clientX - rect.left, y: e.clientY - rect.top, id: rippleIdRef.current, tabKey })
-    setTimeout(() => setRipple(null), 600)
-  }
-
-  return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border md:hidden">
-      <div className="flex items-stretch h-16">
-        {tabs.map((tab) => {
-          const href = basePath + tab.href
-          const isActive =
-            tab.href === ''
-              ? pathname === basePath || pathname === basePath + '/'
-              : pathname.startsWith(basePath + tab.href)
-
-          return (
-            <Link
-              key={tab.key}
-              href={href}
-              onClick={(e) => handleRipple(e, tab.key)}
-              className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-xs transition-colors duration-150 relative overflow-hidden ${
-                isActive
-                  ? 'text-primary'
-                  : 'text-muted-foreground hover:text-foreground/80'
-              }`}
-            >
-              {ripple && ripple.tabKey === tab.key && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    left: ripple.x - 20,
-                    top: ripple.y - 20,
-                    width: 40,
-                    height: 40,
-                    borderRadius: '50%',
-                    background: 'color-mix(in srgb, var(--primary) 20%, transparent)',
-                    animation: 'ripple 0.6s ease-out forwards',
-                    pointerEvents: 'none',
-                  }}
-                />
-              )}
-              <span className={isActive ? 'transform scale-110 transition-transform duration-150' : ''}>
-                {tab.icon}
-              </span>
-              <span>{t(tab.key as 'home' | 'explore' | 'rankings' | 'feed' | 'profile')}</span>
-              {isActive && <span className="w-1.5 h-1.5 rounded-full bg-primary animate-scaleIn" />}
-            </Link>
-          )
-        })}
-      </div>
-    </nav>
-  )
+  const locale = pathname.startsWith('/en') ? 'en' : 'ko'
+  const ko = locale === 'ko'
+  const items = [
+    { path: '', label: ko ? '홈' : 'Home', icon: Home },
+    { path: '/explore', label: ko ? '둘러보기' : 'Explore', icon: Compass },
+    { path: '/play', label: ko ? '탐험' : 'Quest', icon: Flag },
+    { path: '/collections', label: ko ? '저장됨' : 'Saved', icon: Bookmark },
+    { path: '/profile', label: ko ? '내 정보' : 'Profile', icon: UserRound },
+  ]
+  return <nav aria-label={ko ? '주요 메뉴' : 'Main navigation'} className="mobile-nav fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-border bg-card lg:hidden">{items.map(item => {
+    const active = item.path ? pathname.startsWith(`/${locale}${item.path}`) : pathname === `/${locale}`
+    return <Link key={item.path} href={`/${locale}${item.path}`} aria-current={active ? 'page' : undefined} className={`flex min-h-16 min-w-0 flex-col items-center justify-center gap-1 px-1 text-[11px] ${active ? 'font-semibold text-secondary' : 'text-muted-foreground hover:text-foreground'}`}><item.icon size={20} strokeWidth={active ? 2.5 : 1.75} aria-hidden="true" /><span>{item.label}</span></Link>
+  })}</nav>
 }

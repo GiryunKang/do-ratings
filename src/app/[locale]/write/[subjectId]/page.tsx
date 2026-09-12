@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import ReviewForm from '@/components/review/ReviewForm'
+import { parseInitialRating } from '@/lib/utils/return-to'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; subjectId: string }> }): Promise<Metadata> {
   const { locale } = await params
@@ -73,10 +74,7 @@ export default async function WriteReviewPage({ params, searchParams }: PageProp
   // so divide by 2 and clamp to [1, 5].
   const initialRating = (() => {
     if (isEditing || !ratingParam) return undefined
-    const parsed = parseInt(ratingParam, 10)
-    if (isNaN(parsed)) return undefined
-    const converted = Math.round(parsed / 2)
-    return Math.min(5, Math.max(1, converted))
+    return parseInitialRating(ratingParam)
   })()
 
   return (
@@ -85,7 +83,8 @@ export default async function WriteReviewPage({ params, searchParams }: PageProp
       <div className="flex items-center gap-3 mb-6">
         <Link
           href={`/${locale}/subject/${subjectId}`}
-          className="text-muted-foreground hover:text-muted-foreground transition-colors"
+          aria-label={locale === 'ko' ? '주제로 돌아가기' : 'Back to subject'}
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground transition-colors"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -104,16 +103,13 @@ export default async function WriteReviewPage({ params, searchParams }: PageProp
           <p className="text-sm font-medium text-foreground dark:text-primary/30 mb-2">
             {locale === 'ko' ? '로그인하면 리뷰를 저장할 수 있습니다' : 'Sign in to save your review'}
           </p>
-          <Link
-            href={`/${locale}/auth/login?redirect=/${locale}/write/${subjectId}`}
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary/90 transition-colors"
-          >
-            {locale === 'ko' ? '로그인 / 회원가입' : 'Sign in / Sign up'}
-          </Link>
+          <p className="text-sm text-muted-foreground">{locale === 'ko' ? '먼저 작성해보세요. 아래에서 로그인하면 이어 쓸 수 있어요.' : 'Start writing now. Sign in below to continue with your draft.'}</p>
         </div>
       )}
 
       <ReviewForm
+        key={`${user?.id ?? 'guest'}:${subjectId}`}
+        userId={user?.id}
         subjectId={subjectId}
         criteria={criteria}
         locale={locale}

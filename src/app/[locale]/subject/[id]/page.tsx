@@ -1,12 +1,10 @@
 import { cache } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import Image from 'next/image'
+import SubjectImage from '@/components/subject/SubjectImage'
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { displayRating } from '@/lib/utils/rating'
-import { proxyImageUrl } from '@/lib/utils/image-proxy'
-import AnimatedRating from '@/components/ui/AnimatedRating'
 import StarRating from '@/components/review/StarRating'
 import SubRatingChart from '@/components/review/SubRatingChart'
 import RelatedNews from '@/components/news/RelatedNews'
@@ -17,10 +15,6 @@ import ShareMenu from '@/components/ui/ShareMenu'
 import ClaimButton from '@/components/business/ClaimButton'
 import AddToCollectionButton from '@/components/collection/AddToCollectionButton'
 import SentimentRiver from '@/components/subject/SentimentRiver'
-import FaultlineFeed from '@/components/subject/FaultlineFeed'
-import SevenSecondCollapse from '@/components/subject/SevenSecondCollapse'
-import GhostReviews from '@/components/home/GhostReviews'
-
 interface PageProps {
   params: Promise<{ locale: string; id: string }>
 }
@@ -42,7 +36,7 @@ const getSubject = cache(async (id: string) => {
     `)
     .eq('id', id)
     .single()
-  if (error) console.error('[SubjectPage] subject query error:', error.message)
+  if (error && error.code !== 'PGRST116') throw new Error('Could not load subject')
   return data
 })
 
@@ -199,7 +193,7 @@ export default async function SubjectPage({ params }: PageProps) {
 
   const rank = (higherCount ?? 0) + 1
   const total = totalInCategory ?? 1
-  const percentile = Math.round((1 - (rank - 1) / total) * 100)
+  const percentile = total > 0 ? Math.max(1, Math.round(rank / total * 100)) : 100
 
   // Check if current user already reviewed (depends on auth result above)
   let existingReviewId: string | null = null
@@ -217,9 +211,6 @@ export default async function SubjectPage({ params }: PageProps) {
   }
 
   const writeHref = `/${locale}/write/${id}`
-
-  // First letter of subject name for placeholder
-  const firstLetter = subjectName.charAt(0).toUpperCase()
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -251,20 +242,7 @@ export default async function SubjectPage({ params }: PageProps) {
           {/* Subject info row */}
           <div className="flex gap-4">
             <div className="shrink-0">
-              {subject.image_url ? (
-                <Image
-                  src={proxyImageUrl(subject.image_url as string) ?? ''}
-                  alt={subjectName}
-                  width={80}
-                  height={80}
-                  className="rounded-lg object-cover"
-                  unoptimized
-                />
-              ) : (
-                <div className={`w-20 h-20 rounded-lg ${isPeople ? 'bg-foreground/80' : 'bg-primary'} flex items-center justify-center`}>
-                  <span className="text-3xl font-bold text-white">{firstLetter}</span>
-                </div>
-              )}
+              <SubjectImage src={subject.image_url as string | null} name={subjectName} className="h-20 w-20 rounded-lg" sizes="80px" priority />
               {/* Image Attribution */}
               {(() => {
                 const meta = subject.metadata as Record<string, unknown> | null
@@ -274,7 +252,7 @@ export default async function SubjectPage({ params }: PageProps) {
             </div>
 
             <div className="flex-1 min-w-0">
-              <Link href={`/${locale}/category/${category?.slug ?? ''}`} className="inline-block px-2.5 py-0.5 text-xs font-medium bg-secondary text-secondary-foreground rounded-md hover:opacity-80">
+              <Link href={`/${locale}/category/${category?.slug ?? ''}`} className="inline-flex min-h-11 items-center px-2.5 py-1 text-xs font-medium bg-secondary text-secondary-foreground rounded-md hover:opacity-80">
                 {categoryName}
               </Link>
               <h1 className="text-xl font-bold mt-1 mb-1">{subjectName}</h1>
@@ -287,7 +265,7 @@ export default async function SubjectPage({ params }: PageProps) {
                 />
               </div>
               {isPeople ? (
-                <div className="flex items-center gap-2 px-2 py-1 inline-flex">
+                <div className="flex flex-wrap items-center gap-2 py-1">
                   <span className="font-mono text-4xl font-bold text-foreground tracking-tighter">
                     {displayRating(subject.avg_rating)}
                   </span>
@@ -300,9 +278,9 @@ export default async function SubjectPage({ params }: PageProps) {
                   <span className="text-sm text-muted-foreground">({subject.review_count} {locale === 'ko' ? '개 평가' : subject.review_count === 1 ? 'evaluation' : 'evaluations'})</span>
                 </div>
               ) : (
-                <div className="flex items-center gap-2 golden-glow rounded-lg px-2 py-1 inline-flex">
+                <div className="flex flex-wrap items-center gap-2 rounded-lg py-1">
                   <StarRating value={subject.avg_rating ?? 0} readonly size="lg" />
-                  <AnimatedRating value={subject.avg_rating ?? 0} className="text-lg font-semibold text-foreground" />
+                  <span className="text-lg font-semibold text-foreground">{displayRating(subject.avg_rating)}<span className="ml-1 text-xs font-normal text-muted-foreground">/10</span></span>
                   {subject.avg_rating && totalInCategory && totalInCategory > 1 && (
                     <span className="text-xs text-muted-foreground ml-1">
                       {locale === 'ko' ? `상위 ${percentile}%` : `Top ${percentile}%`}
@@ -315,10 +293,10 @@ export default async function SubjectPage({ params }: PageProps) {
           </div>
 
           {/* Sub Rating Chart */}
-          {criteria.length > 0 && Object.keys(avgSubRatings).length > 0 && (
+          {criteria.some(criterion => avgSubRatings[criterion.key] != null) && (
             <>
               <hr className="my-4 border-border" />
-              <SubRatingChart criteria={criteria} values={avgSubRatings} locale={locale} neutral={isPeople} />
+              <SubRatingChart criteria={criteria.filter(criterion => avgSubRatings[criterion.key] != null)} values={avgSubRatings} locale={locale} neutral={isPeople} />
             </>
           )}
 
@@ -327,22 +305,16 @@ export default async function SubjectPage({ params }: PageProps) {
             <SentimentRiver subjectId={id} locale={locale} />
           </div>
 
-          {/* Faultline Feed — trembling crack for polarized subjects */}
-          <FaultlineFeed subjectId={id} locale={locale} />
-
-          {/* Seven Second Collapse — real-time page explosion on rating shift */}
-          <SevenSecondCollapse subjectId={id} previousAvg={subject.avg_rating} locale={locale} />
-
           <hr className="my-4 border-border" />
 
           {/* Action Buttons */}
           <div className="flex gap-2 flex-wrap">
-            <Link href={writeHref} className={`inline-flex items-center gap-1.5 h-9 px-5 text-sm font-semibold rounded-lg transition-all ${
+            <Link href={writeHref} className={`inline-flex items-center gap-1.5 min-h-11 px-5 text-sm font-semibold rounded-lg transition-all ${
               isPeople
                 ? 'bg-foreground text-background hover:opacity-90'
                 : existingReviewId
                   ? 'bg-primary text-primary-foreground hover:bg-primary/80'
-                  : 'bg-primary text-white shadow-md hover:shadow-lg hover:scale-105'
+                  : 'bg-primary text-primary-foreground hover:opacity-90'
             }`}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -351,7 +323,7 @@ export default async function SubjectPage({ params }: PageProps) {
                 ? (locale === 'ko' ? '리뷰 수정' : 'Edit Review')
                 : (locale === 'ko' ? '리뷰 작성' : 'Write Review')}
             </Link>
-            <Link href={`/${locale}/compare?ids=${id}`} className="inline-flex items-center gap-1.5 h-9 px-4 text-sm font-medium border border-border bg-background rounded-lg hover:bg-muted transition-colors">
+            <Link href={`/${locale}/compare?ids=${id}`} className="inline-flex items-center gap-1.5 min-h-11 px-4 text-sm font-medium border border-border bg-background rounded-lg hover:bg-muted transition-colors">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
@@ -363,11 +335,6 @@ export default async function SubjectPage({ params }: PageProps) {
           </div>
         </div>
       </div>
-
-      {/* Ghost Reviews — show when no reviews exist */}
-      {subject.review_count === 0 && (
-        <GhostReviews locale={locale} writeHref={writeHref} />
-      )}
 
       {/* Tabbed content: Reviews, Photos, Trend, AI Summary, Embed */}
       <SubjectTabs

@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "width": 320,
+  "checks": [
+    "draft reload",
+    "half-star keyboard",
+    "44px star hit area",
+    "no horizontal overflow",
+    "login destination",
+    "signup destination"
+  ],
+  "blockedWrites": [],
+  "errors": []
+}

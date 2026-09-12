@@ -35,7 +35,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme)
-    localStorage.setItem('ratings-theme', newTheme)
+    try { localStorage.setItem('ratings-theme', newTheme) } catch { /* The preference still works for this visit. */ }
 
     if (newTheme === 'dark') {
       applyTheme('dark')
@@ -48,8 +48,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    const stored = localStorage.getItem('ratings-theme') as Theme | null
-    const initial = stored ?? 'system'
+    let stored: string | null = null
+    try { stored = localStorage.getItem('ratings-theme') } catch { /* Storage can be unavailable in private contexts. */ }
+    const initial: Theme = stored === 'light' || stored === 'dark' ? stored : 'system'
     // Hydration: sync client state from localStorage (only runs once on mount)
     // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration from localStorage
     setThemeState(initial)

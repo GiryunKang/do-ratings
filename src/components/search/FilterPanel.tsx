@@ -66,7 +66,7 @@ export default function FilterPanel({
           {hasFilters && (
             <button
               onClick={handleClear}
-              className="text-xs text-primary hover:text-primary/70 font-medium"
+              className="min-h-11 px-2 text-xs text-primary hover:text-primary/70 font-medium"
             >
               {t('clearFilters') ?? 'Clear'}
             </button>
@@ -83,7 +83,8 @@ export default function FilterPanel({
               <li key={cat.id}>
                 <button
                   onClick={() => handleCategoryClick(cat.id)}
-                  className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  aria-pressed={selectedCategory === cat.id}
+                  className={`min-h-11 w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                     selectedCategory === cat.id
                       ? 'bg-foreground text-background font-medium'
                       : 'text-foreground/80 hover:bg-muted'
@@ -102,9 +103,10 @@ export default function FilterPanel({
             {t('minRating') ?? 'Min Rating'}
           </p>
           <select
+            aria-label={currentLocale === 'ko' ? '?? ?? (10? ??)' : 'Minimum rating out of 10'}
             value={ratingMin ?? ''}
             onChange={handleRatingChange}
-            className="w-full border border-border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-primary bg-card"
+            className="min-h-11 w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary bg-card"
           >
             <option value="">{t('any') ?? 'Any'}</option>
             {[1, 2, 3, 4, 5].map((r) => (

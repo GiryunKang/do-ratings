@@ -1,199 +1,76 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
-import { useTranslations } from 'next-intl'
-import AddSubjectModal from '@/components/subject/AddSubjectModal'
-import { displayRating } from '@/lib/utils/rating'
+import { useEffect, useId, useRef, useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { ArrowRight, LoaderCircle, Search, X } from 'lucide-react'
 
-interface Subject {
-  id: string
-  name: Record<string, string>
-  avg_rating: number | null
-  categories: { name: Record<string, string>; slug: string } | null
-}
+type Result = { id: string; name: Record<string, string>; categories?: { name: Record<string, string> } | null }
 
-interface SearchBarProps {
-  className?: string
-}
-
-export default function SearchBar({ className }: SearchBarProps) {
-  const t = useTranslations('common')
+export default function SearchBar({ className = '', prominent = false, initialQuery = '' }: { className?: string; prominent?: boolean; initialQuery?: string }) {
   const router = useRouter()
-  const pathname = usePathname()
-  const currentLocale = pathname.startsWith('/en') ? 'en' : 'ko'
-
-  const [query, setQuery] = useState('')
-  const [results, setResults] = useState<Subject[]>([])
+  const locale = usePathname().startsWith('/en') ? 'en' : 'ko'
+  const ko = locale === 'ko'
+  const id = useId()
+  const root = useRef<HTMLDivElement>(null)
+  const input = useRef<HTMLInputElement>(null)
+  const [query, setQuery] = useState(initialQuery)
+  const [results, setResults] = useState<Result[]>([])
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [activeIndex, setActiveIndex] = useState(-1)
-  const [showAddModal, setShowAddModal] = useState(false)
-
-  const inputRef = useRef<HTMLInputElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  const fetchResults = useCallback(async (q: string) => {
-    if (!q.trim()) {
-      setResults([])
-      setOpen(false)
-      setActiveIndex(-1)
-      return
-    }
-    setLoading(true)
-    try {
-      const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`)
-      if (res.ok) {
-        const data = await res.json()
-        setResults(data ?? [])
-        setOpen(true)
-        setActiveIndex(-1)
-      }
-    } catch {
-      // silently fail
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+  const [error, setError] = useState(false)
+  const [active, setActive] = useState(-1)
 
   useEffect(() => {
-    if (debounceTimer.current) clearTimeout(debounceTimer.current)
-    debounceTimer.current = setTimeout(() => {
-      fetchResults(query)
-    }, 300)
-    return () => {
-      if (debounceTimer.current) clearTimeout(debounceTimer.current)
-    }
-  }, [query, fetchResults])
-
-  // Close dropdown on outside click
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setOpen(false)
-        setActiveIndex(-1)
+    if (!query.trim() || !open) return
+    const controller = new AbortController()
+    const timer = setTimeout(async () => {
+      setLoading(true)
+      setError(false)
+      try {
+        const response = await fetch(`/api/search?q=${encodeURIComponent(query.trim())}`, { signal: controller.signal })
+        if (!response.ok) throw new Error('Search failed')
+        const data: unknown = await response.json()
+        if (!Array.isArray(data)) throw new Error('Invalid results')
+        if (!controller.signal.aborted) { setResults(data.slice(0, 6)); setActive(-1) }
+      } catch {
+        if (!controller.signal.aborted) { setError(true); setResults([]) }
+      } finally {
+        if (!controller.signal.aborted) setLoading(false)
       }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, 250)
+    return () => { clearTimeout(timer); controller.abort() }
+  }, [query, open])
+
+  useEffect(() => {
+    const close = (event: PointerEvent) => { if (!root.current?.contains(event.target as Node)) setOpen(false) }
+    document.addEventListener('pointerdown', close)
+    return () => document.removeEventListener('pointerdown', close)
   }, [])
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      setActiveIndex((prev) => Math.min(prev + 1, results.length - 1))
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      setActiveIndex((prev) => Math.max(prev - 1, -1))
-    } else if (e.key === 'Enter') {
-      if (activeIndex >= 0 && results[activeIndex]) {
-        setOpen(false)
-        setActiveIndex(-1)
-        router.push(`/${currentLocale}/subject/${results[activeIndex].id}`)
-      } else if (query.trim()) {
-        setOpen(false)
-        setActiveIndex(-1)
-        router.push(`/${currentLocale}/explore?q=${encodeURIComponent(query.trim())}`)
-      }
-    } else if (e.key === 'Escape') {
-      setOpen(false)
-      setActiveIndex(-1)
-      inputRef.current?.blur()
-    }
+  const show = open && !!query.trim()
+  function search() {
+    if (!query.trim()) { input.current?.focus(); return }
+    setOpen(false)
+    router.push(`/${locale}/explore?q=${encodeURIComponent(query.trim())}`)
   }
+  function choose(result: Result) { setOpen(false); router.push(`/${locale}/subject/${result.id}`) }
 
-  function getSubjectName(subject: Subject): string {
-    return subject.name?.[currentLocale] ?? subject.name?.ko ?? subject.name?.en ?? ''
-  }
-
-  function getCategoryName(subject: Subject): string {
-    if (!subject.categories) return ''
-    return subject.categories.name?.[currentLocale] ?? subject.categories.name?.ko ?? ''
-  }
-
-  return (
-    <>
-    {showAddModal && <AddSubjectModal onClose={() => setShowAddModal(false)} />}
-    <div ref={containerRef} className={`relative ${className ?? ''}`}>
-      <div className="relative">
-        <input
-          ref={inputRef}
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onFocus={() => { if (results.length > 0) setOpen(true) }}
-          placeholder={t('search')}
-          className="w-full pl-9 pr-4 py-1.5 rounded-full border border-border text-sm focus:outline-none focus:border-primary bg-muted/50"
-          autoComplete="off"
-        />
-        <svg
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-        {loading && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-        )}
-      </div>
-
-      {open && results.length > 0 && (
-        <ul className="absolute top-full mt-1 left-0 right-0 bg-card border border-border rounded-xl shadow-lg z-50 max-h-72 overflow-y-auto animate-slideDown">
-          {results.map((subject, index) => (
-            <li key={subject.id}>
-              <button
-                className={`w-full text-left px-4 py-2.5 transition-colors flex items-center justify-between gap-2 ${
-                  index === activeIndex ? 'bg-primary/10' : 'hover:bg-primary/10'
-                }`}
-                onMouseDown={() => {
-                  setOpen(false)
-                  setActiveIndex(-1)
-                  router.push(`/${currentLocale}/subject/${subject.id}`)
-                }}
-                onMouseEnter={() => setActiveIndex(index)}
-              >
-                <div>
-                  <span className="text-sm font-medium text-foreground">{getSubjectName(subject)}</span>
-                  {getCategoryName(subject) && (
-                    <span className="ml-2 text-xs text-muted-foreground">{getCategoryName(subject)}</span>
-                  )}
-                </div>
-                {subject.avg_rating != null && (
-                  <span className="text-xs font-semibold text-primary shrink-0">
-                    ★ {displayRating(subject.avg_rating)}
-                  </span>
-                )}
-              </button>
-            </li>
-          ))}
-          {/* Hint at bottom */}
-          <li className="px-4 py-2 border-t border-border">
-            <p className="text-xs text-muted-foreground">Press Enter to search all</p>
-          </li>
-        </ul>
-      )}
-
-      {open && results.length === 0 && query.trim() && !loading && (
-        <div className="absolute top-full mt-1 left-0 right-0 bg-card border border-border rounded-xl shadow-lg z-50 px-4 py-3 text-sm animate-slideDown">
-          <p className="text-muted-foreground">{t('noResults') ?? 'No results found'}</p>
-          <button
-            onMouseDown={() => {
-              setOpen(false)
-              setShowAddModal(true)
-            }}
-            className="mt-1.5 text-xs text-primary hover:underline"
-          >
-            {currentLocale === 'ko'
-              ? '찾는 대상이 없나요? 직접 추가하기 →'
-              : "Can't find what you're looking for? Add it yourself →"}
-          </button>
-        </div>
-      )}
-    </div>
-    </>
-  )
+  return <div ref={root} className={`relative ${className}`} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false) }}>
+    <form role="search" aria-label={ko ? '대상 검색' : 'Search topics'} onSubmit={event => { event.preventDefault(); if (show && active >= 0 && results[active]) choose(results[active]); else search() }} className={`flex items-center rounded-xl border bg-card shadow-sm focus-within:border-secondary ${prominent ? 'border-border p-1.5' : 'border-border p-1'}`}>
+      <Search size={18} className="ml-3 shrink-0 text-muted-foreground" aria-hidden="true" />
+      <label htmlFor={id} className="sr-only">{ko ? '평가할 대상 검색' : 'Search for a topic to rate'}</label>
+      <input ref={input} id={id} value={query} type="search" autoComplete="off" placeholder={ko ? '무엇이 궁금한가요?' : 'What are you curious about?'} className="min-h-11 min-w-0 flex-1 bg-transparent px-3 text-sm outline-none [&::-webkit-search-cancel-button]:hidden" role="combobox" aria-autocomplete="list" aria-expanded={show} aria-controls={`${id}-list`} aria-activedescendant={show && active >= 0 ? `${id}-option-${active}` : undefined} onFocus={() => setOpen(true)} onChange={event => { setQuery(event.target.value); setOpen(true); setResults([]); setActive(-1); setError(false); setLoading(!!event.target.value.trim()) }} onKeyDown={event => {
+        if (event.key === 'Escape') { setOpen(false); setActive(-1) }
+        if (event.key === 'ArrowDown' && results.length) { event.preventDefault(); setOpen(true); setActive(value => (value + 1) % results.length) }
+        if (event.key === 'ArrowUp' && results.length) { event.preventDefault(); setOpen(true); setActive(value => value <= 0 ? results.length - 1 : value - 1) }
+      }} />
+      {query && <button type="button" aria-label={ko ? '검색어 지우기' : 'Clear search'} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted" onClick={() => { setQuery(''); setResults([]); setActive(-1); setLoading(false); input.current?.focus() }}><X size={16} /></button>}
+      <button type="submit" aria-label={ko ? '검색' : 'Search'} className={`flex h-11 min-w-11 shrink-0 items-center justify-center gap-1 rounded-lg px-3 text-sm font-semibold ${prominent ? 'bg-primary text-primary-foreground' : 'text-secondary hover:bg-muted'}`}>{prominent ? ko ? '검색' : 'Go' : <ArrowRight size={18} />}</button>
+    </form>
+    {show && <div className="absolute inset-x-0 top-full z-50 mt-2 max-h-80 overflow-y-auto rounded-xl border border-border bg-card p-2 shadow-lg">
+      <div role="status" className="text-sm text-muted-foreground">{loading ? <p className="flex items-center gap-2 p-3"><LoaderCircle size={16} className="animate-spin" />{ko ? '검색 중' : 'Searching?'}</p> : error ? <p className="p-3">{ko ? '검색을 불러오지 못했어요. 결과 페이지에서 다시 시도해보세요.' : 'Search could not load. Try again on the results page.'}</p> : results.length === 0 ? <p className="p-3">{ko ? '일치하는 대상이 없어요. 다른 이름을 입력해보세요.' : 'No matching topics. Try another name.'}</p> : null}</div>
+      <ul id={`${id}-list`} role="listbox" aria-label={ko ? '추천 검색 결과' : 'Suggested results'}>{results.map((result, index) => <li key={result.id} id={`${id}-option-${index}`} role="option" aria-selected={active === index} className={`rounded-lg ${active === index ? 'bg-muted' : ''}`}><button type="button" tabIndex={-1} className="flex min-h-12 w-full items-center gap-2 rounded-lg px-3 py-2 text-left hover:bg-muted" onPointerDown={event => event.preventDefault()} onClick={() => choose(result)}><Search size={14} className="shrink-0 text-muted-foreground" /><span className="min-w-0 flex-1 text-sm">{result.name[locale] || result.name.ko || result.name.en}</span>{result.categories && <span className="text-xs text-muted-foreground">{result.categories.name[locale] || result.categories.name.ko}</span>}</button></li>)}</ul>
+      <button type="button" onClick={search} className="mt-1 flex min-h-11 w-full items-center justify-between gap-2 rounded-lg border-t border-border px-3 text-sm font-semibold text-secondary">{ko ? '검색 결과 모두 보기' : 'See all search results'}<ArrowRight size={16} /></button>
+    </div>}
+  </div>
 }

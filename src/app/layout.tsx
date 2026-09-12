@@ -1,10 +1,15 @@
 import './globals.css'
+import type { Metadata } from 'next'
 import { Outfit, Plus_Jakarta_Sans, IBM_Plex_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 
-const outfit = Outfit({ subsets: ['latin'], variable: '--font-display', display: 'swap' });
-const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
-const ibmPlexMono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-mono', display: 'swap' });
+const outfit = Outfit({ subsets: ['latin'], variable: '--font-heading-loaded', display: 'swap' });
+const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-body-loaded', display: 'swap' });
+const ibmPlexMono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-numbers-loaded', display: 'swap' });
+
+export const metadata: Metadata = {
+  metadataBase: new URL('https://do-ratings.com'),
+}
 
 export default function RootLayout({
   children,
@@ -24,7 +29,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#FF6B35" />
       </head>
-      <body className="bg-background text-foreground min-h-screen overflow-x-hidden font-sans">
+      <body className="bg-background text-foreground min-h-screen font-sans">
         {children}
       </body>
     </html>

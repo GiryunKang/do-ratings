@@ -32,11 +32,13 @@ export default function SubRatingChart({
             <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden">
               <div
                 className={`${neutral ? 'bg-foreground/60' : 'bg-primary'} h-2 rounded-full transition-all duration-300`}
+                aria-label={`${label}: ${(val * 2).toFixed(1)}/10`}
+                role="img"
                 style={{ width: `${pct}%` }}
               />
             </div>
-            <span className="text-sm font-medium text-foreground/80 w-8 text-right">
-              {val > 0 ? val.toFixed(1) : '-'}
+            <span className="text-sm font-medium text-foreground/80 w-12 text-right">
+              {val > 0 ? (val * 2).toFixed(1) : '-'}
             </span>
           </div>
         )

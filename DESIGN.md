@@ -1,5 +1,28 @@
 # Design System — Do! Ratings!
 
+## 2026-09-12 product refresh contract (current)
+
+This contract supersedes the historical choices below where they differ.
+
+- Genre: playful, calm and legible. Audience: people sharing their own experiences. Primary task: find a subject, write an honest rating, then discover another field.
+- App macrostructure: Ecosystem Index. Home has a working search, category index, a short set of subject cards and a separate invitation to Play. Content pages retain the existing document/detail structure.
+- Navigation: existing side rail (N3), shown from 1024px, plus five equally reachable mobile destinations. Legal links stay in a quiet footer (Ft4 minimal). No fake LIVE signal, looping ticker or automatic takeover in the shared shell.
+- Theme: existing orange/teal brand; warm paper and accessible ink. `globals.css` semantic tokens are authoritative. All new colors and fonts consume tokens; no per-page theme.
+- Light: background #F7F8F5, foreground #202C28, card #FFFFFF, muted #ECEFE9, muted foreground #5B6862, primary #B94320, primary foreground #FFFFFF, secondary #176B58, border #DCE3DA.
+- Dark: background #141C18, foreground #F0F4EE, card #1C2721, muted #26332B, muted foreground #ACB9B0, primary #FFA17A, primary foreground #202019, secondary #91D9BB, border #38473D.
+- Typography: the existing next/font Outfit display, Plus Jakarta Sans body, IBM Plex Mono numerals; system Korean fallbacks. 2+1 roles, roman headings. No additional font downloads.
+- Spacing: Tailwind's existing 4px scale, 16/24/32px inner padding, 32/48px section gaps, 1200px maximum app canvas. Cards at 12px radius; touch controls at least 44px.
+- Motion: feedback only, 150–220ms. Small check/progress state changes, no compulsory animation or timed redirect. Respect prefers-reduced-motion.
+- CTA: short verb, filled primary, outlined secondary; no color-only distinction. Search has a label and a submit button, mobile theme/language remain reachable.
+- Rating contract: DB 1–5 stays unchanged; public numeric ratings display /10 via displayRating. Five rating stars explain their selected /10 value.
+- Game contract: exploration stage and category stamps derive from actual saved, undeleted, unique subject reviews. No points for rating high, no countdown pressure, no fabricated participation.
+- Error/empty: distinguish no reviews from fetch failure, show retry, show a neutral category/initial fallback for failed images. Do not conceal real reviews merely because they look like tests.
+- Validation: 320/375/414/768/1440, KO/EN, light/dark, keyboard, reduced motion and real public data; authenticated writes use local mocks only.
+
+---
+
+## Historical design notes
+
 ## Product Context
 - **What this is:** Universal review platform where users rate everything (airlines, hotels, restaurants, companies, places, people)
 - **Who it's for:** Korean-first, bilingual (ko/en) users who want trustworthy, curated reviews

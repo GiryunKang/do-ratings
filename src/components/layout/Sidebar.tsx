@@ -1,212 +1,45 @@
 'use client'
-
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { BarChart3, Bookmark, Swords, Bell, Settings, Plus, ChevronDown, Compass, Sparkles } from 'lucide-react'
-import dynamic from 'next/dynamic'
-
-const RatingStreak = dynamic(() => import('@/components/home/RatingStreak'))
-
+import { BarChart3, Bookmark, ChevronDown, Compass, Flag, Home, Plus, Sparkles, Swords } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { CategoryIcon } from '@/lib/icons'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/lib/hooks/useAuth'
 import CategoryRequestModal from '@/components/category/CategoryRequestModal'
 
-interface Category {
-  id: string
-  name: Record<string, string>
-  slug: string
-  icon: string | null
-}
-
+type Category = { id: string; slug: string; name: Record<string, string>; icon: string | null }
 export default function Sidebar({ locale }: { locale: string }) {
-  const [categories, setCategories] = useState<Category[]>([])
-  const [categoriesOpen, setCategoriesOpen] = useState(false)
-  const [categoryRequestOpen, setCategoryRequestOpen] = useState(false)
+  const ko = locale === 'ko'
   const pathname = usePathname()
   const router = useRouter()
   const { user } = useAuth()
-
+  const [categories, setCategories] = useState<Category[]>([])
+  const [open, setOpen] = useState(true)
+  const [requestOpen, setRequestOpen] = useState(false)
   useEffect(() => {
     let cancelled = false
-    const supabase = createClient()
-    const categoryOrder = ['people', 'places', 'companies', 'restaurants', 'airlines', 'hotels']
-    supabase
-      .from('categories')
-      .select('id, name, slug, icon')
-      .then(({ data }) => {
-        if (cancelled) return
-        const sorted = (data as Category[] ?? []).sort((a, b) => {
-          const ai = categoryOrder.indexOf(a.slug)
-          const bi = categoryOrder.indexOf(b.slug)
-          return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
-        })
-        setCategories(sorted)
-      })
+    createClient().from('categories').select('id,slug,name,icon').order('slug').then(({ data }) => { if (!cancelled && data) setCategories(data) })
     return () => { cancelled = true }
   }, [])
-
-  const navItems = [
-    {
-      href: `/${locale}`,
-      label: locale === 'ko' ? '홈' : 'Home',
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-          <polyline points="9 22 9 12 15 12 15 22" />
-        </svg>
-      ),
-    },
-    {
-      href: `/${locale}?sort=popular`,
-      label: locale === 'ko' ? '인기' : 'Popular',
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-        </svg>
-      ),
-    },
-    {
-      href: `/${locale}?sort=latest`,
-      label: locale === 'ko' ? '최신' : 'Latest',
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="12 6 12 12 16 14" />
-        </svg>
-      ),
-    },
+  const nav = [
+    { path: '', title: ko ? '?' : 'Home', icon: Home },
+    { path: '/explore', title: ko ? '????' : 'Explore', icon: Compass },
+    { path: '/play', title: ko ? '?? ??' : 'Taste quest', icon: Flag },
+    { path: '/rankings', title: ko ? '??' : 'Rankings', icon: BarChart3 },
+    { path: '/collections', title: ko ? '? ???' : 'Collections', icon: Bookmark },
   ]
-
-  const moreItems = [
-    { href: `/${locale}/discover`, label: locale === 'ko' ? '발견' : 'Discover', icon: <Compass className="w-4 h-4" /> },
-    { href: `/${locale}/highlights`, label: locale === 'ko' ? '하이라이트' : 'Highlights', icon: <Sparkles className="w-4 h-4" /> },
-    { href: `/${locale}/dashboard`, label: locale === 'ko' ? '대시보드' : 'Dashboard', icon: <BarChart3 className="w-4 h-4" /> },
-    { href: `/${locale}/collections`, label: locale === 'ko' ? '컬렉션' : 'Collections', icon: <Bookmark className="w-4 h-4" /> },
-    { href: `/${locale}/battles`, label: locale === 'ko' ? '배틀' : 'Battles', icon: <Swords className="w-4 h-4" /> },
-    { href: `/${locale}/notifications`, label: locale === 'ko' ? '알림' : 'Notifications', icon: <Bell className="w-4 h-4" /> },
-    { href: `/${locale}/admin`, label: locale === 'ko' ? '관리자' : 'Admin', icon: <Settings className="w-4 h-4" /> },
-  ]
-
-  return (
-    <>
-    <aside className="hidden md:flex flex-col fixed left-0 top-14 bottom-0 w-64 bg-background border-r overflow-y-auto z-40">
-      <div className="p-3 flex flex-col gap-0">
-        {/* Main Navigation */}
-        <nav className="space-y-0.5">
-          {navItems.map((item) => {
-            const isActive =
-              pathname === item.href ||
-              (item.href === `/${locale}` && pathname === `/${locale}`)
-            return (
-              <Button
-                key={item.href}
-                variant={isActive ? 'secondary' : 'ghost'}
-                className="w-full justify-start gap-2"
-                render={<Link href={item.href} />}
-              >
-                <span className="text-muted-foreground">{item.icon}</span>
-                <span>{item.label}</span>
-              </Button>
-            )
-          })}
-        </nav>
-
-        <Separator className="my-3" />
-
-        {/* Categories — collapsible */}
-        <button
-          onClick={() => setCategoriesOpen(!categoriesOpen)}
-          className="w-full flex items-center justify-between px-1 mb-1"
-        >
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-            {locale === 'ko' ? '카테고리' : 'Categories'}
-          </span>
-          <ChevronDown
-            className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${categoriesOpen ? 'rotate-180' : ''}`}
-          />
-        </button>
-
-        {categoriesOpen && (
-          <nav className="space-y-0.5">
-            {categories.map((cat) => {
-              const catHref = `/${locale}/category/${cat.slug}`
-              const isActive = pathname === catHref || pathname.startsWith(catHref + '/')
-              return (
-                <Button
-                  key={cat.id}
-                  variant={isActive ? 'secondary' : 'ghost'}
-                  className={`w-full justify-start gap-2 ${isActive ? 'border-l-2 border-primary pl-[6px]' : ''}`}
-                  render={<Link href={catHref} />}
-                >
-                  <CategoryIcon
-                    name={cat.icon ?? 'folder'}
-                    className="w-4 h-4 text-muted-foreground"
-                  />
-                  <span className="truncate">{cat.name[locale] ?? cat.name['ko']}</span>
-                </Button>
-              )
-            })}
-            <button
-              onClick={() => user ? setCategoryRequestOpen(true) : router.push(`/${locale}/auth/login`)}
-              className="w-full text-left px-2 py-1.5 text-xs text-primary hover:bg-muted rounded-md transition-colors duration-150 flex items-center gap-1.5"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              {locale === 'ko' ? '카테고리 추가 요청' : 'Request New Category'}
-            </button>
-          </nav>
-        )}
-
-        <Separator className="my-3" />
-
-        {/* More Features */}
-        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest px-1 mb-1">
-          {locale === 'ko' ? '더보기' : 'More'}
-        </span>
-        <nav className="space-y-0.5">
-          {moreItems.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
-            return (
-              <Button
-                key={item.href}
-                variant={isActive ? 'secondary' : 'ghost'}
-                className={`w-full justify-start gap-2 ${isActive ? 'border-l-2 border-primary pl-[6px]' : ''}`}
-                render={<Link href={item.href} />}
-              >
-                <span className="text-muted-foreground">{item.icon}</span>
-                <span>{item.label}</span>
-              </Button>
-            )
-          })}
-        </nav>
-
-        {/* Rating Streak */}
-        <div className="mt-3 px-1">
-          <RatingStreak locale={locale} />
-        </div>
-
-        {/* Legal links */}
-        <div className="mt-4 pt-3 border-t border-border flex gap-2 px-1 text-[10px] text-muted-foreground flex-wrap">
-          <Link href={`/${locale}/about`} className="hover:text-foreground transition-colors">
-            {locale === 'ko' ? '서비스 소개' : 'About'}
-          </Link>
-          <span>·</span>
-          <Link href={`/${locale}/terms`} className="hover:text-foreground transition-colors">
-            {locale === 'ko' ? '이용약관' : 'Terms'}
-          </Link>
-          <span>·</span>
-          <Link href={`/${locale}/privacy`} className="hover:text-foreground transition-colors">
-            {locale === 'ko' ? '개인정보처리방침' : 'Privacy'}
-          </Link>
-        </div>
-      </div>
+  const linkClass = (active: boolean) => `flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm transition-colors ${active ? 'bg-secondary/10 font-semibold text-secondary' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`
+  return <>
+    <aside className="fixed bottom-0 left-0 top-16 z-30 hidden w-56 flex-col overflow-y-auto border-r border-border bg-background p-4 lg:flex">
+      <nav aria-label={ko ? '? ??' : 'Main navigation'} className="space-y-1">{nav.map(item => <Link key={item.path} href={`/${locale}${item.path}`} aria-current={pathname === `/${locale}${item.path}` ? 'page' : undefined} className={linkClass(pathname === `/${locale}${item.path}`)}><item.icon size={18} />{item.title}</Link>)}</nav>
+      <div className="my-4 border-t border-border" />
+      <button type="button" aria-expanded={open} aria-controls="sidebar-categories" onClick={() => setOpen(value => !value)} className="flex min-h-11 w-full items-center justify-between px-3 text-xs font-semibold text-muted-foreground">{ko ? '??? ??' : 'CATEGORIES'}<ChevronDown size={16} className={open ? 'rotate-180' : ''} /></button>
+      {open && <nav id="sidebar-categories" aria-label={ko ? '??? ??' : 'Categories'} className="space-y-1">{categories.map(cat => <Link key={cat.id} href={`/${locale}/category/${cat.slug}`} className={linkClass(pathname.includes(`/category/${cat.slug}`))} aria-current={pathname.includes(`/category/${cat.slug}`) ? 'page' : undefined}><CategoryIcon name={cat.icon ?? 'folder'} className="h-4 w-4 shrink-0" /><span>{cat.name[locale] || cat.name.ko || cat.name.en}</span></Link>)}<button type="button" onClick={() => user ? setRequestOpen(true) : router.push(`/${locale}/auth/login`)} className="flex min-h-11 items-center gap-2 px-3 text-xs text-secondary"><Plus size={15} />{ko ? '? ?? ??' : 'Suggest a category'}</button></nav>}
+      <div className="my-4 border-t border-border" />
+      <nav aria-label={ko ? '? ????' : 'More to explore'} className="space-y-1">{[{ path: 'discover', label: ko ? '??' : 'Discover', icon: Compass }, { path: 'highlights', label: ko ? '?????' : 'Highlights', icon: Sparkles }, { path: 'battles', label: ko ? '??' : 'Battles', icon: Swords }].map(item => <Link key={item.path} href={`/${locale}/${item.path}`} className={linkClass(pathname === `/${locale}/${item.path}`)}><item.icon size={17} />{item.label}</Link>)}</nav>
+      <p className="mt-auto px-3 pt-8 text-xs leading-5 text-muted-foreground">{ko ? '?? ?? ??? ??? ??? ??.' : 'A small review can spark a new discovery.'}</p>
     </aside>
-    {categoryRequestOpen && (
-      <CategoryRequestModal locale={locale} onClose={() => setCategoryRequestOpen(false)} />
-    )}
+    {requestOpen && <CategoryRequestModal locale={locale} onClose={() => setRequestOpen(false)} />}
   </>
-  )
 }

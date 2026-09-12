@@ -1,128 +1,18 @@
-'use client'
+﻿'use client'
 
-import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { Target, Check } from 'lucide-react'
+import { Check, Target } from 'lucide-react'
+import { usePlayerProgress } from '@/lib/game/usePlayerProgress'
 
-import { createClient } from '@/lib/supabase/client'
-import { useAuth } from '@/lib/hooks/useAuth'
-
-interface DailyMissionProps {
-  locale: string
-}
-
-const MISSIONS = [
-  { categorySlug: 'airlines', ko: '항공사 1개 평가하기', en: 'Rate 1 airline' },
-  { categorySlug: 'restaurants', ko: '맛집 1개 평가하기', en: 'Rate 1 restaurant' },
-  { categorySlug: 'hotels', ko: '호텔 1개 평가하기', en: 'Rate 1 hotel' },
-  { categorySlug: 'people', ko: '인물 1명 평가하기', en: 'Rate 1 person' },
-  { categorySlug: 'companies', ko: '기업 1개 평가하기', en: 'Rate 1 company' },
-  { categorySlug: 'places', ko: '장소 1개 평가하기', en: 'Rate 1 place' },
-]
-
-export default function DailyMission({ locale }: DailyMissionProps) {
-  const { user } = useAuth()
-  const [completed, setCompleted] = useState(false)
-  const [checking, setChecking] = useState(true)
-
-  // Deterministic daily mission based on date
-  const todayMission = useMemo(() => {
-    const today = new Date()
-    const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate()
-    return MISSIONS[seed % MISSIONS.length]
-  }, [])
-
-  useEffect(() => {
-    if (!user) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setChecking(false)
-      return
-    }
-
-    let cancelled = false
-
-    async function checkCompletion() {
-      const supabase = createClient()
-      // Use UTC midnight to match DB timestamps; avoids timezone mismatch with server
-      const todayStart = new Date()
-      todayStart.setUTCHours(0, 0, 0, 0)
-
-      // Check if user has reviewed any subject in the mission category today
-      const { data: todayReviews, error } = await supabase
-        .from('reviews')
-        .select('id, subjects!inner(categories!inner(slug))')
-        .eq('user_id', user!.id)
-        .gte('created_at', todayStart.toISOString())
-        .limit(50)
-      if (error) console.error('[DailyMission] query error:', error.message)
-
-      if (cancelled) return
-
-      const hasCompleted = (todayReviews ?? []).some(r => {
-        const subject = Array.isArray(r.subjects) ? r.subjects[0] : r.subjects
-        const cat = subject?.categories
-        const catObj = Array.isArray(cat) ? cat[0] : cat
-        return (catObj as { slug: string } | null)?.slug === todayMission.categorySlug
-      })
-
-      if (!cancelled) {
-        setCompleted(hasCompleted)
-        setChecking(false)
-      }
-    }
-
-    checkCompletion()
-    return () => { cancelled = true }
-  }, [user, todayMission.categorySlug])
-
-  if (checking) {
-    return (
-      <div className="border border-border rounded-xl p-4 animate-pulse">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-muted shrink-0" />
-          <div className="flex-1">
-            <div className="h-3 bg-muted rounded w-20 mb-2" />
-            <div className="h-4 bg-muted rounded w-40" />
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className={`border rounded-xl p-4 transition-all ${completed ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800' : 'bg-card border-border'}`}>
-      <div className="flex items-center gap-3">
-        <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${completed ? 'bg-emerald-100 dark:bg-emerald-900/40' : 'bg-primary/10'}`}>
-          {completed ? (
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 500 }}>
-              <Check className="w-5 h-5 text-emerald-600" />
-            </motion.div>
-          ) : (
-            <Target className="w-5 h-5 text-primary" />
-          )}
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground">
-            {locale === 'ko' ? '오늘의 미션' : "Today's Mission"}
-          </p>
-          <p className={`text-sm font-bold ${completed ? 'text-emerald-700 dark:text-emerald-300 line-through' : 'text-foreground'}`}>
-            {locale === 'ko' ? todayMission.ko : todayMission.en}
-          </p>
-        </div>
-        {completed ? (
-          <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/40 px-3 py-1 rounded-full">
-            {locale === 'ko' ? '완료!' : 'Done!'}
-          </span>
-        ) : (
-          <Link
-            href={`/${locale}/explore?category=${todayMission.categorySlug}`}
-            className="text-xs font-bold text-white bg-primary px-3 py-1.5 rounded-full hover:opacity-90 transition-opacity"
-          >
-            {locale === 'ko' ? '도전' : 'Go'}
-          </Link>
-        )}
-      </div>
-    </div>
-  )
+export default function DailyMission({ locale }: { locale: string }) {
+  const ko = locale === 'ko'
+  const { status, progress, retry } = usePlayerProgress()
+  return <section className="rounded-xl border border-border bg-card p-4">
+    <div className="flex items-center gap-2"><Target className="size-5 text-primary" aria-hidden="true" /><h2 className="text-sm font-bold">{ko ? '오늘의 미션' : "Today's challenge"}</h2></div>
+    {status === 'loading' && <p role="status" className="mt-3 text-sm text-muted-foreground">{ko ? '기록 확인 중…' : 'Checking your reviews…'}</p>}
+    {status === 'error' && <div className="mt-3"><p role="alert" className="text-sm text-muted-foreground">{ko ? '미션 진척을 불러오지 못했어요.' : 'Could not load your challenge.'}</p><button type="button" onClick={retry} className="mt-2 min-h-11 rounded-lg px-3 text-sm font-semibold hover:bg-muted focus-visible:outline-2 focus-visible:outline-primary">{ko ? '다시 시도' : 'Try again'}</button></div>}
+    {status === 'guest' && <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{ko ? '로그인 후 저장한 평가로 미션을 채워보세요.' : 'Sign in and save reviews to complete your challenges.'}</p>}
+    {progress && <div className="mt-3"><p className="text-sm font-semibold">{ko ? `${progress.dailyMission.ko} 1개 평가하기` : `Review one in ${progress.dailyMission.en}`}</p><p className="mt-1 text-xs text-muted-foreground">{ko ? '한국시간 자정 기준' : 'Resets at midnight KST'}</p>{progress.dailyCompleted && <p className="mt-3 flex items-center gap-2 text-sm font-semibold text-primary"><Check className="size-4" aria-hidden="true" />{ko ? '오늘의 미션 완료' : 'Challenge complete'}</p>}</div>}
+    <Link href={progress && !progress.dailyCompleted ? `/${locale}/explore?category=${progress.dailyMission.slug}` : `/${locale}/play`} className="mt-3 inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-primary hover:bg-primary/10 focus-visible:outline-2 focus-visible:outline-primary">{ko ? '탐험 이어가기' : 'Keep exploring'}</Link>
+  </section>
 }
