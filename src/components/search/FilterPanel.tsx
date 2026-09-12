@@ -103,7 +103,7 @@ export default function FilterPanel({
             {t('minRating') ?? 'Min Rating'}
           </p>
           <select
-            aria-label={currentLocale === 'ko' ? '?? ?? (10? ??)' : 'Minimum rating out of 10'}
+            aria-label={currentLocale === 'ko' ? '최소 평점 (10점 만점)' : 'Minimum rating out of 10'}
             value={ratingMin ?? ''}
             onChange={handleRatingChange}
             className="min-h-11 w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary bg-card"
@@ -120,3 +120,4 @@ export default function FilterPanel({
     </aside>
   )
 }
+
